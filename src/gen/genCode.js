@@ -35,34 +35,38 @@ async function getGenCode(softwareData) {
 
 function getAdapterData(menuInfo, pages) {
   const menuList = menuInfo.reduce((res, item) => {
-    const { code } = item
+    const { code,menuType } = item
     const CONST_CODE = constantCase(code)
     const CAMEL_CASE_CODE = camelCase(code)
     const PASCAL_CASE_CODE = pascalCase(code)
-    res['menuList'].push({
-      ...item,
-      menuParams: CONST_CODE,
-    })
-    // 设置了功能菜单 且必须设置配置了pages才可以生成页面内容
-    const pageInfo = pages.find(page => page.bindMenu == item.id)
-    if (pageInfo) {
+    if (menuType == MENU_TYPE_ENUM.MODULE) {
+      res['menuList'].push({
+        ...item,
+        menuParams: CONST_CODE,
+      })
+    } else {
+      // 设置了功能菜单 且必须设置配置了pages才可以生成页面内容
+      const pageInfo = pages.find(page => page.bindMenu == item.id)
+      if (pageInfo) {
+        const { label } = pageInfo
+        const VUE_FILE_NAME = `${CAMEL_CASE_CODE}/${PASCAL_CASE_CODE}${ENTRY_SUFFIX_ENUM[label]}.vue`
+            res['menuList'].push({
+              ...item,
+              menuParams: CONST_CODE,
+            })
+            res['routesConstantList'].push({
+              const: CONST_CODE,
+              path: CAMEL_CASE_CODE,
+              name: PASCAL_CASE_CODE,
+            })
 
-      const { type } = pageInfo
-      const VUE_FILE_NAME = `${CAMEL_CASE_CODE}/${PASCAL_CASE_CODE}${ENTRY_SUFFIX_ENUM[type]}.vue`
-      if (item.menuType == MENU_TYPE_ENUM.PAGE && pageInfo) {
-        res['routesConstantList'].push({
-          const: CONST_CODE,
-          path: CAMEL_CASE_CODE,
-          name: PASCAL_CASE_CODE,
-        })
-
-        res['routeList'].push({
-          ...item,
-          const: CONST_CODE,
-          path: `${FRAMEWORK_CONFIG.ROUTE_COMPONENT_PREFIX}/${VUE_FILE_NAME}`,
-        })
-        res['pageList'].push({ ...item, pageInfo });
-      }
+            res['routeList'].push({
+              ...item,
+              const: CONST_CODE,
+              path: `${FRAMEWORK_CONFIG.ROUTE_COMPONENT_PREFIX}/${VUE_FILE_NAME}`,
+            })
+            res['pageList'].push({ ...item, pageInfo });
+        }
     }
     return res
   }, {
@@ -84,7 +88,6 @@ async function getPageAdapterData(menuPageList) {
       pagesCode.push(await getCrudAdapterData(pageData))
     }
   }
-  console.log('pagesCode',pagesCode)
   return getPageResultAnddCollectServiceData(pagesCode)
 }
 // 返回页面需要的数据

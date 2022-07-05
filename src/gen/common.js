@@ -25,10 +25,13 @@ function getFileInfo({ name, type, dirpath, template }) {
   }
 }
 
-function addExtFuncStruct(script,extList){
+function addExtFuncStruct(script, extList, param = '') {
+  if (extList.length) {
+    script[VUE_DATA_SCRIPT_ENUM.IMPORT_LIST].push({isDefault: true,from: '@/utils/tools',content: 'tools'})
+  }
   extList.forEach(item=>{
     const { ServiceName, InterfaceName }=getInterfaceData(item)
-    script[VUE_DATA_SCRIPT_ENUM.METHOD_LIST].push({type:'extMehodStruct',name:item.code,ServiceName,InterfaceName})
+    script[VUE_DATA_SCRIPT_ENUM.METHOD_LIST].push({type:'extMehodStruct',name:item.code,ServiceName,InterfaceName,param})
   })
 }
 

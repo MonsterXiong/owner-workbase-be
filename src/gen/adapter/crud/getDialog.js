@@ -46,11 +46,7 @@ function initStruct(script){
 function handleFieldList(script,fieldList){
   let initValue = "{}"
   if(fieldList.length){
-    initValue = [{
-      name: 'name',
-      type: 'string',
-      initValue: '""'
-    }]
+    initValue = []
     fieldList.forEach(field=>{
       initValue.push({
         name: field.code,

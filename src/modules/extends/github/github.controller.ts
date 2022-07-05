@@ -269,6 +269,7 @@ export class GithubController {
   @ApiOperation({ summary: '代码生成通过json' })
   async genByJson(@Body() jsonData:JsonData) {
     try {
+      this.genProjectAndDowload(jsonData)
       const code = await getGenCode(jsonData)
       const result = code.map(item =>{
         const { filePath } = item
@@ -305,13 +306,13 @@ export class GithubController {
     try {
       const { projectInfo } = jsonData;
       const { project_outputDir } = projectInfo
-
+      const outputDir = project_outputDir || './temp'
       // 本地项目路径
-      const projectPath = path.join(project_outputDir, 'fe');
+      const projectPath = path.join(outputDir, 'fe');
       if (!fse.pathExistsSync(projectPath)) {
         fse.emptyDirSync(projectPath);
         // 拷贝项目
-        await uncompress('public/txsj-fe-template-master.zip',projectPath)
+        // await uncompress('public/txsj-fe-template-master.zip',projectPath)
       }
       const code = await getGenCode(jsonData)
 
@@ -324,7 +325,7 @@ export class GithubController {
 
       await genCode(fileList);
 
-      // await compress(projectPath,'public/temp/code.zip')
+      compress(projectPath,path.join(outputDir,'code.zip'))
 
       // await fse.removeSync(project_outputDir,true);
       return fileList

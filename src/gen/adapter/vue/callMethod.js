@@ -38,7 +38,7 @@ function getEditDialogShowMethod(method){
       if(row) {
         this.formData = {...row}
       }
-      await this.getData(row.${pri})
+      await this.getData(${pri?'row.'+pri:''})
     },`
 }
 function getEditGetData(method){
@@ -93,9 +93,9 @@ function getTableDeleteBatchMethod(method){
 }
 
 function getExtMehodStruct(method){
-  const { name, ServiceName,InterfaceName } = method
-  return `${getTab(2)}async ${name}() {
-      await ${ServiceName}.${InterfaceName}()
+  const { name, ServiceName,InterfaceName,param } = method
+  return `${getTab(2)}async ${name}(${param}) {
+      await ${ServiceName}.${InterfaceName}(${param})
       tools.message('操作成功')
     },`
 }
@@ -181,14 +181,14 @@ function getOnSelectionChanget(method){
     },`
 }
 function getQueryTableData(method){
-  const { ServiceName,InterfaceName } = method
+  const { ServiceName,InterfaceName,hasQuery } = method
   return `${getTab(2)}async queryTableData() {
       let queryCondition = QueryConditionBuilder.getInstance(this.pageInfo.page, this.pageInfo.rows)
-      Object.keys(this.queryForm).forEach((key) => {
+      ${hasQuery?`Object.keys(this.queryForm).forEach((key) => {
         if (this.queryForm[key] || this.queryForm[key] == 0) {
           queryCondition.buildLikeQuery(key, this.queryForm[key])
         }
-      })
+      })`:''}
       const { data, count } = await ${ServiceName}.${InterfaceName}(queryCondition)
       this.tableData = data
       this.total = count
