@@ -269,7 +269,31 @@ export class GithubController {
   @ApiOperation({ summary: '代码生成通过json' })
   async genByJson(@Body() jsonData:JsonData) {
     try {
-      return await getGenCode(jsonData)
+      const code = await getGenCode(jsonData)
+      const result = code.map(item =>{
+        const { filePath } = item
+        let filepath = filePath
+        let dirPath = ''
+        let fileName = ''
+        let lastSlashIndex = -1
+        if (filepath.endsWith('.vue')){
+          filepath=filepath.replace(/\\/g,'/');
+        }
+        lastSlashIndex = filepath.lastIndexOf('/');
+        if (lastSlashIndex == -1) {
+          fileName = filepath
+        } else {
+          dirPath = filepath.substring(0, lastSlashIndex)
+          fileName = filepath.substring(lastSlashIndex+1)
+        }
+        return {
+          ...item,
+          dirPath,
+          fileName
+        }
+      })
+      return result
+
     } catch (error) {
       console.log(error, 'error');
     }
