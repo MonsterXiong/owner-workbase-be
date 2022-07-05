@@ -146,14 +146,16 @@ function getFormatRequestList(sourceData){
   const functionMap = functionList.reduce((res,item)=>{
     res[item.label] = item
     return res
-  },{})
+  }, {})
+
   const serviceList = elementList.reduce((res,element) => {
     let request = functionMap[element.bindFunction]
     const prikeyInfo = getPrikeyInfoByList(element.data)
-    res.push({
-      ...request,
-      prikeyInfo:{...prikeyInfo,code:camelCase(prikeyInfo.code)}
-    })
+    const param = {...request}
+    if (prikeyInfo && prikeyInfo.code) {
+      param.prikeyInfo={...prikeyInfo,code:camelCase(prikeyInfo.code)}
+    }
+    res.push(param)
     return res
   },functionList).reduce((res,item)=>{
     const { interfaceType, serviceType, interfaceName } = parseUrl(item.request)

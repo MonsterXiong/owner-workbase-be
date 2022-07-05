@@ -78,12 +78,13 @@ async function getPageAdapterData(menuPageList) {
   const pagesCode = []
   for await (const menuPage of menuPageList) {
     // 根据页面的菜单信息去找对应的pages信息
-    const { type } = menuPage.pageInfo
+    const { label } = menuPage.pageInfo
     const pageData = parseJsonToPage(menuPage)
-    if (type == PAGE_TYPE_ENUM.CRUD) {
+    if (label == PAGE_TYPE_ENUM.CRUD) {
       pagesCode.push(await getCrudAdapterData(pageData))
     }
   }
+  console.log('pagesCode',pagesCode)
   return getPageResultAnddCollectServiceData(pagesCode)
 }
 // 返回页面需要的数据

@@ -33,7 +33,7 @@ function getToolbarBtnAndObjBtn(functionList) {
 }
 
 function getQueryList(tableFieldList) {
-  return tableFieldList.filter(item => item.param.isSearch)
+  return tableFieldList.filter(item => item?.param?.isSearch)
 }
 
 function getParam(menuInfo) {
@@ -176,7 +176,6 @@ async function getCrudAdapterData(sourceData) {
   if (hasUpdate) {
     pages.push(await getDialog({ ...fileParam, name: 'updateDialog' }, param))
   }
-
   return {
     services: getFormatRequestList(sourceData),
     pages: pages.filter(item => !!item)

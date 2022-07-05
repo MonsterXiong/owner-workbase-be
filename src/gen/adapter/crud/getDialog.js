@@ -115,7 +115,7 @@ async function getDialog(fileParam, sourceData) {
   const isUpdate = name == 'updateDialog'
   let funcInfo = isUpdate ? updateInfo : addInfo
   sourceFieldList = funcInfo?.elementList || []
-  fieldList = sourceFieldList.filter(item=>!item.param.isHidden)
+  fieldList = sourceFieldList.filter(item=>!item.param?.isHidden)
 
   // 初始化script
   const script = initScript(fileInfo.filename)
