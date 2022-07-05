@@ -63,12 +63,12 @@ function getTableDeleteMethod(method){
   const { name, param,pri, ServiceName,InterfaceName } = method
   return `${getTab(2)}async ${name}(${param}) {
       try {
-        await this.$tools.confirm('请确认是否删除？')
+        await tools.confirm('请确认是否删除？')
         const { code } = await ${ServiceName}.${InterfaceName}(${param}.${pri})
-        if (code === 200) this.$tools.message('删除成功')
+        if (code === 200) tools.message('删除成功')
         this.queryTableData()
       } catch (e) {
-        if (e == 'cancel') return this.$tools.message('已取消删除', { type: 'info' })
+        if (e == 'cancel') return tools.message('已取消删除', { type: 'info' })
         console.error('删除失败', e)
       }
     },`
@@ -78,15 +78,15 @@ function getTableDeleteBatchMethod(method){
   return `${getTab(2)}async ${name}() {
       const rows = this.multipleSelection
       if (Array.isArray(rows) && !rows.length) {
-        return this.$tools.message('请勾选要删除的文档信息！', { type: 'warning' })
+        return tools.message('请勾选要删除的文档信息！', { type: 'warning' })
       }
       try {
-        await this.$tools.confirm('请确认是否删除？')
+        await tools.confirm('请确认是否删除？')
         const { code } = await ${ServiceName}.${InterfaceName}(rows.map((row) =>row.${pri}))
-        if (code === 200) this.$tools.message('删除成功')
+        if (code === 200) tools.message('删除成功')
         this.queryTableData()
       } catch (e) {
-        if (e == 'cancel') return this.$tools.message('已取消删除', { type: 'info' })
+        if (e == 'cancel') return tools.message('已取消删除', { type: 'info' })
         console.error('删除失败', e)
       }
     },`
@@ -96,7 +96,7 @@ function getExtMehodStruct(method){
   const { name, ServiceName,InterfaceName } = method
   return `${getTab(2)}async ${name}() {
       await ${ServiceName}.${InterfaceName}()
-      this.$tools.message('操作成功')
+      tools.message('操作成功')
     },`
 }
 function getOnDialogCloseMethod(method){
