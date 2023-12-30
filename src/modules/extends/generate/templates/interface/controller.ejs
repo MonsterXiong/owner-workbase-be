@@ -1,0 +1,49 @@
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
+} from '@nestjs/common';
+import { <%=name %>Service } from './<%=TABLE_NAME %>.service';
+import { ApiBody, ApiParam, ApiTags } from '@nestjs/swagger';
+import { <%=name %> } from './<%=TABLE_NAME %>.entity';
+
+@ApiTags('<%=TABLE_COMMENT %>')
+@Controller('<%=TABLE_NAME %>')
+export class <%=name %>Controller {
+  constructor(private readonly <%=dirName %>Service: <%=name %>Service) { }
+
+  @Post()
+  create(@Body() entity: <%=name %>) {
+    return this.<%=dirName %>Service.create(entity);
+  }
+
+  @Get()
+  async findAll(
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 10,
+    @Query() queryParams: <%=name %>
+  ) {
+    return await this.<%=dirName %>Service.findAll(page, limit, queryParams);
+  }
+
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.<%=dirName %>Service.findOne(+id);
+  }
+
+  @Patch(':id')
+  async update(@Param('id') id: string, @Body() entity: <%=name %>) {
+    await this.<%=dirName %>Service.update(+id, entity);
+    return this.<%=dirName %>Service.findOne(id);
+  }
+
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.<%=dirName %>Service.remove(+id);
+  }
+}

@@ -1,0 +1,12 @@
+import { Module } from '@nestjs/common';
+import { <%=name %>Service } from './<%=TABLE_NAME %>.service';
+import { <%=name %>Controller } from './<%=TABLE_NAME %>.controller';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { <%=name %> } from './<%=TABLE_NAME %>.entity';
+
+@Module({
+  imports: [TypeOrmModule.forFeature([<%=name %>])],
+  controllers: [<%=name %>Controller],
+  providers: [<%=name %>Service],
+})
+export class <%=name %>Module { }

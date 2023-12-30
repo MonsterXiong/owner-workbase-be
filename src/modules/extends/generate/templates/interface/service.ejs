@@ -1,0 +1,60 @@
+import { Injectable } from '@nestjs/common';
+import { <%=name %> } from './<%=TABLE_NAME %>.entity';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+
+@Injectable()
+export class <%=name %>Service {
+  constructor(
+    @InjectRepository(<%=name %>)
+    private <%=dirName %>Repository: Repository<<%=name %>>,
+  ) { }
+
+  create(entity: <%=name %>) {
+    return this.<%=dirName %>Repository.save(entity);
+  }
+
+  async findAll(page, limit, queryParams) {
+    const {
+    <%_ fields.forEach(field =>{ -%>
+      <%= field.Field -%>,
+    <%_ }) -%>
+    } = queryParams;
+    const query = this.<%=dirName %>Repository.createQueryBuilder('entity');
+    <%_ fields.forEach((field,index) => { -%>
+    <%_ if (index==0) { %>
+    if (<%=field.Field %>) {
+      query.where('entity.<%=field.Field %> = :<%=field.Field %>', { <%=field.Field %> });
+    }
+    <%_ }else{ -%>
+    if (<%=field.Field %>) {
+      query.andWhere('entity.<%=field.Field %> = :<%=field.Field %>', { <%=field.Field %> });
+    }
+    <%_ } -%>
+    <%_ }); -%>
+
+    const totalCount = await query.getCount();
+    const offset = (page - 1) * limit;
+    query.skip(offset).take(limit);
+    const entities = await query.getMany();
+
+    return {
+      totalCount,
+      page,
+      limit,
+      data: entities,
+    };
+  }
+
+  findOne(id) {
+    return this.<%=dirName %>Repository.findOne( id );
+  }
+
+  update(id: number,entity: <%=name %>) {
+    return this.<%=dirName %>Repository.update(id, entity);
+  }
+
+  remove(id: number) {
+    return this.<%=dirName %>Repository.softDelete(id);
+  }
+}
