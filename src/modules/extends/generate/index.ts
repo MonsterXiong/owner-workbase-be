@@ -84,9 +84,9 @@ async function genEntryFile(basePath,templateDirPath,tables){
     const data = {
       tables:tables.map(table=>{
         return {
-          dirName:toCamelCase(table.TABLE_NAME),
-          moduleName:toPascalCase(table.TABLE_NAME),
-          TABLE_NAME:toCamelCase(table.TABLE_NAME)
+          dirName:changeCase.camelCase(table.TABLE_NAME),
+          moduleName:changeCase.pascalCase(table.TABLE_NAME),
+          TABLE_NAME:changeCase.camelCase(table.TABLE_NAME)
         }
       })
     }

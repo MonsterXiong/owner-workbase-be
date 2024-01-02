@@ -1,0 +1,135 @@
+import {
+  Controller,
+  Post,
+  Body,
+  Query,
+  UploadedFile,
+  UseInterceptors,
+  Res,
+} from '@nestjs/common';
+import { <%= TableName %>Service } from './<%= tableName%>.service';
+import { ApiTags, ApiOperation, ApiConsumes, ApiBody } from '@nestjs/swagger';
+import { <%= TableName %> } from './<%= tableName%>.entity';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { Response } from 'express';
+import * as xlsx from 'xlsx';
+import { QueryDto } from '@/common/query.dto';
+
+@ApiTags('测试')
+@Controller('/nbpgBase/<%= tableName%>')
+export class <%= TableName %>Controller {
+  constructor(private readonly <%= tableName%>Service: <%= TableName %>Service) {}
+
+  @Post('delete<%= TableName %>Batch')
+  @ApiOperation({ summary: '删除<%= TableCommon %>(批量、递归)' })
+
+  delete<%= TableName %>Batch(@Body() ids: number[]) {
+    return this.<%= tableName%>Service.delete<%= TableName %>Batch(ids);
+  }
+
+  @Post('download<%= TableName %>Template')
+  @ApiOperation({ summary: '导出<%= TableCommon %>模板下载' })
+  async download<%= TableName %>Template(@Res() res: Response): Promise<void> {
+    const data = await this.<%= tableName%>Service.findAll();
+    const firstData = data[0];
+    const fileName = '<%= TableName %>_template.xlsx';
+    const result = {};
+    Object.keys(firstData).forEach((key) => {
+      result[key] = null;
+    });
+    return this.<%= tableName%>Service.exportExcel([result], res, fileName);
+  }
+
+  @Post('export<%= TableName %>')
+  @ApiOperation({ summary: '导出<%= TableCommon %>' })
+  async export<%= TableName %>(@Res() res: Response): Promise<void> {
+    const fileName = '<%= TableName %>.xlsx';
+    const data = await this.<%= tableName%>Service.findAll();
+    return this.<%= tableName%>Service.exportExcel(data, res, fileName);
+  }
+
+  @Post('get<%= TableName %>')
+  @ApiOperation({ summary: '获取<%= TableCommon %>' })
+  get<%= TableName %>(@Query('<%= tableName%>Id') <%= tableName%>Id: number) {
+    return this.<%= tableName%>Service.get<%= TableName %>(<%= tableName%>Id);
+  }
+
+  @Post('import<%= TableName %>')
+  @ApiOperation({ summary: '导入<%= TableCommon %>' })
+  @UseInterceptors(FileInterceptor('file'))
+  @ApiOperation({ summary: '文件上传,返回 url 地址' })
+  @ApiConsumes('multipart/form-data')
+  // @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        file: {
+          description: '文件',
+          type: 'string',
+          format: 'binary',
+        },
+      },
+    },
+  })
+  import<%= TableName %>(@UploadedFile() file: Express.Multer.File) {
+    const reader = new FileReader();
+    reader.onload = function (event) {
+      var data = event.target.result;
+      var workbook = xlsx.read(data, { type: 'binary' });
+      // 读取第一个工作表的所有数据
+      var sheet1 = workbook.Sheets[workbook.SheetNames[0]];
+      var rows = xlsx.utils.sheet_to_json(sheet1);
+      // 处理读取出来的数据
+      console.log(rows);
+    };
+    console.log(file);
+    // reader.readAsBinaryString(file);
+    // 导入
+    return 1;
+  }
+
+  @Post('insert<%= TableName %>')
+  @ApiOperation({ summary: '增加<%= TableCommon %>' })
+  insert<%= TableName %>(@Body() entity: <%= TableName %>) {
+    return this.<%= tableName%>Service.insert<%= TableName %>(entity);
+  }
+
+  @Post('insert<%= TableName %>Batch')
+  @ApiOperation({ summary: '增加<%= TableCommon %>(批量)' })
+  insert<%= TableName %>Batch(@Body() entity: <%= TableName %>[]) {
+    return this.<%= tableName%>Service.insert<%= TableName %>Batch(entity);
+  }
+
+  @Post('query<%= TableName %>')
+  @ApiOperation({ summary: '查询<%= TableCommon %>列表结果' })
+  query<%= TableName %>(@Body() condition:QueryDto) {
+    return this.<%= tableName%>Service.query<%= TableName %>(condition)
+  }
+
+  @Post('save<%= TableName %>')
+  @ApiOperation({ summary: '保存<%= TableCommon %>' })
+  save<%= TableName %>(@Body() entity: <%= TableName %>) {
+    return this.<%= tableName%>Service.save<%= TableName %>(entity);
+  }
+  @Post('save<%= TableName %>Batch')
+  @ApiOperation({ summary: '保存<%= TableCommon %>(批量)' })
+  save<%= TableName %>Batch(@Body() entity: <%= TableName %>[]) {
+    return this.<%= tableName%>Service.save<%= TableName %>Batch(entity);
+  }
+
+  @Post('update<%= TableName %>')
+  @ApiOperation({ summary: '修改<%= TableCommon %>' })
+  // update<%= TableName %>(<%= tableName%>Id : number,@Body() entity: <%= TableName %>) {
+  //   return this.<%= tableName%>Service.update(<%= tableName%>Id,entity);
+  // }
+  update<%= TableName %>(@Body() entity: <%= TableName %>) {
+    return this.<%= tableName%>Service.update(entity);
+  }
+
+  @Post('update<%= TableName %>Batch')
+  @ApiOperation({ summary: '修改<%= TableCommon %>(批量)' })
+  update<%= TableName %>Batch(@Body() entity: <%= TableName %>[]) {
+    return this.<%= tableName%>Service.update<%= TableName %>Batch(entity);
+  }
+}

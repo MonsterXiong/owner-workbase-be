@@ -1,7 +1,7 @@
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 
 export const databaseConfig = {
-  NAME: 'default',
+  // NAME: 'default',
   DATA_TYPE: 'mysql',
   HOST: 'localhost',
   PORT: 3306,

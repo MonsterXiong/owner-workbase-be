@@ -5,6 +5,7 @@ import {
   HttpStatus,
   Get,
   Param,
+  Body,
 } from '@nestjs/common';
 import { DatabaseService } from './database.service';
 import { createConnection } from 'typeorm';
@@ -110,19 +111,49 @@ export class DatabaseController {
     );
   }
 
+
+  @Post('getDatabaseData')
+  async getDatabaseData(@Body() params) {
+    const { poolId } = params;
+    const connection = await getConnection(params);
+    const result = {
+      databaseList: [],
+      tableList: [],
+    };
+      const databaseList = filterSystemDb(await connection.query(
+        generatorQueryDatabaseSql(),
+      )).map((item) => {
+        return {
+          poolId,
+          databaseId: item,
+          name: item,
+        };
+      });
+      let tableList = [];
+      for (const database of databaseList) {
+        console.log(generatorQueryTableSql(database.name));
+
+        const data = await connection.query(
+          generatorQueryTableSql(database.name),
+        );
+        console.log(data);
+        // console.log(TABLE_NAME, TABLE_COMMENT);
+        const tableItemResult = data.map((tableItem) => {
+          return {
+            databaseId: database.name,
+            tableId: tableItem.TABLE_NAME,
+            name: tableItem.TABLE_NAME,
+            comment: tableItem.TABLE_COMMENT,
+          };
+        });
+        tableList = tableList.concat(tableItemResult);
+      }
+      result.databaseList = databaseList;
+      result.tableList = tableList;
+      connection.close();
+    return result
+
+    // return await querySql(generatorQueryDatabaseSql());
+  }
   // 根据项目id直接获取所有数据
 }
-
-// @Post()
-// async genInterface() {
-//   // 数据库进行连接然后生成
-//   // 先连接数据库进行获取数据
-//   return this.genInterfaceByTable();
-// }
-// @Post('table')
-// async genInterfaceByTable() {
-//   // 直接传递数据就生成
-// }
-// @Post('database')
-// async genInterfaceByDb() {}
-// }

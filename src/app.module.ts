@@ -2,13 +2,16 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { getConfiguration } from './config/configuration';
-import ModuleList from './base/index';
+import * as ModuleList from './base/index';
 import { PeopleModule } from './modules/people/people.module';
 import { DatabaseModule } from './modules/extends/database/database.module';
 import {
   databaseConfig,
   generatorDatabaseConfig,
 } from './config/database.config';
+import { TestModule } from './modules/extends/test/test.module';
+console.log(ModuleList);
+
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -33,7 +36,8 @@ import {
     }),
     PeopleModule,
     DatabaseModule,
-    ...ModuleList,
+    // ...ModuleList,
+    TestModule,
   ],
   controllers: [],
   providers: [],
