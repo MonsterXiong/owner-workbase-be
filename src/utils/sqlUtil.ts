@@ -40,10 +40,11 @@ function getWhereCode(condition, index) {
   let result = ''
   const code = genWhere(condition)
   if (code) {
-    if (index == 0) {
+    // if (index == 0) {
+    if (index == -1) {
       result = `.where(${code})`
     } else {
-      result = `.addWhere(${code})`
+      result = `.andWhere(${code})`
     }
   }
   return result
@@ -55,7 +56,6 @@ function getPageCode({ pageNumber, pageSize }) {
     result = `.offset(${(pageNumber - 1) * pageSize}).limit(${pageSize})`
   }
   return result
-
 }
 
 
@@ -95,9 +95,8 @@ function getSortCode(sortParams) {
 }
 
 function getCode(params) {
-
   const { conditionParams, sortParams, pageNumber, pageSize } = params
-  let code = ""
+  let code = ".where('isdel = :isdel',{isdel: 0})"
   if (conditionParams.length || sortParams.length) {
     code += getFilterCode(conditionParams)
     code += getSortCode(sortParams)
@@ -117,8 +116,6 @@ function getDataByPage(data, params) {
     count
   }
   return result
-
-
 }
 
 // // 导出函数

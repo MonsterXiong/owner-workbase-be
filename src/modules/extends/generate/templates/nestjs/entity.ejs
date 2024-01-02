@@ -8,9 +8,9 @@ export class <%=TableName %>{
     description: '<%=field.Comment %>'
   })
   <%_if (field.Key == 'PRI') { -%>
-  @PrimaryColumn({ 
+  @PrimaryColumn({
     name:'<%=field.sourceField %>',
-    comment: '主键' 
+    comment: '主键'
   })
   <%_ }else if(field.Field == 'updateDate'){ -%>
   @UpdateDateColumn({

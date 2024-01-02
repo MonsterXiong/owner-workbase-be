@@ -14,15 +14,22 @@ export class <%= TableName %>Service {
   ) { }
 
   async findOne(<%= primaryKey %>) {
-    return await this.repository.findOne({ where: { <%= primaryKey %> } });
+    return await this.repository.findOne({where: { <%= primaryKey %> } });
   }
 
   async findAll(){
     return await this.repository.find()
   }
 
-  async delete<%= TableName%>Batch(ids: string[]): Promise<void> {
-    await this.repository.softDelete(ids);
+  async deleteBatch(ids: string[]): Promise<void> {
+    const dataList = await this.repository.findByIds(ids)
+    const delList = dataList.map(item=>{
+      return {
+        ...item,
+        isdel:null
+      }
+    })
+    return await this.updateBatch(delList)
   }
 
   async exportExcel(data:any[],res: Response,fileName:string) {
@@ -40,7 +47,7 @@ export class <%= TableName %>Service {
    res.send(Buffer.from(buffer))
   }
 
-  async get<%= TableName %>(<%= primaryKey %>: string) {
+  async getItem(<%= primaryKey %>: string) {
     return this.findOne(<%= primaryKey %>);
   }
 
@@ -48,12 +55,12 @@ export class <%= TableName %>Service {
     // return this.repository.findOne( {where:{ <%= primaryKey %> }});
   }
 
-  async insert<%= TableName %>(entity: <%= TableName %>) {
+  async insert(entity: <%= TableName %>) {
     const { identifiers } = await this.repository.insert(entity);
     return this.findOne(identifiers[0].<%= primaryKey %>)
   }
 
-  async insert<%= TableName %>Batch(entity: <%= TableName %>[]) {
+  async insertBatch(entity: <%= TableName %>[]) {
     const { identifiers } = await this.repository.createQueryBuilder().insert().values(entity).execute()
     return await this.repository.find({
       where: {
@@ -62,14 +69,14 @@ export class <%= TableName %>Service {
     })
   }
 
-  async query<%= TableName %>(params:QueryDto) {
+  async queryList(params:QueryDto) {
     return queryParams(params, this)
   }
-  save<%= TableName %>(entity: <%= TableName %>) {
+  save(entity: <%= TableName %>) {
     return this.repository.save(entity);
 
   }
-  save<%= TableName %>Batch(entity: <%= TableName %>[]) {
+  saveBatch(entity: <%= TableName %>[]) {
     return this.repository.save(entity);
   }
 
@@ -79,7 +86,7 @@ export class <%= TableName %>Service {
     this.repository.update(entity.<%= primaryKey %>, merged<%= TableName%>)
   }
 
-  async update<%= TableName %>Batch(entity: <%= TableName %>[]) {
+  async updateBatch(entity: <%= TableName %>[]) {
     for await (const entityItem of entity) {
       this.update(entityItem)
     }
