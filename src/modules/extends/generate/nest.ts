@@ -1,64 +1,11 @@
-import { databaseConfig } from '@/config/database.config';
+import { databaseConfig } from '../../../config/database.config';
 const fse = require('fs-extra');
 const path = require('path');
 const fs = require('fs/promises');
 const mysql = require('mysql2/promise');
 const ejs = require('ejs');
 import * as changeCase from "change-case";
-//   controller模板需要什么东西
 
-/**
- * 1. 大驼峰表名Test     TableName
- * 2. 小驼峰表名test      tableName
- * 3. 主键             primaryKey
- */
-
-// 删除Test(批量、递归)
-// 导出模板下载
-// 导出Test
-// 获取Test
-// 导入Test
-// 增加Test
-// 增加Test(批量)
-// 查询Test列表结果
-// 保存Test
-// 修改Test
-// 修改Test(批量)
-
-//   service模板需要什么东西
-/**
- * 1. 大驼峰表名Test     TableName
- * 2. 主键             primaryKey
- */
-
-
-//   entity模板需要什么东西
-/**
- * 1. 大驼峰表名Test     TableName
- * 2. 表字段（key,Field,Comment,Null）
- */
-
-//   module模板需要什么东西
-/**
- * 1. 大驼峰表名Test     TableName
- * 2. 小驼峰表名test     tableName
- */
-
-
-// A. 传递数据库过来=>获取表信息和表字段信息
-
-// B. 直接传表和表字段信息
-
-// 不管如何我已经有表和表字段信息了
-
-// 第一步 =>遍历表=>将表和表字段放入一个数组中
-
-// 第二步 =>生成类型（例如内置接口、nest）
-  // 1. 有了模板路径就可以先获取模板，生成compile函数
-  // 2. 开始遍历表数据
-      // 文件名、数据、写入
-  // 写入入口文件=>应该做累加
-// mysql数据类型转为为nodejs的数据类型
 function convertMySQLTypeToNodeJS(mysqlType) {
   if (mysqlType.includes('varchar') || mysqlType.includes('text') || mysqlType.includes('char')) {
     return 'String';
@@ -93,17 +40,20 @@ function convertMySQLTypeToNodeJS(mysqlType) {
         database: DATABASE
       }
     const connection = await mysql.createConnection(config);
-    const tables = await getTableLsit(connection,DATABASE)
+    const tables = await getTableLsit(connection,DATABASE)    
     const result = []
+ 
+    
     for await (const table of tables) {
       const { TABLE_NAME, TABLE_COMMENT } = table
-      const fields = getFieldInfoByTable(connection,DATABASE,TABLE_NAME)
+      const fields = await getFieldInfoByTable(connection,DATABASE,TABLE_NAME)
       result.push({
         TABLE_NAME,
         TABLE_COMMENT,
         TABLE_FIELDS: fields
       })
     }
+
     connection.end();
     return result
   }
@@ -162,7 +112,7 @@ function convertMySQLTypeToNodeJS(mysqlType) {
   }
 
   !(async () => {
-    const tableInfo = getTableInfo()
+    const tableInfo = await getTableInfo()
     generate(tableInfo)
   })()
 
@@ -179,27 +129,37 @@ function convertMySQLTypeToNodeJS(mysqlType) {
     for await (const table of tables) {
       const { TABLE_NAME, TABLE_FIELDS, TABLE_COMMENT } = table
       const { entityFilePath, controllerFilePath, moduleFilePath, serviceFilePath } = await getFilePath(TABLE_NAME, basePath)
-
-
+      const primaryFieldInfo = TABLE_FIELDS.find(item=>item.Key == 'PRI')
+      if(!primaryFieldInfo){
+        throw new Error('没有找到主键')
+      }
       // 整理模板=>和参数
+      // TableName
+      // tableName
+      // primaryKey
+      // fields (key，Field,Comment,null)
       const data = {
-        TABLE_NAME: changeCase.camelCase(TABLE_NAME),
-        TABLE_COMMENT,
-        dirName: changeCase.camelCase(TABLE_NAME),
-        name: changeCase.pascalCase(TABLE_NAME)
+        ApiPrefix:'gdzhfxBase',
+        tableName: changeCase.camelCase(TABLE_NAME),
+        TableName:changeCase.pascalCase(TABLE_NAME),
+        tableComment:TABLE_COMMENT,
+        primaryKey: changeCase.camelCase(primaryFieldInfo.Field),
       }
 
       const fields = TABLE_FIELDS.map((item) => {
+        const type = convertMySQLTypeToNodeJS(item['Type'])
         return {
           ...item,
+          sourceField:item.Field,
+          Field: changeCase.camelCase(item.Field),
           Null: item.Null == 'YES',
-          Type: convertMySQLTypeToNodeJS(item['Type'])
+          Type: type == 'Date'?type:changeCase.camelCase(type)
         }
       })
       fs.writeFile(entityFilePath, enyityTemp({ ...data, fields }))
       fs.writeFile(controllerFilePath, controllerTemp(data))
       fs.writeFile(moduleFilePath, moduleTemp(data))
-      fs.writeFile(serviceFilePath, serviceTemp({ ...data, fields }))
+      fs.writeFile(serviceFilePath, serviceTemp(data))
     }
 
     genEntryFile(basePath,templateDirPath,tables)

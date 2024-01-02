@@ -7,6 +7,7 @@
   "license": "UNLICENSED",
   "scripts": {
     "g": "ts-node src/modules/extends/generate/index.ts",
+    "g:nest": "ts-node src/modules/extends/generate/nest.ts",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "cross-env NODE_ENV=development nest start",

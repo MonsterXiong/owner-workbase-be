@@ -2,7 +2,8 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { getConfiguration } from './config/configuration';
-import * as ModuleList from './base/index';
+// import ModuleList from '@/base/index';
+// import NestModuleList from '@/nestjs/index';
 import { PeopleModule } from './modules/people/people.module';
 import { DatabaseModule } from './modules/extends/database/database.module';
 import {
@@ -37,6 +38,7 @@ console.log(ModuleList);
     PeopleModule,
     DatabaseModule,
     // ...ModuleList,
+    // ...NestModuleList,
     TestModule,
   ],
   controllers: [],

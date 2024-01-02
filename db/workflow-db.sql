@@ -2,7 +2,7 @@
 -- 主机:                           127.0.0.1
 -- 服务器版本:                        5.7.26 - MySQL Community Server (GPL)
 -- 服务器操作系统:                      Win64
--- HeidiSQL 版本:                  12.0.0.6468
+-- HeidiSQL 版本:                  12.1.0.6537
 -- --------------------------------------------------------
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -34,13 +34,13 @@ CREATE TABLE IF NOT EXISTS `test` (
   `parent_code` varchar(255) DEFAULT NULL COMMENT '父标识',
   `level_code` varchar(255) DEFAULT NULL COMMENT '级别标识',
   `sort` int(11) DEFAULT NULL COMMENT '排序',
-  `id` int(11) NOT NULL COMMENT '主键',
+  `id` varchar(32) NOT NULL COMMENT '主键',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- 正在导出表  workflow_db.test 的数据：~1 rows (大约)
+-- 正在导出表  workflow_db.test 的数据：~0 rows (大约)
 INSERT INTO `test` (`updateDate`, `createdDate`, `lock_time`, `deleteDate`, `creator`, `updater`, `menu_code`, `name`, `icon`, `css_style`, `parent_code`, `level_code`, `sort`, `id`) VALUES
-	('2023-12-30 19:47:44.141176', '2023-12-30 11:45:21.258000', '2023-12-30 11:45:21', NULL, 'string', 'string', 'string', 'string', 'string', 'string', 'string', 'string', 0, 0);
+	('2023-12-30 19:47:44.141176', '2023-12-30 11:45:21.258000', '2023-12-30 11:45:21', NULL, 'string', 'string', 'string', 'string', 'string', 'string', 'string', 'string', 0, '0');
 
 -- 导出  表 workflow_db.wf_code_template 结构
 CREATE TABLE IF NOT EXISTS `wf_code_template` (
@@ -60,7 +60,7 @@ CREATE TABLE IF NOT EXISTS `wf_code_template` (
   PRIMARY KEY (`code_template_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='框架代码';
 
--- 正在导出表  workflow_db.wf_code_template 的数据：~0 rows (大约)
+-- 正在导出表  workflow_db.wf_code_template 的数据：~1 rows (大约)
 INSERT INTO `wf_code_template` (`code_template_id`, `name`, `description`, `repo_url`, `type`, `order_num`, `isdel`, `creator`, `create_time`, `create_ip`, `updater`, `update_time`, `update_ip`) VALUES
 	('', '', NULL, 'http://baidu.com', 'fe', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 
@@ -90,6 +90,7 @@ CREATE TABLE IF NOT EXISTS `wf_gen_project` (
 
 -- 导出  表 workflow_db.wf_gen_project_record 结构
 CREATE TABLE IF NOT EXISTS `wf_gen_project_record` (
+  `gen_project_record_id` varchar(32) NOT NULL COMMENT '主键',
   `name` varchar(50) NOT NULL COMMENT '名称',
   `description` varchar(255) DEFAULT NULL COMMENT '描述',
   `bind_project` varchar(32) NOT NULL COMMENT '所属项目',
@@ -102,7 +103,8 @@ CREATE TABLE IF NOT EXISTS `wf_gen_project_record` (
   `create_ip` varchar(32) CHARACTER SET utf8 DEFAULT NULL COMMENT '创建ip',
   `updater` varchar(32) CHARACTER SET utf8 DEFAULT NULL COMMENT '修改人',
   `update_time` varchar(32) CHARACTER SET utf8 DEFAULT NULL COMMENT '修改时间',
-  `update_ip` varchar(32) CHARACTER SET utf8 DEFAULT NULL COMMENT '修改ip'
+  `update_ip` varchar(32) CHARACTER SET utf8 DEFAULT NULL COMMENT '修改ip',
+  PRIMARY KEY (`gen_project_record_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COMMENT='项目生成记录';
 
 -- 正在导出表  workflow_db.wf_gen_project_record 的数据：0 rows
@@ -130,11 +132,12 @@ CREATE TABLE IF NOT EXISTS `zy_database_pool` (
   PRIMARY KEY (`database_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='数据池';
 
--- 正在导出表  workflow_db.zy_database_pool 的数据：~2 rows (大约)
+-- 正在导出表  workflow_db.zy_database_pool 的数据：~3 rows (大约)
 INSERT INTO `zy_database_pool` (`database_id`, `name`, `description`, `host`, `port`, `account`, `password`, `type`, `order_num`, `isdel`, `creator`, `create_time`, `create_ip`, `updater`, `update_time`, `update_ip`) VALUES
 	('1', '204', NULL, '192.168.2.204', '3306', 'root', '123456', 'mysql', NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL),
 	('2', '200', NULL, '192.168.2.200', '3306', 'root', '123456', 'mysql', NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL),
-	('3', '本机', NULL, 'localhost', '3306', 'root', '123456', 'mysql', NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL);
+	('3', '本机', NULL, 'localhost', '3306', 'root', '123456', 'mysql', NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL),
+	('444', '8888', 'string', '1', '2', '3', '4', 'mysql', 0, '0', 'string', 'string', 'string', 'string', 'string', 'string');
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;

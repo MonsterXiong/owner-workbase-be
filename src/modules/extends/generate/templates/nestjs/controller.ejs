@@ -15,20 +15,19 @@ import { Response } from 'express';
 import * as xlsx from 'xlsx';
 import { QueryDto } from '@/common/query.dto';
 
-@ApiTags('测试')
-@Controller('/nbpgBase/<%= tableName%>')
+@ApiTags('<%= tableComment %>接口')
+@Controller('/<%= ApiPrefix %>/<%= tableName%>')
 export class <%= TableName %>Controller {
   constructor(private readonly <%= tableName%>Service: <%= TableName %>Service) {}
 
   @Post('delete<%= TableName %>Batch')
-  @ApiOperation({ summary: '删除<%= TableCommon %>(批量、递归)' })
-
-  delete<%= TableName %>Batch(@Body() ids: number[]) {
-    return this.<%= tableName%>Service.delete<%= TableName %>Batch(ids);
+  @ApiOperation({ summary: '删除<%= tableComment %>(批量、递归)' })
+  delete<%= TableName %>Batch(@Body() <%= primaryKey %>List: string[]) {
+    return this.<%= tableName%>Service.delete<%= TableName %>Batch(<%= primaryKey %>List);
   }
 
   @Post('download<%= TableName %>Template')
-  @ApiOperation({ summary: '导出<%= TableCommon %>模板下载' })
+  @ApiOperation({ summary: '导出<%= tableComment %>模板下载' })
   async download<%= TableName %>Template(@Res() res: Response): Promise<void> {
     const data = await this.<%= tableName%>Service.findAll();
     const firstData = data[0];
@@ -41,7 +40,7 @@ export class <%= TableName %>Controller {
   }
 
   @Post('export<%= TableName %>')
-  @ApiOperation({ summary: '导出<%= TableCommon %>' })
+  @ApiOperation({ summary: '导出<%= tableComment %>' })
   async export<%= TableName %>(@Res() res: Response): Promise<void> {
     const fileName = '<%= TableName %>.xlsx';
     const data = await this.<%= tableName%>Service.findAll();
@@ -49,13 +48,13 @@ export class <%= TableName %>Controller {
   }
 
   @Post('get<%= TableName %>')
-  @ApiOperation({ summary: '获取<%= TableCommon %>' })
-  get<%= TableName %>(@Query('<%= tableName%>Id') <%= tableName%>Id: number) {
-    return this.<%= tableName%>Service.get<%= TableName %>(<%= tableName%>Id);
+  @ApiOperation({ summary: '获取<%= tableComment %>' })
+  get<%= TableName %>(@Query('<%= primaryKey %>') <%= primaryKey %>: string) {
+    return this.<%= tableName%>Service.get<%= TableName %>(<%= primaryKey %>);
   }
 
   @Post('import<%= TableName %>')
-  @ApiOperation({ summary: '导入<%= TableCommon %>' })
+  @ApiOperation({ summary: '导入<%= tableComment %>' })
   @UseInterceptors(FileInterceptor('file'))
   @ApiOperation({ summary: '文件上传,返回 url 地址' })
   @ApiConsumes('multipart/form-data')
@@ -73,62 +72,63 @@ export class <%= TableName %>Controller {
     },
   })
   import<%= TableName %>(@UploadedFile() file: Express.Multer.File) {
-    const reader = new FileReader();
-    reader.onload = function (event) {
-      var data = event.target.result;
-      var workbook = xlsx.read(data, { type: 'binary' });
-      // 读取第一个工作表的所有数据
-      var sheet1 = workbook.Sheets[workbook.SheetNames[0]];
-      var rows = xlsx.utils.sheet_to_json(sheet1);
-      // 处理读取出来的数据
-      console.log(rows);
-    };
-    console.log(file);
+    // const reader = new FileReader();
+    // reader.onload = function (event) {
+      //   var data = event.target.result;
+      //   var workbook = xlsx.read(data, { type: 'binary' });
+      //   // 读取第一个工作表的所有数据
+      //   var sheet1 = workbook.Sheets[workbook.SheetNames[0]];
+      //   var rows = xlsx.utils.sheet_to_json(sheet1);
+      //   // 处理读取出来的数据
+      //   console.log(rows);
+      // };
+      // console.log(file);
     // reader.readAsBinaryString(file);
     // 导入
     return 1;
   }
 
   @Post('insert<%= TableName %>')
-  @ApiOperation({ summary: '增加<%= TableCommon %>' })
+  @ApiOperation({ summary: '增加<%= tableComment %>' })
   insert<%= TableName %>(@Body() entity: <%= TableName %>) {
     return this.<%= tableName%>Service.insert<%= TableName %>(entity);
   }
 
   @Post('insert<%= TableName %>Batch')
-  @ApiOperation({ summary: '增加<%= TableCommon %>(批量)' })
+  @ApiOperation({ summary: '增加<%= tableComment %>(批量)' })
   insert<%= TableName %>Batch(@Body() entity: <%= TableName %>[]) {
     return this.<%= tableName%>Service.insert<%= TableName %>Batch(entity);
   }
 
   @Post('query<%= TableName %>')
-  @ApiOperation({ summary: '查询<%= TableCommon %>列表结果' })
+  @ApiOperation({ summary: '查询<%= tableComment %>列表结果' })
   query<%= TableName %>(@Body() condition:QueryDto) {
     return this.<%= tableName%>Service.query<%= TableName %>(condition)
   }
 
   @Post('save<%= TableName %>')
-  @ApiOperation({ summary: '保存<%= TableCommon %>' })
+  @ApiOperation({ summary: '保存<%= tableComment %>' })
   save<%= TableName %>(@Body() entity: <%= TableName %>) {
     return this.<%= tableName%>Service.save<%= TableName %>(entity);
   }
+
   @Post('save<%= TableName %>Batch')
-  @ApiOperation({ summary: '保存<%= TableCommon %>(批量)' })
+  @ApiOperation({ summary: '保存<%= tableComment %>(批量)' })
   save<%= TableName %>Batch(@Body() entity: <%= TableName %>[]) {
     return this.<%= tableName%>Service.save<%= TableName %>Batch(entity);
   }
 
   @Post('update<%= TableName %>')
-  @ApiOperation({ summary: '修改<%= TableCommon %>' })
-  // update<%= TableName %>(<%= tableName%>Id : number,@Body() entity: <%= TableName %>) {
-  //   return this.<%= tableName%>Service.update(<%= tableName%>Id,entity);
+  @ApiOperation({ summary: '修改<%= tableComment %>' })
+  // update<%= TableName %>(<%= primaryKey %> : string,@Body() entity: <%= TableName %>) {
+  //   return this.<%= tableName%>Service.update(<%= primaryKey %>,entity);
   // }
   update<%= TableName %>(@Body() entity: <%= TableName %>) {
     return this.<%= tableName%>Service.update(entity);
   }
 
   @Post('update<%= TableName %>Batch')
-  @ApiOperation({ summary: '修改<%= TableCommon %>(批量)' })
+  @ApiOperation({ summary: '修改<%= tableComment %>(批量)' })
   update<%= TableName %>Batch(@Body() entity: <%= TableName %>[]) {
     return this.<%= tableName%>Service.update<%= TableName %>Batch(entity);
   }
