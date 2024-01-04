@@ -14,11 +14,11 @@ export class <%= TableName %>Service {
   ) { }
 
   async findOne(<%= primaryKey %>) {
-    return await this.repository.findOne({where: { <%= primaryKey %> } });
+    return await this.repository.findOne({where: { isdel:'0',<%= primaryKey %> } });
   }
 
   async findAll(){
-    return await this.repository.find()
+    return (await this.repository.find()).filter(item=>item.isdel=='0')
   }
 
   async deleteBatch(ids: string[]): Promise<void> {

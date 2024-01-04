@@ -10,8 +10,8 @@ async function bootstrap() {
  // 开启静态资源访问
  app.useStaticAssets('public')
   //  app.useStaticAssets(join(__dirname,'../public'),{prefix:'/static'})
-  // app.useGlobalInterceptors(new SuccessResponse());
-  // app.useGlobalFilters(new HttpFaild());
+  app.useGlobalInterceptors(new SuccessResponse());
+  app.useGlobalFilters(new HttpFaild());
   // swagger
   setupSwagger(app);
   await app.listen(3000);
