@@ -1,0 +1,103 @@
+<template>
+  <base-dialog :title="title" :visible.sync="dialogVisible" :before-close="handleDialogClose" :width="dialogWidth">
+    <el-form ref="formRef" :model="formData" :rules="formDataRules" label-width="auto" size="small">
+      <%_ fields.forEach(function(field){ -%>
+      <el-form-item label="<%= field.label %>" prop="<%= field.key %>">
+        <%_if (field.type=='input' ) { -%>
+        <el-input v-model.trim="formData.<%= field.key %>" <%_if (field.options?.placeholder) { -%> placeholder="<%=
+                field.options.placeholder %>" <%_ } -%>></el-input>
+        <%_ }else if(field.type=='select' ){ -%>
+        <el-select v-model="formData.<%= field.key %>" clearable <%_if (field.options?.placeholder) {
+                -%> placeholder="<%= field.options.placeholder %>" <%_ } -%>>
+          <%_if (field.dataType=='dictCategory' ) { -%>
+          <el-option v-for="item in $root.getEnumByCode(dictCategory.<%= field.data %>) || []" :key="item.code" :label="item.name" :value="item.code"></el-option>
+          <%_ } -%>
+        </el-select>
+        <%_ }else if(field.type=='textarea' ){ -%>
+        <el-input v-model.trim="formData.<%= field.key %>" type="textarea"></el-input>
+        <%_ } -%>
+      </el-form-item>
+      <%_ }); -%>
+    </el-form>
+    <template slot="footer">
+      <el-button size="mini" @click="handleDialogClose">取 消</el-button>
+      <el-button size="mini" type="primary" @click="handleSubmitForm">确 定</el-button>
+    </template>
+  </base-dialog>
+</template>
+
+<script>
+  import {
+    CommonDialogWidth,
+    dictCategory
+  } from "@/common/constants";
+  export default {
+    name: "<%= TableName %>EditDialog",
+    data() {
+      return {
+        dialogWidth: CommonDialogWidth.smallForm,
+        dialogVisible: false,
+        title: "新增",
+        row: null,
+        formData: {
+          name: ""
+        },
+        formDataRules: {
+          //   name: [{ required: true, message: '请输入职称', trigger: 'blur' }],
+        },
+        dictCategory
+      };
+    },
+    methods: {
+      async show({
+        row,
+        title
+      }) {
+        this.title = title;
+        this.dialogVisible = true;
+        this.row = row;
+        if (row) {
+          this.formData = {
+            ...row
+          };
+        } else {
+          this.formData = {};
+        }
+      },
+
+      handleDialogClose() {
+        this.resetFormData();
+        this.dialogVisible = false;
+      },
+      resetFormData() {
+        this.formData = {
+          name: ""
+        };
+      },
+      async handleSubmitForm() {
+        this.$refs.formRef.validate(async valid => {
+          if (valid) {
+            if (this.row && this.row.<%= prikey %>) {
+              await this.$api.<%= TableName %>Service.update<%= TableName %>(
+                this.formData
+              );
+            } else {
+              await this.$api.<%= TableName %>Service.insert<%= TableName %>(
+                this.formData
+              );
+            }
+            this.$tools.message("保存成功");
+            this.handleDialogClose();
+            this.$emit("refresh");
+          } else {
+            return false;
+          }
+        });
+      }
+    }
+  };
+</script>
+
+<style scoped lang="less">
+  .dialog {}
+</style>

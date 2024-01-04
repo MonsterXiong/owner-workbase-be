@@ -1,0 +1,43 @@
+import { service } from '../http'
+
+/**
+ * 关于<%=tableCommon %>的服务
+ */
+export default class <%=TableName %>Service {
+  /**
+   * @description 增加<%=tableCommon %>
+   * @returns
+   */
+  static async insert<%=TableName %>(params) {
+    return service.post('/<%=basePrefix %>/<%=tableName %>/insert<%=TableName %>', params)
+  }
+  /**
+   * @description 查询<%=tableCommon %>列表结果
+   * @param 页码等
+   * @returns
+   */
+  static async query<%=TableName %>(condition) {
+    return service.post('/<%=basePrefix %>/<%=tableName %>/query<%=TableName %>', condition)
+  }
+  /**
+   * @description 修改<%=tableCommon %>
+   * @returns
+   */
+  static async update<%=TableName %>(params) {
+    return service.post('/<%=basePrefix %>/<%=tableName %>/update<%=TableName %>', params)
+  }
+  /**
+   * @description 保存<%=tableCommon %>
+   * @returns
+   */
+  static async save<%=TableName %>(params) {
+    return service.post('/<%=basePrefix %>/<%=tableName %>/save<%=TableName %>', params)
+  }
+  /**
+   * @description 删除<%=tableCommon %>(批量、递归)
+   * @returns
+   */
+  static async delete<%=TableName %>Batch(<%=tableName %>IdList) {
+    return service.post('/<%=basePrefix %>/<%=tableName %>/delete<%=TableName %>Batch', <%=tableName %>IdList)
+  }
+}

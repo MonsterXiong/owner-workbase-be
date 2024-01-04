@@ -1,0 +1,10 @@
+const routes = [
+<% routes.forEach(function(route){ -%>
+    {
+        ...<%= route.routeConstant %>,
+        component:()=>import("<%=route.component %>")
+    },
+<% }); -%>
+]
+
+export default {routes}

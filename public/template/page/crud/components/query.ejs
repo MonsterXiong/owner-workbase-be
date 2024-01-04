@@ -1,0 +1,53 @@
+<template>
+  <el-form :model="queryForm" size="small" :inline="true" class="query-form-container">
+    <%_ fields.forEach(function(field){ -%>
+    <el-form-item label="<%= field.label %>" prop="<%= field.key %>">
+      <%_if (field.type=='input' ) { -%>
+      <el-input v-model.trim="formData.<%= field.key %>" <%_if (field.options?.placeholder) { -%> placeholder="<%=
+              field.options.placeholder %>" <%_ } -%>></el-input>
+      <%_ }else if(field.type=='select' ){ -%>
+      <el-select v-model="formData.<%= field.key %>" clearable <%_if (field.options?.placeholder) {
+                -%> placeholder="<%= field.options.placeholder %>" <%_ } -%>>
+      <%_if (field.dataType=='dictCategory' ) { -%>
+        <el-option v-for="item in $root.getEnumByCode(dictCategory.<%= field.data %>) || []" :key="item.code" :label="item.name" :value="item.code"></el-option>
+      <%_ } -%>
+      </el-select>
+      <%_ }else if(field.type=='textarea' ){ -%>
+      <el-input v-model.trim="formData.<%= field.key %>" type="textarea"></el-input>
+      <%_ } -%>
+    </el-form-item>
+    <%_ }); -%>
+    <el-form-item>
+      <div class="btn-container">
+        <el-button type="primary" icon="el-icon-search" @click="onQuery">查询</el-button>
+        <el-button icon="el-icon-refresh" @click="onReset">重置</el-button>
+        <el-button type="success" icon="el-icon-circle-plus-outline" @click="onAdd">新增</el-button>
+        <el-button type="danger" icon="el-icon-delete" @click="onBatchDelete">批量删除</el-button>
+      </div>
+    </el-form-item>
+  </el-form>
+</template>
+
+<script>
+export default {
+  props: {
+    queryForm: {},
+  },
+  methods: {
+    onQuery() {
+      this.$emit('onQuery')
+    },
+    onAdd() {
+      this.$emit('onAdd')
+    },
+    onReset() {
+      this.$emit('onReset')
+    },
+    onBatchDelete() {
+      this.$emit('onBatchDelete')
+    },
+  },
+}
+</script>
+
+<style lang="less" scoped></style>
