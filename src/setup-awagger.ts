@@ -16,13 +16,6 @@ export function setupSwagger(app: INestApplication): void {
     .setTitle(configService.get<string>('swagger.title'))
     .setDescription(configService.get<string>('swagger.desc'))
     .setLicense('MIT', 'https://github.com/buqiyuan/nest-admin')
-    // // JWT鉴权
-    // .addSecurity('ADMIN_PREFIX', {
-    //   description: '后台管理接口授权',
-    //   type: 'apiKey',
-    //   in: 'header',
-    //   name: 'Authorization',
-    // })
     .build();
   const document = SwaggerModule.createDocument(app, swaggerConfig);
 

@@ -6,6 +6,6 @@ export class GenerateController {
   constructor(private readonly generateService: GenerateService) {}
   @Get()
   findAll() {
-    return this.generateService.findAll();
+    // return this.generateService.findAll();
   }
 }
