@@ -1,0 +1,94 @@
+import {  Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { In, Repository  } from 'typeorm';
+import { <%= TableName %> } from "./<%= tableName %>.entity";
+import { queryParams } from '@/utils/sqlUtil'
+import * as xlsx from 'xlsx';
+import {Response} from 'express';
+import { QueryDto } from '@/common/query.dto';
+@Injectable()
+export class <%= TableName %>Service {
+  constructor(
+    @InjectRepository(<%= TableName %>)
+    private repository: Repository<<%= TableName %>>,
+  ) { }
+
+  async findOne(<%= primaryKey %>) {
+    return await this.repository.findOne({where: { isdel:'0',<%= primaryKey %> } });
+  }
+
+  async findAll(){
+    return (await this.repository.find()).filter(item=>item.isdel=='0')
+  }
+
+  async deleteBatch(ids: string[]): Promise<void> {
+    const dataList = await this.repository.findByIds(ids)
+    const delList = dataList.map(item=>{
+      return {
+        ...item,
+        isdel:null
+      }
+    })
+    return await this.updateBatch(delList)
+  }
+
+  async exportExcel(data:any[],res: Response,fileName:string) {
+    const worksheet = xlsx.utils.json_to_sheet(data);
+    const workbook = xlsx.utils.book_new();
+    xlsx.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+    const buffer = xlsx.write(workbook, {
+      type: 'buffer',
+      bookType: 'xlsx',
+    });
+    res.set({
+      'Content-Disposition': `attachment; filename=${fileName}`,
+      'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    });
+   res.send(Buffer.from(buffer))
+  }
+
+  async getItem(<%= primaryKey %>: string) {
+    return this.findOne(<%= primaryKey %>);
+  }
+
+  async import<%= TableName %>(<%= primaryKey %>: string) {
+    // return this.repository.findOne( {where:{ <%= primaryKey %> }});
+  }
+
+  async insert(entity: <%= TableName %>) {
+    const { identifiers } = await this.repository.insert(entity);
+    return this.findOne(identifiers[0].<%= primaryKey %>)
+  }
+
+  async insertBatch(entity: <%= TableName %>[]) {
+    const { identifiers } = await this.repository.createQueryBuilder().insert().values(entity).execute()
+    return await this.repository.find({
+      where: {
+        <%= primaryKey %>: In(identifiers.map(item => item.<%= primaryKey %>))
+      }
+    })
+  }
+
+  async queryList(params:QueryDto) {
+    return queryParams(params, this)
+  }
+  save(entity: <%= TableName %>) {
+    return this.repository.save(entity);
+
+  }
+  saveBatch(entity: <%= TableName %>[]) {
+    return this.repository.save(entity);
+  }
+
+  async update(entity: <%= TableName %>) {
+    const existingData = await this.findOne(entity.<%= primaryKey %>);
+    const merged<%= TableName %> = this.repository.merge(existingData, entity);
+    this.repository.update(entity.<%= primaryKey %>, merged<%= TableName%>)
+  }
+
+  async updateBatch(entity: <%= TableName %>[]) {
+    for await (const entityItem of entity) {
+      this.update(entityItem)
+    }
+  }
+}

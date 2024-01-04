@@ -1,0 +1,45 @@
+import { Column, Entity, PrimaryColumn, UpdateDateColumn, CreateDateColumn, DeleteDateColumn } from 'typeorm' ;
+import { ApiProperty } from '@nestjs/swagger';
+
+@Entity()
+export class <%=TableName %>{
+<% fields.forEach(function(field){ %>
+  @ApiProperty({
+    description: '<%=field.Comment %>'
+  })
+  <%_if (field.Key == 'PRI') { -%>
+  @PrimaryColumn({
+    name:'<%=field.sourceField %>',
+    comment: '主键'
+  })
+  <%_ }else if(field.Field == 'updateDate'){ -%>
+  @UpdateDateColumn({
+    type: 'timestamp',
+    name:'<%=field.sourceField %>',
+    comment: '<%=field.Comment %>',
+  })
+  <%_ }else if(field.Field == 'createdDate'){ -%>
+  @CreateDateColumn({
+    type: 'timestamp',
+    name:'<%=field.sourceField %>',
+    comment: '<%=field.Comment %>',
+  })
+  <%_ }else if(field.Field == 'deleteDate'){ -%>
+  @DeleteDateColumn({
+    type: 'timestamp',
+    name:'<%=field.sourceField %>',
+    comment: '<%=field.Comment %>',
+  })
+  <%_ }else{ -%>
+  @Column({
+    name:'<%=field.sourceField %>',
+    nullable: <%=field.Null %>,
+    <%_if (field.Type == 'Date') { -%>
+    type: 'timestamp',
+    <%_ }-%>
+    comment: '<%=field.Comment %>'
+  })
+  <%_ } -%>
+  <%=field.Field %>: <%=field.Type %>
+<% }); %>
+}

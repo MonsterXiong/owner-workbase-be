@@ -7,7 +7,7 @@ const ejs = require('ejs');
 import * as changeCase from "change-case";
 
 
-const templateDirPath = 'public/templates/interface'
+const templateDirPath = 'public/template/interface'
 // const basePath = path.join(process.cwd(), './src/modules/base')
 
 
