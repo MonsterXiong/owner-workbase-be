@@ -2,8 +2,9 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { getConfiguration } from './config/configuration';
-import ModuleList from '@/modules/base';
+import  ModuleList from  './modules/base/index';
 import { DatabaseModule } from './modules/extends/database/database.module';
+import { GenerateModule } from './modules/extends/generate/generate.module';
 import {
   databaseConfig,
   generatorDatabaseConfig,
@@ -32,6 +33,7 @@ import {
       }),
     }),
     DatabaseModule,
+    GenerateModule,
     ...ModuleList,
   ],
   controllers: [],

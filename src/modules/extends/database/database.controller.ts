@@ -14,7 +14,7 @@ import {
   generatorQueryDatabaseSql,
   generatorQueryTableSql,
 } from './utils/sqlTool';
-import { ApiOperation, ApiParam } from '@nestjs/swagger';
+import { ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
 
 const databaseConfig = {
   type: 'mysql',
@@ -58,6 +58,7 @@ async function getConnect() {
   return await getConnection(databaseConfig);
 }
 
+@ApiTags('database')
 @Controller('database')
 // 跟db相关的接口
 export class DatabaseController {

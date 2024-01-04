@@ -7,8 +7,8 @@ const ejs = require('ejs');
 import * as changeCase from "change-case";
 
 
-const templateDirPath = './templates/interface'
-const basePath = path.join(process.cwd(), './src/modules/base')
+const templateDirPath = 'public/templates/interface'
+// const basePath = path.join(process.cwd(), './src/modules/base')
 
 
 function convertMySQLTypeToNodeJS(mysqlType) {
@@ -83,10 +83,10 @@ async function getFilePath(tableName, basePath) {
 
 // 读取模板文件
 async function getGenTemp(templateDirPath) {
-  const enyityTempFile = await fs.readFile(path.join(__dirname, `${templateDirPath}/entity.ejs`), 'utf8')
-  const moduleTempFile = await fs.readFile(path.join(__dirname, `${templateDirPath}/module.ejs`), 'utf8')
-  const controllerTempFile = await fs.readFile(path.join(__dirname, `${templateDirPath}/controller.ejs`), 'utf8')
-  const serviceTempFile = await fs.readFile(path.join(__dirname, `${templateDirPath}/service.ejs`), 'utf8')
+  const enyityTempFile = await fs.readFile( `${templateDirPath}/entity.ejs`, 'utf8')
+  const moduleTempFile = await fs.readFile( `${templateDirPath}/module.ejs`, 'utf8')
+  const controllerTempFile = await fs.readFile( `${templateDirPath}/controller.ejs`, 'utf8')
+  const serviceTempFile = await fs.readFile( `${templateDirPath}/service.ejs`, 'utf8')
 
   const enyityTemp = ejs.compile(enyityTempFile);
   const moduleTemp = ejs.compile(moduleTempFile);
@@ -101,9 +101,9 @@ async function getGenTemp(templateDirPath) {
 }
 
 // 生成入口文件
-async function genEntryFile(basePath, templateDirPath, tables) {
+async function genEntryFile(basePath, templateDirPath, tables,result) {
   const indexFilePath = path.join(basePath, `index.ts`)
-  const serviceTemp = await fs.readFile(path.join(__dirname, `${templateDirPath}/index.ejs`), 'utf8')
+  const serviceTemp = await fs.readFile(`${templateDirPath}/index.ejs`, 'utf8')
   // 生成一个index.文件
   const data = {
     tables: tables.map(table => {
@@ -114,18 +114,21 @@ async function genEntryFile(basePath, templateDirPath, tables) {
       }
     })
   }
+  result.push({
+    path:indexFilePath,
+    content:ejs.render(serviceTemp, data)
+  })
   fs.writeFile(indexFilePath, ejs.render(serviceTemp, data))
 }
 
-!(async () => {
-  const tableInfo = await getTableInfo()
-  generate(tableInfo,templateDirPath)
-})()
 
-  async function generate(tables,templateDirPath) {
-  await fse.emptyDir(basePath)
+
+async function generate(tables,projectInfo,templateDirPath) {
+  const { prefix,outputPath:basePath } = projectInfo
+
+  await fse.ensureDir(basePath)
   const { enyityTemp, moduleTemp, controllerTemp, serviceTemp } = await getGenTemp(templateDirPath)
-
+  const result = []
   // 如果存在目录，则删除目录以及目录之下的文件
   for await (const table of tables) {
     const { TABLE_NAME, TABLE_FIELDS, TABLE_COMMENT } = table
@@ -136,7 +139,7 @@ async function genEntryFile(basePath, templateDirPath, tables) {
     }
 
     const data = {
-      ApiPrefix: 'gdzhfxBase',
+      ApiPrefix: prefix,
       tableName: changeCase.camelCase(TABLE_NAME),
       TableName: changeCase.pascalCase(TABLE_NAME),
       tableComment: TABLE_COMMENT,
@@ -153,12 +156,33 @@ async function genEntryFile(basePath, templateDirPath, tables) {
         Type: type == 'Date' ? type : changeCase.camelCase(type)
       }
     })
-
+    result.push({
+      path:entityFilePath,
+      content:enyityTemp({ ...data, fields })
+    })
+    result.push({
+      path:controllerFilePath,
+      content:controllerTemp(data)
+    })
+    result.push({
+      path:moduleFilePath,
+      content:moduleTemp(data)
+    })
+    result.push({
+      path:serviceFilePath,
+      content:serviceTemp(data)
+    })
     fs.writeFile(entityFilePath, enyityTemp({ ...data, fields }))
     fs.writeFile(controllerFilePath, controllerTemp(data))
     fs.writeFile(moduleFilePath, moduleTemp(data))
     fs.writeFile(serviceFilePath, serviceTemp(data))
   }
 
-  genEntryFile(basePath, templateDirPath, tables)
+  await genEntryFile(basePath, templateDirPath, tables,result)
+  return result
+}
+
+export async function exec(param){
+  const tableInfo = await getTableInfo()
+  return await generate(tableInfo,param.projectInfo,templateDirPath)
 }
