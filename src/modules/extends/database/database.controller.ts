@@ -140,8 +140,6 @@ export class DatabaseController {
     );
     const result = field.map(item=>{
       const {type,length} = parseFieldTypeAndLength(item.Type)
-      console.log(type,length);
-      
       return {
         ...item,
         _type:type,
