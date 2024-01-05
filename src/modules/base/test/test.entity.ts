@@ -5,6 +5,15 @@ import { ApiProperty } from '@nestjs/swagger';
 export class Test{
 
   @ApiProperty({
+    description: '主键'
+  })
+  @PrimaryColumn({
+    name:'id',
+    comment: '主键'
+  })
+  id: string
+
+  @ApiProperty({
     description: '更新时间'
   })
   @UpdateDateColumn({
@@ -134,15 +143,6 @@ export class Test{
     comment: '排序'
   })
   sort: number
-
-  @ApiProperty({
-    description: '主键'
-  })
-  @PrimaryColumn({
-    name:'id',
-    comment: '主键'
-  })
-  id: string
 
   @ApiProperty({
     description: ''

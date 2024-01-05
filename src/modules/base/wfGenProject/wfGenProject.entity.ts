@@ -28,7 +28,7 @@ export class WfGenProject{
   })
   @Column({
     name:'code',
-    nullable: true,
+    nullable: false,
     comment: '项目标识'
   })
   code: string
