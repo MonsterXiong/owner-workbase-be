@@ -21,6 +21,7 @@ USE `workflow_db`;
 
 -- 导出  表 workflow_db.test 结构
 CREATE TABLE IF NOT EXISTS `test` (
+  `id` varchar(32) NOT NULL COMMENT '主键',
   `updateDate` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6) COMMENT '更新时间',
   `createdDate` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) COMMENT '创建时间',
   `lock_time` timestamp NULL DEFAULT NULL COMMENT '锁定时间',
@@ -34,13 +35,13 @@ CREATE TABLE IF NOT EXISTS `test` (
   `parent_code` varchar(255) DEFAULT NULL COMMENT '父标识',
   `level_code` varchar(255) DEFAULT NULL COMMENT '级别标识',
   `sort` int(11) DEFAULT NULL COMMENT '排序',
-  `id` varchar(32) NOT NULL COMMENT '主键',
+  `isdel` varchar(1) DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- 正在导出表  workflow_db.test 的数据：~0 rows (大约)
-INSERT INTO `test` (`updateDate`, `createdDate`, `lock_time`, `deleteDate`, `creator`, `updater`, `menu_code`, `name`, `icon`, `css_style`, `parent_code`, `level_code`, `sort`, `id`) VALUES
-	('2023-12-30 19:47:44.141176', '2023-12-30 11:45:21.258000', '2023-12-30 11:45:21', NULL, 'string', 'string', 'string', 'string', 'string', 'string', 'string', 'string', 0, '0');
+-- 正在导出表  workflow_db.test 的数据：~1 rows (大约)
+INSERT INTO `test` (`id`, `updateDate`, `createdDate`, `lock_time`, `deleteDate`, `creator`, `updater`, `menu_code`, `name`, `icon`, `css_style`, `parent_code`, `level_code`, `sort`, `isdel`) VALUES
+	('0', '2023-12-30 19:47:44.141176', '2023-12-30 11:45:21.258000', '2023-12-30 11:45:21', NULL, 'string', 'string', 'string', 'string', 'string', 'string', 'string', 'string', 0, '0');
 
 -- 导出  表 workflow_db.wf_code_template 结构
 CREATE TABLE IF NOT EXISTS `wf_code_template` (
@@ -64,11 +65,59 @@ CREATE TABLE IF NOT EXISTS `wf_code_template` (
 INSERT INTO `wf_code_template` (`code_template_id`, `name`, `description`, `repo_url`, `type`, `order_num`, `isdel`, `creator`, `create_time`, `create_ip`, `updater`, `update_time`, `update_ip`) VALUES
 	('', '', NULL, 'http://baidu.com', 'fe', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 
+-- 导出  表 workflow_db.wf_def_table 结构
+CREATE TABLE IF NOT EXISTS `wf_def_table` (
+  `table_id` varchar(32) NOT NULL COMMENT 'ID',
+  `code` varchar(50) NOT NULL COMMENT '表格标识',
+  `name` varchar(50) NOT NULL COMMENT '名称',
+  `description` varchar(255) DEFAULT NULL COMMENT '描述',
+  `order_num` int(10) DEFAULT NULL COMMENT '排序',
+  `isdel` varchar(1) CHARACTER SET utf8 DEFAULT '0' COMMENT '是否删除',
+  `creator` varchar(32) CHARACTER SET utf8 DEFAULT NULL COMMENT '创建人',
+  `create_time` varchar(32) CHARACTER SET utf8 DEFAULT NULL COMMENT '创建时间',
+  `create_ip` varchar(32) CHARACTER SET utf8 DEFAULT NULL COMMENT '创建ip',
+  `updater` varchar(32) CHARACTER SET utf8 DEFAULT NULL COMMENT '修改人',
+  `update_time` varchar(32) CHARACTER SET utf8 DEFAULT NULL COMMENT '修改时间',
+  `update_ip` varchar(32) CHARACTER SET utf8 DEFAULT NULL COMMENT '修改ip',
+  PRIMARY KEY (`table_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COMMENT='表定义';
+
+-- 正在导出表  workflow_db.wf_def_table 的数据：0 rows
+/*!40000 ALTER TABLE `wf_def_table` DISABLE KEYS */;
+/*!40000 ALTER TABLE `wf_def_table` ENABLE KEYS */;
+
+-- 导出  表 workflow_db.wf_def_table_column 结构
+CREATE TABLE IF NOT EXISTS `wf_def_table_column` (
+  `table_column_id` varchar(32) NOT NULL COMMENT 'ID',
+  `name` varchar(50) NOT NULL COMMENT '名称',
+  `description` varchar(255) DEFAULT NULL COMMENT '描述',
+  `bind_table_id` varchar(32) NOT NULL COMMENT '绑定表',
+  `field` varchar(50) NOT NULL COMMENT '字段标识',
+  `type` varchar(50) NOT NULL COMMENT '类型',
+  `length` varchar(50) NOT NULL COMMENT '长度',
+  `not_null` varchar(50) NOT NULL COMMENT '不是null',
+  `comment` varchar(50) NOT NULL COMMENT '注释',
+  `is_pri_key` varchar(50) NOT NULL COMMENT '是否主键',
+  `order_num` int(10) DEFAULT NULL COMMENT '排序',
+  `isdel` varchar(1) CHARACTER SET utf8 DEFAULT '0' COMMENT '是否删除',
+  `creator` varchar(32) CHARACTER SET utf8 DEFAULT NULL COMMENT '创建人',
+  `create_time` varchar(32) CHARACTER SET utf8 DEFAULT NULL COMMENT '创建时间',
+  `create_ip` varchar(32) CHARACTER SET utf8 DEFAULT NULL COMMENT '创建ip',
+  `updater` varchar(32) CHARACTER SET utf8 DEFAULT NULL COMMENT '修改人',
+  `update_time` varchar(32) CHARACTER SET utf8 DEFAULT NULL COMMENT '修改时间',
+  `update_ip` varchar(32) CHARACTER SET utf8 DEFAULT NULL COMMENT '修改ip',
+  PRIMARY KEY (`table_column_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COMMENT='列定义';
+
+-- 正在导出表  workflow_db.wf_def_table_column 的数据：0 rows
+/*!40000 ALTER TABLE `wf_def_table_column` DISABLE KEYS */;
+/*!40000 ALTER TABLE `wf_def_table_column` ENABLE KEYS */;
+
 -- 导出  表 workflow_db.wf_gen_project 结构
 CREATE TABLE IF NOT EXISTS `wf_gen_project` (
   `project_id` varchar(32) NOT NULL COMMENT '主键',
   `name` varchar(50) NOT NULL COMMENT '名称',
-  `code` varchar(50) DEFAULT NULL COMMENT '项目标识',
+  `code` varchar(50) NOT NULL COMMENT '项目标识',
   `description` varchar(255) DEFAULT NULL COMMENT '描述',
   `alias_name` varchar(50) DEFAULT NULL COMMENT '简称',
   `bind_databae_pool` varchar(32) NOT NULL COMMENT '映射数据池',
@@ -111,6 +160,77 @@ CREATE TABLE IF NOT EXISTS `wf_gen_project_record` (
 /*!40000 ALTER TABLE `wf_gen_project_record` DISABLE KEYS */;
 /*!40000 ALTER TABLE `wf_gen_project_record` ENABLE KEYS */;
 
+-- 导出  表 workflow_db.wf_view_component 结构
+CREATE TABLE IF NOT EXISTS `wf_view_component` (
+  `view_view_component_id` varchar(32) NOT NULL COMMENT 'ID',
+  `name` varchar(50) NOT NULL COMMENT '名称',
+  `description` varchar(255) DEFAULT NULL COMMENT '描述',
+  `bind_view_page` varchar(32) NOT NULL COMMENT '绑定页面',
+  `order_num` int(10) DEFAULT NULL COMMENT '排序',
+  `isdel` varchar(1) CHARACTER SET utf8 DEFAULT '0' COMMENT '是否删除',
+  `creator` varchar(32) CHARACTER SET utf8 DEFAULT NULL COMMENT '创建人',
+  `create_time` varchar(32) CHARACTER SET utf8 DEFAULT NULL COMMENT '创建时间',
+  `create_ip` varchar(32) CHARACTER SET utf8 DEFAULT NULL COMMENT '创建ip',
+  `updater` varchar(32) CHARACTER SET utf8 DEFAULT NULL COMMENT '修改人',
+  `update_time` varchar(32) CHARACTER SET utf8 DEFAULT NULL COMMENT '修改时间',
+  `update_ip` varchar(32) CHARACTER SET utf8 DEFAULT NULL COMMENT '修改ip',
+  PRIMARY KEY (`view_view_component_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COMMENT='组件';
+
+-- 正在导出表  workflow_db.wf_view_component 的数据：0 rows
+/*!40000 ALTER TABLE `wf_view_component` DISABLE KEYS */;
+/*!40000 ALTER TABLE `wf_view_component` ENABLE KEYS */;
+
+-- 导出  表 workflow_db.wf_view_menu 结构
+CREATE TABLE IF NOT EXISTS `wf_view_menu` (
+  `view_menu_id` varchar(32) NOT NULL COMMENT 'ID',
+  `name` varchar(50) NOT NULL COMMENT '名称',
+  `description` varchar(255) DEFAULT NULL COMMENT '描述',
+  `bind_gen_project_id` varchar(32) NOT NULL COMMENT '绑定生成项目',
+  `type` varchar(50) NOT NULL COMMENT '菜单类型（模块还是页面）',
+  `emit_type` varchar(50) NOT NULL COMMENT '触发类型（页面、弹窗、事件）',
+  `parent_id` varchar(32) DEFAULT NULL COMMENT '父菜单',
+  `emit_params` longtext COMMENT '触发类型的事件参数',
+  `alias_name` longtext COMMENT '菜单别名',
+  `icon` varchar(50) DEFAULT NULL COMMENT '图标',
+  `iconType` varchar(50) DEFAULT NULL COMMENT '图标类型png、svg、el-class',
+  `icon_size` varchar(50) DEFAULT NULL COMMENT '图标大小',
+  `order_num` int(10) DEFAULT NULL COMMENT '排序',
+  `isdel` varchar(1) CHARACTER SET utf8 DEFAULT '0' COMMENT '是否删除',
+  `creator` varchar(32) CHARACTER SET utf8 DEFAULT NULL COMMENT '创建人',
+  `create_time` varchar(32) CHARACTER SET utf8 DEFAULT NULL COMMENT '创建时间',
+  `create_ip` varchar(32) CHARACTER SET utf8 DEFAULT NULL COMMENT '创建ip',
+  `updater` varchar(32) CHARACTER SET utf8 DEFAULT NULL COMMENT '修改人',
+  `update_time` varchar(32) CHARACTER SET utf8 DEFAULT NULL COMMENT '修改时间',
+  `update_ip` varchar(32) CHARACTER SET utf8 DEFAULT NULL COMMENT '修改ip',
+  PRIMARY KEY (`view_menu_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COMMENT='菜单';
+
+-- 正在导出表  workflow_db.wf_view_menu 的数据：0 rows
+/*!40000 ALTER TABLE `wf_view_menu` DISABLE KEYS */;
+/*!40000 ALTER TABLE `wf_view_menu` ENABLE KEYS */;
+
+-- 导出  表 workflow_db.wf_view_page 结构
+CREATE TABLE IF NOT EXISTS `wf_view_page` (
+  `view_page_id` varchar(32) NOT NULL COMMENT 'ID',
+  `name` varchar(50) NOT NULL COMMENT '名称',
+  `description` varchar(255) DEFAULT NULL COMMENT '描述',
+  `bind_view_menu_id` int(11) NOT NULL COMMENT '绑定菜单',
+  `order_num` int(10) DEFAULT NULL COMMENT '排序',
+  `isdel` varchar(1) CHARACTER SET utf8 DEFAULT '0' COMMENT '是否删除',
+  `creator` varchar(32) CHARACTER SET utf8 DEFAULT NULL COMMENT '创建人',
+  `create_time` varchar(32) CHARACTER SET utf8 DEFAULT NULL COMMENT '创建时间',
+  `create_ip` varchar(32) CHARACTER SET utf8 DEFAULT NULL COMMENT '创建ip',
+  `updater` varchar(32) CHARACTER SET utf8 DEFAULT NULL COMMENT '修改人',
+  `update_time` varchar(32) CHARACTER SET utf8 DEFAULT NULL COMMENT '修改时间',
+  `update_ip` varchar(32) CHARACTER SET utf8 DEFAULT NULL COMMENT '修改ip',
+  PRIMARY KEY (`view_page_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COMMENT='页面';
+
+-- 正在导出表  workflow_db.wf_view_page 的数据：0 rows
+/*!40000 ALTER TABLE `wf_view_page` DISABLE KEYS */;
+/*!40000 ALTER TABLE `wf_view_page` ENABLE KEYS */;
+
 -- 导出  表 workflow_db.zy_database_pool 结构
 CREATE TABLE IF NOT EXISTS `zy_database_pool` (
   `database_id` varchar(32) NOT NULL COMMENT 'ID',
@@ -132,12 +252,12 @@ CREATE TABLE IF NOT EXISTS `zy_database_pool` (
   PRIMARY KEY (`database_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='数据池';
 
--- 正在导出表  workflow_db.zy_database_pool 的数据：~3 rows (大约)
+-- 正在导出表  workflow_db.zy_database_pool 的数据：~4 rows (大约)
 INSERT INTO `zy_database_pool` (`database_id`, `name`, `description`, `host`, `port`, `account`, `password`, `type`, `order_num`, `isdel`, `creator`, `create_time`, `create_ip`, `updater`, `update_time`, `update_ip`) VALUES
-	('1', '204', NULL, '192.168.2.204', '3306', 'root', '123456', 'mysql', NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL),
-	('2', '200', NULL, '192.168.2.200', '3306', 'root', '123456', 'mysql', NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL),
-	('3', '本机', NULL, 'localhost', '3306', 'root', '123456', 'mysql', NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL),
-	('444', '8888', 'string', '1', '2', '3', '4', 'mysql', 0, '0', 'string', 'string', 'string', 'string', 'string', 'string');
+	('1', '204', NULL, '192.168.2.204', '3306', 'root', '123456', 'mysql', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	('2', '200', NULL, '192.168.2.200', '3306', 'root', '123456', 'mysql', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	('3', '本机', NULL, 'localhost', '3306', 'root', '123456', 'mysql', 0, '0', NULL, NULL, NULL, NULL, NULL, NULL),
+	('444', '8888', 'string', '1', '2', '3', '4', 'mysql', 0, NULL, 'string', 'string', 'string', 'string', 'string', 'string');
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
