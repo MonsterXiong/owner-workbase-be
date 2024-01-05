@@ -58,6 +58,34 @@ async function getConnect() {
   return await getConnection(databaseConfig);
 }
 
+// function parseFieldTypeAndLength(fieldDefinition) {
+  
+//   const matches = fieldDefinition.match(/([a-zA-Z]+)\((\d+)\)/);
+//   if (matches) {
+//     const type = matches[1];
+//     const length = parseInt(matches[2]);
+//     return { type, length };
+//   } else {
+//     return { type: fieldDefinition, length: null };
+//   }
+// }
+
+function parseFieldTypeAndLength(fieldDefinition) {
+  const matches = fieldDefinition.match(/([a-zA-Z]+)\(([^)]+)\)/);
+  if (matches) {
+    const type = matches[1];
+    let length = matches[2].split(",");
+    if(length && length.length>1){
+      length = JSON.stringify(length.map((value) => value.replace(/'/g, "")))
+    }else{
+      length = length[0]
+    }
+    return { type, length };
+  } else {
+    return { type: fieldDefinition, length: null };
+  }
+}
+
 @ApiTags('database')
 @Controller('database')
 // 跟db相关的接口
@@ -106,10 +134,22 @@ export class DatabaseController {
   ) {
     // 根据pooIId 加上DbName，获取表名，获取字段数据
     const connection = await getConnect();
-    return await querySql(
+    const field = await querySql(
       connection,
       generatorQueryColumnsSql(database, tableName),
     );
+    const result = field.map(item=>{
+      const {type,length} = parseFieldTypeAndLength(item.Type)
+      console.log(type,length);
+      
+      return {
+        ...item,
+        _type:type,
+        _length:length
+      }
+    })
+    
+    return result 
   }
 
 
@@ -137,8 +177,6 @@ export class DatabaseController {
         const data = await connection.query(
           generatorQueryTableSql(database.name),
         );
-        console.log(data);
-        // console.log(TABLE_NAME, TABLE_COMMENT);
         const tableItemResult = data.map((tableItem) => {
           return {
             databaseId: database.name,

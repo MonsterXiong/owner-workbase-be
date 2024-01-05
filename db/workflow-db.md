@@ -48,7 +48,7 @@ ENGINE=InnoDB
 
 # 加字段
 ALTER TABLE wf_gen_project_record ADD (
-    `code_template_id` VARCHAR(32) NOT NULL COMMENT 'ID' COLLATE 'utf8mb4_general_ci',
+    `code_template_id` VARCHAR(32) NOT NULL COMMENT 'ID' COLLATE 'utf8mb4_general_ci' PRIMARY KEY,
    `name` VARCHAR(50) NOT NULL COMMENT '名称' COLLATE 'utf8mb4_general_ci',
    `description` VARCHAR(255) NULL DEFAULT NULL COMMENT '描述' COLLATE 'utf8mb4_general_ci',
     `order_num` INT(10) NULL DEFAULT NULL COMMENT '排序',
@@ -60,4 +60,13 @@ ALTER TABLE wf_gen_project_record ADD (
     `update_time` VARCHAR(32) NULL DEFAULT NULL COMMENT '修改时间' COLLATE 'utf8_general_ci',
     `update_ip` VARCHAR(32) NULL DEFAULT NULL COMMENT '修改ip' COLLATE 'utf8_general_ci'
 );
+
+# 类型
+varchar
+int
+longtext
+double
+text
+
 ```
+
