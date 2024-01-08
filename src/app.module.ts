@@ -9,6 +9,9 @@ import {
   databaseConfig,
   generatorDatabaseConfig,
 } from './config/database.config';
+import { GithubModule } from './modules/extends/github/github.module';
+import { GitlabModule } from './modules/extends/gitlab/gitlab.module';
+import { GiteeModule } from './modules/extends/gitee/gitee.module';
 
 @Module({
   imports: [
@@ -35,6 +38,9 @@ import {
     DatabaseModule,
     GenerateModule,
     ...ModuleList,
+    GithubModule,
+    GitlabModule,
+    GiteeModule,
   ],
   controllers: [],
   providers: [],
