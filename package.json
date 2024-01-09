@@ -7,6 +7,7 @@
   "license": "UNLICENSED",
   "scripts": {
     "g:nest": "ts-node src/modules/extends/generate/index.ts",
+    "g:test": "ts-node src/modules/extends/generate/compose.ts",
     "g:fe": "ts-node src/modules/extends/generate/fe/index.ts",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
