@@ -2,16 +2,16 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { getConfiguration } from './config/configuration';
-import  ModuleList from  './modules/base/index';
+// import  ModuleList from  './modules/base/index';
 import { DatabaseModule } from './modules/extends/database/database.module';
 import { GenerateModule } from './modules/extends/generate/generate.module';
 import {
   databaseConfig,
   generatorDatabaseConfig,
 } from './config/database.config';
-import { GithubModule } from './modules/extends/github/github.module';
-import { GitlabModule } from './modules/extends/gitlab/gitlab.module';
-import { GiteeModule } from './modules/extends/gitee/gitee.module';
+// import { GithubModule } from './modules/extends/github/github.module';
+// import { GitlabModule } from './modules/extends/gitlab/gitlab.module';
+// import { GiteeModule } from './modules/extends/gitee/gitee.module';
 
 @Module({
   imports: [
@@ -37,10 +37,10 @@ import { GiteeModule } from './modules/extends/gitee/gitee.module';
     }),
     DatabaseModule,
     GenerateModule,
-    ...ModuleList,
-    GithubModule,
-    GitlabModule,
-    GiteeModule,
+    // ...ModuleList,
+    // GithubModule,
+    // GitlabModule,
+    // GiteeModule,
   ],
   controllers: [],
   providers: [],

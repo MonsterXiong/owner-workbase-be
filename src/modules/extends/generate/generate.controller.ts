@@ -49,7 +49,7 @@ export class GenerateController {
     },{
       id:nanoid(),
       parent:id1,
-      code:'xmjbxx',
+      code:'project_info',
       name:'项目基本信息',
       icon:'icon-xinjian-copy',
       menuType:'page',
@@ -103,6 +103,7 @@ export class GenerateController {
       icon:'icon-xinjian-copy',
       menuType:'page',
     }]
+    // 功能组成模型的基础代码
     return await genPage(funcList)
   }
 
@@ -113,8 +114,9 @@ export class GenerateController {
     const {outputPath} = projectInfo
     // 获取services代码
     const serviceList = await this.getServiceFe(param)
-    const getPages = await this.getPages()
-    const list = [...serviceList,...getPages]
+    // 获取menuData,route,rputeConstant代码
+    const pageList = await this.getPages()
+    const list = [...serviceList,...pageList]
     // 拼写路径
     const fileList = list.map(item=>{
       return {

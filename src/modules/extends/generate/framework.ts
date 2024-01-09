@@ -1,9 +1,9 @@
-const CONFIG_TYPE = {
+export const FE_FRAMEWORK_TYPE = {
     TXSJ: 'txsj'
 }
 
-const CONFIG_DATA = {
-    [CONFIG_TYPE.TXSJ]: {
+export const FE_FRAMEWORK_DATA = {
+    [FE_FRAMEWORK_TYPE.TXSJ]: {
         // SERVICE
         projectInfo: {
             projectName: '体系建模',
@@ -38,17 +38,20 @@ const CONFIG_DATA = {
                 VUE_APP_URL:'http://192.168.2.204:9981/'
             },
         },
-        genPathInfo: {
+        pathInfo: {
+            menu:{
+                base:'src/layout/sideBar/menuData.js'
+            },
             service: {
                 base: 'src/services/module/base',
                 extend: 'src/services/module/extend',
                 system: 'src/services/module/system',
             },
             route: {
-                base: 'src/router/routes/'
+                base: 'src/router/base/baseRoutes.js',
             },
             routeConstant: {
-                base: 'src/router/routeConstant'
+                base: 'src/router/base/baseRoutesConstant.js'
             },
             page: {
                 base: 'src/pages'
