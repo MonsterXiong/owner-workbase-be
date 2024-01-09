@@ -121,7 +121,7 @@ export class GenerateController {
     // 获取menuData,route,rputeConstant代码
     const pageList = await this.getPages();
     const list = [...serviceList, ...pageList];
-    // 拼写路径
+    // 拼写路径 
     const fileList = list.map((item) => {
       return {
         ...item,
