@@ -7,11 +7,11 @@ class GithubRequest {
     this.token = token;
     this.service = axios.create({
       baseURL: BASE_URL,
-      timeout: 5000,
+      timeout: 10000,
     });
     this.service.interceptors.request.use(
       (config) => {
-        config.headers["Authorization"] = `Bearer  ${this.token}`;
+        config.headers["Authorization"] = `Bearer ${this.token}`;
         config.headers["X-GitHub-Api-Version"] = `2022-11-28`;
         return config;
       },

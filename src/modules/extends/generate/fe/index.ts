@@ -25,14 +25,7 @@ function transParams() {
 
 
 
-async function genCode(result) {
-  for (const writeItem of result) {
-    // process.cwd()
-    const writeFilePath = path.resolve('E://temp//owner-workbench-be-template//fe//', `${writeItem.filePath}`);
-    fse.ensureFileSync(writeFilePath);
-    fse.writeFile(writeFilePath, writeItem.content)
-  }
-}
+
 
 // console.log(chalk.blue(`创建项目文件夹`))
 // await execa("cnpm i ", {
@@ -91,7 +84,7 @@ async function genCode(result) {
   result = result.concat(routesData)
   result = result.concat(routesConstantData)
 
-  await genCode(result)
+  // await genCode(result)
 
   const resultAnalysis:any = result.filter(item => item.genType == GEN_TYPE.PAGE).map(item => {
     const params = {}

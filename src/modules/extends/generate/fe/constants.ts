@@ -34,7 +34,7 @@ export const GEN_PATH={
     path:'./src/views/pages'
   },
   [GEN_TYPE.SERVICES]:{
-    path:'./src/services'
+    path:'./src/services/module'
   },
   [GEN_TYPE.ROUTER]:{
     path:'./src/router'

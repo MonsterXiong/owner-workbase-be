@@ -1,0 +1,10 @@
+const routesConstant = Object.freeze({
+    <% list.forEach(function(item){ -%>
+        <%= item.const %>:{
+            path: '/<%= item.path %>',
+            name: '<%= item.name %>',
+        },
+    <% }); -%>
+    })
+  
+export default routesConstant

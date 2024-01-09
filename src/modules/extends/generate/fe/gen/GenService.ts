@@ -9,13 +9,14 @@ class GenService extends BaseGen {
     super(type, codeType)
   }
   implTemplateParams(params) {
-    const { tableName, tableCommon, basePrefix } = params
+    const { tableName, tableCommon, basePrefix,prikey} = params
     const TableName = changeCase.pascalCase(tableName);
     return {
       [GEN_SERVICE_TYPE.BASE]: {
         tableName,
         TableName,
         tableCommon,
+        prikey,
         basePrefix,
       },
     }

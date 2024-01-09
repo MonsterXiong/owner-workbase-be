@@ -25,7 +25,6 @@ function downloadCode(url, project_path) {
   return new Promise<void>((resolve, reject) => {
     download(url, project_path, async function (err) {
       console.log(err,'err');
-
       if (err) {
         return reject(err)
       }
@@ -45,7 +44,7 @@ export class GithubController {
   async getRepo(@Param('repos') repos: string,) {
     try {
       const gitServer = new Github();
-      gitServer.setToken('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')
+      await gitServer.setToken('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')
       const userInfo = await gitServer.getUser()
       const orgInfo = await gitServer.getOrg(userInfo.login);
       let repoInfo = await gitServer.getRepo(userInfo.login, repos)
@@ -56,9 +55,14 @@ export class GithubController {
       const project_path = path.resolve(userHomePath, repos)
       fse.ensureDirSync(project_path);
       const gitInstance = simpleGit(project_path);
+      if(!gitCloneUrl){
+        console.log('gitCloneUrl',gitCloneUrl);
+        return 'no gitCloneUrl'
+      }
       await gitInstance.init().addRemote('origin', gitCloneUrl)
       await downloadCode('github:MonsterXiong/gffx-fe-template#master', project_path)
       // 代码生成
+      // ******
       await gitInstance.add("*");
       await gitInstance.commit("add readme.md");
       await gitInstance.push('origin', 'master');
@@ -67,21 +71,8 @@ export class GithubController {
         orgInfo,
         repoInfo
       }
-
-      // console.log(data);
-
-      // return {
-      //   userInfo,
-      //   orgInfo,
-      //   repoInfo
-      // }
-      // const data = await http.get('/user/repos')
-      // console.log(data.data);
-      // return data.data
-
     } catch (error) {
       console.log('error', error);
-
     }
     return 1
   }
