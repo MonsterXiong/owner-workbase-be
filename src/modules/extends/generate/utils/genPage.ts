@@ -2,8 +2,6 @@ const ejs = require('ejs');
 import * as changeCase from 'change-case';
 import { FE_FRAMEWORK_DATA, FE_FRAMEWORK_TYPE } from '../framework';
 const path = require('path');
-const fse = require('fs-extra');
-const templateDirPath = 'public/template/fe';
 const fs = require('fs/promises');
 
 async function getGenTemp(templateDirPath) {
@@ -37,24 +35,26 @@ async function getGenTemp(templateDirPath) {
 }
 
 function getFilePath(frameworkType,genType="base"){
-  const { pathInfo } = FE_FRAMEWORK_DATA[frameworkType]
+  const { pathInfo,projectInfo } = FE_FRAMEWORK_DATA[frameworkType]
   const  {menu,service,route,routeConstant,page} = pathInfo
+  const { templateDirPath } = projectInfo
+
   const menuFilePath = menu[genType]
   const routeConstantFilePath = routeConstant[genType]
   const routeFilePath = route[genType]
   const pageDirPath = page[genType]
   const serviceDirPath = service[genType]
-
   return {
     routeConstantFilePath,
     menuFilePath,
     routeFilePath,
     pageDirPath,
-    serviceDirPath
+    serviceDirPath,
+    templateDirPath
   }
 }
 
-function getFileInfo(funcList){
+function getTemplateParams(funcList){
   const init_fileList = {
     menuList:[],
     routeList:[],
@@ -93,10 +93,10 @@ function getFileInfo(funcList){
   return fileInfo
 }
 
-export async function genPage(funcList) {
+async function genPage(funcList) {
+  const { routeConstantFilePath, menuFilePath,routeFilePath,pageDirPath,serviceDirPath,templateDirPath } = getFilePath(FE_FRAMEWORK_TYPE.TXSJ)
   const { routeConstantTemp, menuTemp, pageTemp, routeTemp } = await getGenTemp(templateDirPath);
-  const { routeConstantFilePath, menuFilePath,routeFilePath,pageDirPath,serviceDirPath } = getFilePath(FE_FRAMEWORK_TYPE.TXSJ)
-  const { pageList,routesConstantList,routeList,menuList } = getFileInfo(funcList)
+  const { pageList,routesConstantList,routeList,menuList } = getTemplateParams(funcList)
   
   const result = [];
 
@@ -124,3 +124,5 @@ export async function genPage(funcList) {
 
   return result;
 }
+
+export default genPage

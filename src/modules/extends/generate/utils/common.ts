@@ -1,16 +1,15 @@
 const mysql = require('mysql2/promise');
 import { databaseConfig } from '../../../../config/database.config';
-const path = require("path");
-const fse = require("fs-extra");
-export async function getConnection(){
-    const { HOST, USERNAME, PASSWORD, DATABASE } = databaseConfig;
-    const config = {
-      host: HOST,
-      user: USERNAME,
-      password: PASSWORD,
-      database: DATABASE,
-    };
-    return await mysql.createConnection(config);
+const fse = require('fs-extra');
+export async function getConnection() {
+  const { HOST, USERNAME, PASSWORD, DATABASE } = databaseConfig;
+  const config = {
+    host: HOST,
+    user: USERNAME,
+    password: PASSWORD,
+    database: DATABASE,
+  };
+  return await mysql.createConnection(config);
 }
 
 export function convertMySQLTypeToNodeJS(mysqlType) {
@@ -45,21 +44,21 @@ export function convertMySQLTypeToNodeJS(mysqlType) {
   }
 }
 
-export  async function getTableLsit(connection, DATABASE) {
+export async function getTableLsit(connection, DATABASE) {
   const [tables] = await connection.query(
     `SELECT TABLE_NAME,TABLE_COMMENT FROM information_schema.TABLES WHERE table_schema = '${DATABASE}'`,
   );
   return tables;
 }
 
-export  async function getFieldInfoByTable(connection, DATABASE, TABLE_NAME) {
+export async function getFieldInfoByTable(connection, DATABASE, TABLE_NAME) {
   const [fields] = await connection.query(
     `SHOW FULL COLUMNS FROM \`${DATABASE}\`.${TABLE_NAME}`,
   );
   return fields;
 }
 
-export  async function getTableInfo() {
+export async function getTableInfo() {
   const { DATABASE } = databaseConfig;
 
   const connection = await getConnection();
@@ -81,12 +80,9 @@ export  async function getTableInfo() {
 }
 
 export async function genCode(result) {
-    for (const writeItem of result) {
-      // process.cwd()
-    //   const writeFilePath = path.resolve('E://temp//owner-workbench-be-template//fe//', `${writeItem.filePath}`);
-    //   fse.ensureFileSync(writeFilePath);
-      const writeFilePath = writeItem.filePath;
-      fse.ensureFileSync(writeFilePath);
-      fse.writeFile(writeFilePath, writeItem.content)
-    }
+  for (const writeItem of result) {
+    const writeFilePath = writeItem.filePath;
+    fse.ensureFileSync(writeFilePath);
+    fse.writeFile(writeFilePath, writeItem.content);
   }
+}

@@ -1,18 +1,40 @@
 export const FE_FRAMEWORK_TYPE = {
     TXSJ: 'txsj'
 }
+export const BE_FRAMEWORK_TYPE = {
+    NEST: 'nest'
+}
+export const BE_FRAMEWORK_DATA = {
+    [BE_FRAMEWORK_TYPE.NEST]: {
+        projectInfo: {
+            projectName: '后端',
+            // 标识
+            code: 'be',
+            version: '0.0.1',
+            framework_code:'',
+            templateDirPath:`public/template/be/${BE_FRAMEWORK_TYPE.NEST}`
+        },
+        pathInfo:{
+            module:{
+                base:'src/modules/base'
+            }
+        }
+    }
+}
 
 export const FE_FRAMEWORK_DATA = {
     [FE_FRAMEWORK_TYPE.TXSJ]: {
         // SERVICE
         projectInfo: {
-            projectName: '体系建模',
+            projectName: '前端',
             // 标识
-            code: 'txsj',
+            code: 'fe',
             version: '0.0.1',
+            framework_code:'',
+            templateDirPath:`public/template/fe/${FE_FRAMEWORK_TYPE.TXSJ}`
         },
         config:{
-            systemName: '体系结构建模与分析软件',
+            systemName: 'xxx软件',
             systemIcon: '',
             showLogo: 0,
             companyName: '2024- xxx科技',
