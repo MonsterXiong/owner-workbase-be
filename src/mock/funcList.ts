@@ -24,7 +24,7 @@ export const funcList = [
     {
       id: nanoid(),
       parent: id1,
-      code: 'jszbyq',
+      code: 'tech_index_requirement',
       name: '技术指标要求',
       icon: 'icon-xinjian-copy',
       menuType: 'page',
@@ -48,7 +48,7 @@ export const funcList = [
     {
       id: nanoid(),
       parent: id21,
-      code: 'rjsjjuece',
+      code: 'software_design_dicision',
       name: '软件设计决策',
       icon: 'icon-xinjian-copy',
       menuType: 'page',
@@ -56,15 +56,15 @@ export const funcList = [
     {
       id: nanoid(),
       parent: id21,
-      code: 'xtywlc',
-      name: '系统业务员流程',
+      code: 'system_biz_flow',
+      name: '系统业务流程',
       icon: 'icon-xinjian-copy',
       menuType: 'page',
     },
     {
       id: nanoid(),
       parent: id21,
-      code: 'jsjgsj',
+      code: 'tech_system_design',
       name: '技术架构设计',
       icon: 'icon-xinjian-copy',
       menuType: 'page',
@@ -72,7 +72,7 @@ export const funcList = [
     {
       id: nanoid(),
       parent: id21,
-      code: 'xtjgsj',
+      code: 'system_design',
       name: '系统架构设计',
       icon: 'icon-xinjian-copy',
       menuType: 'page',

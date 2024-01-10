@@ -4,7 +4,7 @@ export class Project {
   @ApiProperty({
     description:'接口前缀',
     required: false,
-    default: 'base',
+    default: 'sfBase',
   })
   readonly prefix: string
 
@@ -12,17 +12,13 @@ export class Project {
     description:'输出路径',
     required: true,
   })
-  readonly outputPath: string
+  outputPath: string
 }
 
 export class ParamsDto {
   @ApiProperty({
     description:'项目信息',
     required: true,
-    default: {
-			"prefix": "base",
-      "outputPath":""
-    },
   })
-  readonly projectInfo:Project
+  projectInfo:Project
 }

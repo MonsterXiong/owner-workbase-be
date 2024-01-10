@@ -100,7 +100,7 @@ async function genPage(funcList) {
   
   const result = [];
 
-  for await (const page of pageList) {
+  for (const page of pageList) {
     if (page.code) {
       result.push({
         filePath: path.join(pageDirPath, page.filePath),
