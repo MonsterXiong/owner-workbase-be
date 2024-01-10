@@ -1,8 +1,12 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { GenerateService } from './../generate/generate.service';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { GithubService } from './github.service';
 import axios from 'axios'
 import { ApiTags } from '@nestjs/swagger';
 import Github from './utils/Github'
+import { ParamsDto } from '../generate/dto/param.dto';
+import { genCode } from '../generate/utils/common';
+import { FE_FRAMEWORK_DATA, FE_FRAMEWORK_TYPE } from '../generate/framework';
 const path = require('path')
 const download = require('download-git-repo')
 const userHomeDir = require("os").homedir();
@@ -11,15 +15,6 @@ const fse = require('fs-extra')
 const userHomePath = path.resolve(userHomeDir, '.workflow-space')
 
 const simpleGit = require('simple-git')
-
-
-// const http =axios.create({
-//   baseURL:'https://api.github.com',
-//   timeout:60000
-// })
-// http.defaults.headers.common['Authorization']='Bearer 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'
-// http.defaults.headers.common['X-GitHub-Api-Version']='2022-11-28'
-
 
 function downloadCode(url, project_path) {
   return new Promise<void>((resolve, reject) => {
@@ -38,17 +33,18 @@ function downloadCode(url, project_path) {
 @ApiTags('github api')
 @Controller('github')
 export class GithubController {
-  constructor(private readonly githubService: GithubService) { }
+  constructor(private readonly githubService: GithubService,private readonly generateService:GenerateService) { }
 
-  @Get(':repos')
-  async getRepo(@Param('repos') repos: string,) {
+  @Post(':repos')
+  async getRepo(@Param('repos') repos: string,@Body() param:ParamsDto) {
     try {
       const gitServer = new Github();
-      await gitServer.setToken('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')
+      await gitServer.setToken('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')
       const userInfo = await gitServer.getUser()
-      const orgInfo = await gitServer.getOrg(userInfo.login);
+      // const orgInfo = await gitServer.getOrg(userInfo.login);
       let repoInfo = await gitServer.getRepo(userInfo.login, repos)
       if (!repoInfo) {
+        // 第一次
         repoInfo = await gitServer.createRepo(repos)
       }
       const gitCloneUrl = repoInfo.clone_url
@@ -59,16 +55,21 @@ export class GithubController {
         console.log('gitCloneUrl',gitCloneUrl);
         return 'no gitCloneUrl'
       }
-      await gitInstance.init().addRemote('origin', gitCloneUrl)
-      await downloadCode('github:MonsterXiong/gffx-fe-template#master', project_path)
+      // await downloadCode('github:MonsterXiong/txsj-fe-template#master', project_path)
+      const {projectInfo} = FE_FRAMEWORK_DATA[FE_FRAMEWORK_TYPE.TXSJ]
+      const {framework_code_url} = projectInfo
+      await gitInstance.clone(framework_code_url,'.')
+      await fse.removeSync(path.resolve(project_path,'.git'))
       // 代码生成
-      // ******
+      const fileList = await this.generateService.genCode(param)
+      await genCode(fileList)
+       
+      await gitInstance.init().addRemote('origin', gitCloneUrl)
       await gitInstance.add("*");
       await gitInstance.commit("add readme.md");
       await gitInstance.push('origin', 'master');
       return {
         userInfo,
-        orgInfo,
         repoInfo
       }
     } catch (error) {

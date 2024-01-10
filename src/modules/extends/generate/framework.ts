@@ -30,7 +30,7 @@ export const FE_FRAMEWORK_DATA = {
             // 标识
             code: 'fe',
             version: '0.0.1',
-            framework_code:'',
+            framework_code_url:'https://github.com/MonsterXiong/txsj-fe-template',
             templateDirPath:`public/template/fe/${FE_FRAMEWORK_TYPE.TXSJ}`
         },
         config:{
