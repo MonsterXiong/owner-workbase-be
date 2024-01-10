@@ -7,6 +7,7 @@ import Github from './utils/Github';
 import { ParamsDto } from '../generate/dto/param.dto';
 import { genCode } from '../generate/utils/common';
 import { FE_FRAMEWORK_DATA, FE_FRAMEWORK_TYPE } from '../generate/framework';
+import { getConfiguration } from '@/config/configuration';
 const path = require('path');
 const download = require('download-git-repo');
 const userHomeDir = require('os').homedir();
@@ -34,7 +35,7 @@ function downloadCode(url, project_path) {
  */
 async function initGitServer() {
   const gitServer = new Github();
-  await gitServer.setToken('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');
+  await gitServer.setToken(getConfiguration().gitToken);
   return gitServer;
 }
 
@@ -164,6 +165,7 @@ export class GithubController {
   @Post('gen')
   @ApiOperation({ summary: '代码生成整体流程' })
   async flow(@Body() projectInfo: ProjectInfo) {
+    try {
       const { repoName, frameworkType, projectParma} = projectInfo;
       // 本地项目路径
       const projectPath = path.resolve(userHomePath, repoName);
@@ -176,6 +178,7 @@ export class GithubController {
       const gitInstance = simpleGit(projectPath);
       // 获取repoinfo
       let repoInfo = await getRepos(gitServer, projectInfo);
+      
       if (!repoInfo) {
         repoInfo = await initRepo({repoName,gitServer,projectPath,frameworkType,gitInstance});
       }
@@ -214,6 +217,10 @@ export class GithubController {
       //   删除本地分支
       //   删除远程分支
       await gitPush(gitInstance,'auto:生成代码')
+    }
+    } catch (error) {
+        console.log(error,'error');
+        
     }
   }
 }

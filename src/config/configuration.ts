@@ -4,6 +4,7 @@ export const getConfiguration = () =>
     jwt: {
       secret: process.env.JWT_SECRET || '123456',
     },
+    gitToken:process.env.GIT_TOKEN,
     //typeorm config
     database: {
       type: 'mysql',
