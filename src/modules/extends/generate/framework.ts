@@ -76,7 +76,8 @@ export const FE_FRAMEWORK_DATA = {
                 base: 'src/router/base/baseRoutesConstant.js'
             },
             page: {
-                base: 'src/pages'
+                base: 'src/pages',
+                genDir:"@/pages"
             },
             components: {
                 base: 'src/components'

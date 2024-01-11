@@ -4,7 +4,7 @@ function error(methodName) {
 
 class GitServer {
   [x: string]: any;
-  constructor(type, token) {
+  constructor(type, token=null) {
     this.type = type;
     this.token = token;
   }
@@ -13,15 +13,15 @@ class GitServer {
     this.token = token;
   }
 
-  createRepo() {
+  createRepo(name) {
     error("createRepo");
   }
 
-  createOrgRepo() {
+  createOrgRepo(name, login) {
     error("createOrgRepo");
   }
 
-  getRemote() {
+  getRemote(login, name) {
     error("getRemote");
   }
 
