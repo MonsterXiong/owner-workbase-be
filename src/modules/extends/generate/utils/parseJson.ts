@@ -2,9 +2,45 @@ import { FE_FRAMEWORK_DATA } from './../framework';
 import * as changeCase from 'change-case';
 const fse = require('fs-extra')
 const path = require('path')
+const ejs = require('ejs')
+const fs = require('fs/promises');
 
-const TEMPLATE_MAP = {
-    'table_general':[
+enum ELEMENT_ENUM {
+    LIST='listElement',
+    UPDATE='updateElement',
+    INSERT='insertElement'
+}
+
+enum TEMPLATE_ENUM  {
+    CRUD_TABLE='table_general'
+}
+
+enum MENU_TYPE_ENUM {
+    MODULE = 'module',
+    PAGE = 'page'
+}
+
+enum FUNCTION_TYPE_ENUM {
+    TOOLBAR='global',
+    OBJ = 'obj'
+}
+
+// 对应特定接口
+enum TABLE_FUNCTION_ENUM  {
+    // 一定会有查询功能
+    QUERY_LIST ='queryList',
+    QUERY ='query',
+    INSERT ='insert',
+    UPDATE ='update',
+    DELETE ='delete',
+    EXPORT = 'export',
+    IMPORT = 'import'
+
+}
+
+// 模板
+const TEMPLATE_DATA = {
+    [TEMPLATE_ENUM.CRUD_TABLE]:[
         {
             type:'entry',
             templatePath:"public/fe/common/crud.ejs"
@@ -20,26 +56,76 @@ const TEMPLATE_MAP = {
         {
             type:'dialog',
             templatePath:"public/fe/base/dialog.ejs"
+        },
+        {
+            type:'service',
+            templatePath:"public/v2/tableService.ejs"
         }
     ]
 }
 
-const projectJson = fse.readJsonSync(path.resolve(__dirname,'../../../../mock/allData.json'))
+function parseUrlList(urlList,prikey){
+    const result = []
+    urlList.forEach(urlItem => {
+        result.push(parseUrl(urlItem)) 
+    });
+    const serviceRenderTempFile = fse.readFileSync('public/template/v2/tableService.ejs','utf8',);
+    const serviceRenderTemp = ejs.compile(serviceRenderTempFile)
+    const serviceList = result.map(item=>{
+        const {label,url,tempParam} = item
+        const { functionName } = tempParam
+        const content = serviceRenderTemp({functionType:label,functionUrl:url,functionName,prikey})
+        return {
+            ...item,
+            content
+        }
+    })
+    console.log('serviceList',serviceList);
+    
+    return serviceList
+}
+function parseUrl(item){
+    console.log(item,'item');
+    const {url,label} = item
+    const [x,interfaceType,serviceType,functionName]=url.split('/')
+    console.log(interfaceType,serviceType,functionName);
+    return {
+        ...item,
+        tempParam:{
+            interfaceType,
+            serviceType,
+            functionName
+        }
+    }
+    
+    // if(item.label == TABLE_FUNCTION_ENUM.QUERY_LIST){
+    //     const  queryUrl = item.queryUrl
+    //     return {
+    //         functionName:'',
+    //         method:''
+    //     }
+    // }
+}
+
+
+
+
+const projectJson = fse.readJsonSync(path.resolve(__dirname,'../../../../mock/projectGenData1.json'))
 
 const {projectInfo,menuInfo,dataModel,pages} = projectJson
 
 // const { functionModel, elementConfig } = pages
 
-const {feConfig} = projectInfo
+const {project_frameworkType,project_name,project_code,project_version,project_description,project_port} = projectInfo
 
 const need_project_data = {
-    frameworkType: feConfig.frameworkType,
-    name:projectInfo.name,
-    code:projectInfo.code,
-    version:projectInfo.version,
-    description:projectInfo.description,
+    frameworkType: project_frameworkType,
+    name:project_name,
+    code:project_code,
+    version:project_version,
+    description:project_description,
     // 服务端口
-    port:8080
+    port:project_port
 }
 
 
@@ -60,9 +146,8 @@ function getTableHeader(headerList,dataModel){
 
     const tableHeader = []
     headerList.forEach(headerColumn=>{
-        const {alias,bindObj,bindAttr,aliasCode,isHidden,displayType} =  headerColumn
-        console.log(tableMap[bindObj]);
-
+        const {alias,bindObj,bindAttr,aliasCode,displayType,param} =  headerColumn
+        const {isHidden}= param
         const name = tableMap[bindObj]?.find(item=>item.code == bindAttr)?.remark || '默认名称'
 
         if(!isHidden){
@@ -76,14 +161,18 @@ function getTableHeader(headerList,dataModel){
     return tableHeader
 }
 
+function getElementItem(elementConfig,bindFunction){
+    const elementInfo = elementConfig.find(item=>item.bindFunction == bindFunction)
+    return elementInfo?.data || []
+}
 function hasOperateColumn(operateBtnList){
     return operateBtnList.length>0
 }
 function gtetCategoryBtn(functionModel){
    return functionModel.reduce((res,item)=>{
-        if(item.functionClass == 'global'){
+        if(item.functionType == FUNCTION_TYPE_ENUM.TOOLBAR){
             res['toolbarBtnList'].push(item)
-        }else if(item.functionClass == 'obj'){
+        }else if(item.functionType == FUNCTION_TYPE_ENUM.OBJ){
             res['operateBtnList'].push(item)
         }
         return res
@@ -93,29 +182,56 @@ function gtetCategoryBtn(functionModel){
     })
 }
 
+function getPrimaryKey(headerList){
+    const primaryKeyInfo = headerList.find(item=>item.pk)
+    if(!primaryKeyInfo){
+        throw new Error("没有找到主键信息");
+    }
+    const { bindAttr,aliasCode} = primaryKeyInfo
+    return aliasCode?aliasCode:bindAttr
+}
+
+function getUrlList(functionModel){
+    return functionModel.reduce((res,item)=>{
+        const requestList = item['request']
+        res = res.concat(requestList)
+        return res
+    },[])
+}
+
 // 转换为模板需要的数据
+// service转换
 function genPageParams(menuItemInfo,pageList,dataModel){
     const {id,code} = menuItemInfo
     const pageInfo = pageList.find(item=>item.bindMenu === id)
+    if(!pageInfo){
+        return null
+    }
     const {functionModel,elementConfig} = pageInfo
-    if(pageInfo.type ==  "table_general"){
+    
+    if(pageInfo.type ==  TEMPLATE_ENUM.CRUD_TABLE){
         //
-        const templateStruct = TEMPLATE_MAP[pageInfo.type]
+        const templateStruct = TEMPLATE_DATA[pageInfo.type]
 
-        const headerList = elementConfig['list']
-        const queryList = elementConfig['query']
-
-        const functionMap = functionModel.reduce((res,functionItem)=>res[functionItem.funtionType] = functionItem,{})
+        // const headerList = elementMap[TABLE_FUNCTION_ENUM.QUERY_LIST]
+        const headerList = getElementItem(elementConfig,TABLE_FUNCTION_ENUM.QUERY_LIST)
+        const prikey = getPrimaryKey(headerList)
+        const queryList = headerList.filter(item=>item.param.isSearch)
 
 
         const {toolbarBtnList,operateBtnList} = gtetCategoryBtn(functionModel)
-        // const toolbarBtnList = functionModel.filter(item=>item.functionClass == )
+        const urlList = getUrlList(functionModel)
+        const serviceList = parseUrlList(urlList,prikey)
+        // 是否有工具栏
         const isToolBar = hasToolBar(queryList,toolbarBtnList)
+        // 是否有操作列
         const isOperateColumn = hasOperateColumn(operateBtnList)
 
         const tableHeader = getTableHeader(headerList,dataModel)
 
         return {
+            serviceList,
+            urlList,
             // 是否有工具栏组件
             isToolBar,
             // 工具栏按钮列表
@@ -145,11 +261,11 @@ function parseTemplateParams(menuData){
         const CAMEL_CASE_CODE = changeCase.camelCase(code)
         const PASCAL_CASE_CODE = changeCase.pascalCase(code)
         const VUE_FILE_NAME = `${CAMEL_CASE_CODE}/${PASCAL_CASE_CODE}.vue`
-        res['menuList'].push({
-            ...item,
-            menuParams: CONST_CODE,
-          })
-          if(item.functionType == 'page'){
+            res['menuList'].push({
+                ...item,
+                menuParams: CONST_CODE,
+            })
+          if(item.menuType == MENU_TYPE_ENUM.PAGE){
             res['routesConstantList'].push({
               const: CONST_CODE,
               path: CAMEL_CASE_CODE,
@@ -160,7 +276,10 @@ function parseTemplateParams(menuData){
               const: CONST_CODE,
               path: `${pathInfo.page.genDir}/${VUE_FILE_NAME}`,
             })
-            res['pageList'].push(genPageParams(item,pages,dataModel));
+            const pageInfo = genPageParams(item,pages,dataModel)
+            if(pageInfo){
+                res['pageList'].push(pageInfo);
+            }
            }
         return res
     },init_fileList)
@@ -168,6 +287,7 @@ function parseTemplateParams(menuData){
     return menuList
 }
 
-const genData = parseTemplateParams(menuInfo)
 
-console.log(genData,'xxxx');
+    const genData = parseTemplateParams(menuInfo)
+    console.log(genData,'xxxx',genData.pageList[0]);
+

@@ -122,23 +122,21 @@
           "code": "addnlObj",
           "functionType": "create",
           "functionClass": "global",
-          "queryUrl": "/design_abi/addAbi",
           "operateUrl": "/base/design_abi/addAbi"
         },
         {
           "name": "编辑",
           "code": "update",
           "functionClass": "obj",
-          "queryUrl": "/design_abi/queryIndex",
-          "operateUrl": "/design_abi/updateAbi"
+          "queryUrl": "/base/design_abi/queryIndex",
+          "operateUrl": "/base/design_abi/updateAbi"
         },
         {
           "name": "打开",
           "code": "openPrject",
           "functionType": "ext",
           "functionClass": "global",
-          "queryUrl": "/design_abi/queryIndex",
-          "operateUrl": "/design_abi/updateAbi"
+          "operateUrl": "/base/project/openProjectAbi"
         }
       ],
       "elementConfig": {

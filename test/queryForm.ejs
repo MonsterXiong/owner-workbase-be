@@ -1,0 +1,59 @@
+<template>
+    <el-form :model="queryForm" size="small" :inline="true" class="query-form-container">
+      <%_if (querList.length > 0) { -%>
+      <%_ querList.forEach(function(queryItem){ -%>
+      <el-form-item label="<%=queryItem.name%>" prop="<%=queryItem.prop%>">
+        <%_if (queryItem.displayType == 'text') { -%>
+        <el-input v-model.trim="formData.<%=queryItem.prop%>" placeholder="请输入<%=queryItem.name%>"></el-input>
+        <%_ } -%>
+        <%_if (queryItem.displayType == 'select') { -%>
+          <el-select v-model="formData.<%=queryItem.prop%>" clearable placeholder="请选择<%=queryItem.name%>">
+            <%_if (queryItem.selectType == 'dict') { -%>
+            <el-option v-for="item in $root.getEnumByCode(dictCategory.<%=queryItem.dictCode %>) || []" :key="item.code" :label="item.name" :value="item.code"></el-option>
+            <%_ }else if (queryItem.selectType == 'entity') { -%>
+            <el-option v-for="item in <%=queryItem.prop%>Option || []" :key="item.<%=queryItem.entityKey%>" :label="item.<%=queryItem.entityValue%>" :value="item.<%=queryItem.entityKey%>"></el-option>
+            <%_ } -%>
+          </el-select>
+        <%_ } -%>
+      </el-form-item>
+      <%_ }); -%>
+      <%_ } -%>
+      <el-form-item>
+        <div class="btn-container">
+          <%_if (querList.length>0) { -%>
+          <el-button type="primary" icon="el-icon-search" @click="onQuery">查询</el-button>
+          <el-button icon="el-icon-refresh" @click="onReset">重置</el-button>
+          <%_ } -%>
+          <%_ toolbarBtnList.forEach(function(btn){ -%>
+            <el-button type="<%= btn.type %>" <%_if (btn.icon) { -%>icon="<%= btn.icon %>"<%_ } -%>  <%_if (btn.icon) { -%>@click="<%= btn.functionName %>"<%_ } -%>><%= btn.name %></el-button>
+          <%_ }); -%>
+        </div>
+      </el-form-item>
+    </el-form>
+  </template>
+  
+  <script>
+  export default {
+    props: {
+      queryForm: {},
+    },
+    methods: {
+      <%_if (querList.length > 0) { -%>
+      onQuery() {
+        this.$emit('onQuery')
+      },
+      onReset() {
+        this.$emit('onReset')
+      },
+      <%_ } -%>
+      <%_ toolbarBtnList.forEach(function(btn){ -%>
+      <%= btn.functionName %>() {
+        this.$emit('<%= btn.functionName %>')
+      },
+      <%_ }); -%>
+    },
+  }
+  </script>
+  
+  <style lang="less" scoped></style>
+  

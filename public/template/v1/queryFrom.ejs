@@ -1,0 +1,71 @@
+<template>
+    <el-form :model="queryForm" size="small" :inline="true" class="query-form-container">
+      <%_if (queryList.length > 0) { -%>
+      <%_ queryList.forEach(function(queryItem){ -%>
+      <%- include("form.ejs",{...queryItem}) %>
+      <%_ }); -%>
+      <%_ } -%>
+      <%_if (queryList.length > 0 && toolbarBtnList.length > 0) { %>
+      <el-form-item label="操作">
+        <div class="btn-container">
+          <%_if (queryList.length>0) { -%>
+          <el-button type="primary" icon="el-icon-search" @click="onQuery">查询</el-button>
+          <el-button icon="el-icon-refresh" @click="onReset">重置</el-button>
+          <%_ } -%>
+          <%_ toolbarBtnList.forEach(function(btn){ -%>
+          <%- include("btn.ejs",{...btn}) %>
+          <%_ }); -%>
+        </div>
+      </el-form-item>
+      <%_ } -%>
+    </el-form>
+  </template>
+  
+  <script>
+  <%_ if(initOptionList.length) { -%>
+  import { QueryConditionBuilder } from '@/utils/queryConditionBuilder'
+  import {<%_ initOptionList.forEach(function(option,index){ -%><%=option.serviceName%><%_ if(index !=initOptionList.length-1 ){-%>,<%_}-%> <%_ }); -%>} from '@/services'
+  <%_ } -%>
+  export default {
+    data() {
+      return {
+        <%_ initOptionList.forEach(function(option){ -%>
+          <%option.prop%>Option: []
+        <%_ }); -%>
+        
+      }
+    },
+    props: {
+      queryForm: {},
+    },
+    mounted(){
+      <%_ initOptionList.forEach(function(option){ -%>
+        await this.<%=option.functionName%>()
+      <%_ }); -%>
+    },
+    methods: {
+      <%_ initOptionList.forEach(function(option){ -%>
+        async <%=option.functionName%>(){
+          let queryCondition = QueryConditionBuilder.getInstanceNoPage()
+          const { data } = await <%=option.functionName%>.<%= option.interfaceName%>(queryCondition)
+          this.<%=option.variableName%> = data
+        },
+      <%_ }); -%>
+
+      <%_if (queryList.length > 0) { -%>
+      onQuery() {
+        this.$emit('onQuery')
+      },
+      onReset() {
+        this.$emit('onReset')
+      },
+      <%_ } -%>
+      <%_ toolbarBtnList.forEach(function(btn){ -%>
+        <%- include("queryFromMethod.ejs",{...btn}) %>
+      <%_ }); -%>
+    },
+  }
+  </script>
+  
+  <style lang="less" scoped></style>
+  
