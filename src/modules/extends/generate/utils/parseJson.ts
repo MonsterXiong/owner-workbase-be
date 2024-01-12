@@ -48,7 +48,7 @@ const {pathInfo} = FE_FRAMEWORK_DATA[need_project_data.frameworkType]
 
 
 function hasToolBar(queryList,toolbarBtnList){
-    return queryList.length>0 && toolbarBtnList.length>0
+    return queryList.length > 0 && toolbarBtnList.length > 0
 }
 
 function getTableHeader(headerList,dataModel){
@@ -57,19 +57,19 @@ function getTableHeader(headerList,dataModel){
         res[table.code] = table.cloumns
         return res
     },{})
-    
+
     const tableHeader = []
     headerList.forEach(headerColumn=>{
         const {alias,bindObj,bindAttr,aliasCode,isHidden,displayType} =  headerColumn
         console.log(tableMap[bindObj]);
-        
+
         const name = tableMap[bindObj]?.find(item=>item.code == bindAttr)?.remark || '默认名称'
-   
+
         if(!isHidden){
             tableHeader.push({
-                prop:aliasCode?aliasCode:bindAttr,
-                label:alias?alias:name,
-                type:displayType
+                prop: aliasCode ? aliasCode : bindAttr,
+                label: alias ? alias : name,
+                type: displayType
             })
         }
     })
@@ -99,11 +99,11 @@ function genPageParams(menuItemInfo,pageList,dataModel){
     const pageInfo = pageList.find(item=>item.bindMenu === id)
     const {functionModel,elementConfig} = pageInfo
     if(pageInfo.type ==  "table_general"){
-        // 
+        //
         const templateStruct = TEMPLATE_MAP[pageInfo.type]
 
-        const headerList = elementConfig['list'] 
-        const queryList = elementConfig['query'] 
+        const headerList = elementConfig['list']
+        const queryList = elementConfig['query']
 
         const functionMap = functionModel.reduce((res,functionItem)=>res[functionItem.funtionType] = functionItem,{})
 
@@ -112,7 +112,7 @@ function genPageParams(menuItemInfo,pageList,dataModel){
         // const toolbarBtnList = functionModel.filter(item=>item.functionClass == )
         const isToolBar = hasToolBar(queryList,toolbarBtnList)
         const isOperateColumn = hasOperateColumn(operateBtnList)
-        
+
         const tableHeader = getTableHeader(headerList,dataModel)
 
         return {
@@ -171,4 +171,3 @@ function parseTemplateParams(menuData){
 const genData = parseTemplateParams(menuInfo)
 
 console.log(genData,'xxxx');
-
