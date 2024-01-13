@@ -7,8 +7,7 @@
   "license": "UNLICENSED",
   "scripts": {
     "g:nest": "ts-node src/modules/extends/generate/index.ts",
-    "g:test": "ts-node src/modules/extends/generate/compose.ts",
-    "g:json": "ts-node src/modules/extends/generate/utils/parseJson.ts",
+    "g:compose": "ts-node src/modules/extends/generate/compose.ts",
     "g:json": "ts-node src/modules/extends/generate/utils/parseJson.ts",
     "g:test": "ts-node test/mixinTemplate.ts",
     "build": "nest build",
