@@ -1,17 +1,21 @@
-  <el-form-item label="<%=label%>" prop="<%=prop%>">
-      <%_if (displayType == 'text') { -%>
-        <el-input v-model.trim="formData.<%=prop%>" placeholder="请输入<%=label%>"></el-input>
+<%# 表单项 -%>
+<%_ queryList.forEach(function(formItem){ -%>
+    <el-form-item label="<%=formItem.label%>" prop="<%=formItem.prop%>">
+      <%_ if (formItem.displayType == 'text') { -%>
+      <el-input v-model.trim="formData.<%=formItem.prop%>" placeholder="请输入<%=formItem.label%>"></el-input>
       <%_ } -%>
-      <%_  if(displayType=='textarea' ){ -%>
-        <el-input v-model.trim="formData.<%=prop%>" type="textarea"></el-input>
+      <%_ if (formItem.displayType=='textarea' ){ -%>
+      <el-input v-model.trim="formData.<%=formItem.prop%>" type="textarea"></el-input>
       <%_ } -%>
-      <%_if (displayType == 'select') { -%>
-        <el-select v-model="formData.<%=prop%>" clearable placeholder="请选择<%=label%>">
-          <%_if (selectType == 'dict') { -%>
-          <el-option v-for="item in $root.getEnumByCode(dictCategory.<%=dictCode %>) || []" :key="item.code" :label="item.name" :value="item.code"></el-option>
-          <%_ }else if (selectType == 'entity') { -%>
-          <el-option v-for="item in <%=prop%>Option || []" :key="item.<%=entityKey%>" :label="item.<%=entityLabel%>" :value="item.<%=entityKey%>"></el-option>
-          <%_ } -%>
-        </el-select>
+      <%_ if (formItem.displayType == 'select') { -%>
+      <el-select v-model="formData.<%=formItem.prop%>" clearable placeholder="请选择<%=formItem.label%>">
+        <el-option v-for="item in <%=formItem.prop%>Option || []" :key="item.<%=formItem.entityKey%>" :label="item.<%=formItem.entityLabel%>" :value="item.<%=formItem.entityKey%>"></el-option>
+      </el-select>
       <%_ } -%>
-  </el-form-item>
+      <%_ if (formItem.displayType == 'dict') { -%>
+      <el-select v-model="formData.<%=formItem.prop%>" clearable placeholder="请选择<%=formItem.label%>">
+        <el-option v-for="item in $root.getEnumByCode(dictCategory.<%=formItem.dictCode %>) || []" :key="item.code" :label="item.name" :value="item.code"></el-option>
+      </el-select>
+      <%_ } -%>
+    </el-form-item>
+<%_ }); -%>

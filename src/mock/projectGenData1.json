@@ -108,7 +108,7 @@
             "type": "table_general",
             "name": "指标表格",
             "code": "abiDiv",
-            "bindMenu": "001001",
+            "bindMenu": "001002",
             "functionModel": [
                 {
                     "name": "查询指标列表",
@@ -169,23 +169,23 @@
                     "bindFunction": "queryList",
                     "data": [
                         {
-                            "alias": "indexId",
-                            "aliasCode": "指标ID",
+                            "alias": "指标ID",
+                            "aliasCode": "indexId",
                             "bindObj": "db_index",
                             "bindAttr": "index_id",
-                            "displayType":"text",
+                            "displayType": "text",
                             "pk": true,
                             "param": {
                                 "isHidden": true,
-                                "isSearch": true
+                                "isSearch": false
                             }
                         },
                         {
-                            "alias": "indexName",
-                            "aliasCode": "指标名称",
+                            "alias": "指标名称",
+                            "aliasCode": "indexName",
                             "bindObj": "db_index",
                             "bindAttr": "name",
-                            "displayType":"text",
+                            "displayType": "text",
                             "pk": false,
                             "param": {
                                 "isHidden": false,
@@ -193,11 +193,11 @@
                             }
                         },
                         {
-                            "alias": "bindAbiName",
-                            "aliasCode": "所属能力",
+                            "alias": "所属能力",
+                            "aliasCode": "bindAbiName",
                             "bindObj": "db_index",
                             "bindAttr": "bind_abi",
-                            "displayType":"text",
+                            "displayType": "text",
                             "pk": false,
                             "param": {
                                 "isHidden": false,
@@ -211,11 +211,11 @@
                     "bindFunction": "update",
                     "data": [
                         {
-                            "alias": "indexId",
-                            "aliasCode": "指标ID",
+                            "alias": "指标ID",
+                            "aliasCode": "indexId",
                             "bindObj": "db_index",
                             "bindAttr": "index_id",
-                            "displayType":"text",
+                            "displayType": "text",
                             "pk": true,
                             "param": {
                                 "isHidden": true,
@@ -223,11 +223,11 @@
                             }
                         },
                         {
-                            "alias": "indexName",
-                            "aliasCode": "指标名称",
+                            "alias": "指标名称",
+                            "aliasCode": "indexName",
                             "bindObj": "db_index",
                             "bindAttr": "name",
-                            "displayType":"text",
+                            "displayType": "text",
                             "pk": false,
                             "param": {
                                 "isHidden": false,
@@ -241,11 +241,11 @@
                     "bindFunction": "insert",
                     "data": [
                         {
-                            "alias": "indexId",
-                            "aliasCode": "指标ID",
+                            "alias": "指标ID",
+                            "aliasCode": "indexId",
                             "bindObj": "db_index",
                             "bindAttr": "index_id",
-                            "displayType":"text",
+                            "displayType": "text",
                             "pk": true,
                             "param": {
                                 "isHidden": true,
@@ -253,11 +253,11 @@
                             }
                         },
                         {
-                            "alias": "indexName",
-                            "aliasCode": "指标名称",
+                            "alias": "指标名称",
+                            "aliasCode": "indexName",
                             "bindObj": "db_index",
                             "bindAttr": "name",
-                            "displayType":"text",
+                            "displayType": "text",
                             "pk": false,
                             "param": {
                                 "isHidden": false,
@@ -265,11 +265,11 @@
                             }
                         },
                         {
-                            "alias": "bindAbiName",
-                            "aliasCode": "所属能力",
+                            "alias": "所属能力",
+                            "aliasCode": "bindAbiName",
                             "bindObj": "db_index",
                             "bindAttr": "bind_abi",
-                            "displayType":"text",
+                            "displayType": "text",
                             "pk": false,
                             "param": {
                                 "isRequired": true,

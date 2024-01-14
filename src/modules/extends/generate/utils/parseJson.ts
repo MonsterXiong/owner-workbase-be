@@ -67,7 +67,7 @@ const TEMPLATE_DATA = {
 function parseUrlList(urlList,prikey){
     const result = []
     urlList.forEach(urlItem => {
-        result.push(parseUrl(urlItem)) 
+        result.push(parseUrl(urlItem))
     });
     const serviceRenderTempFile = fse.readFileSync('public/template/v2/tableService.ejs','utf8',);
     const serviceRenderTemp = ejs.compile(serviceRenderTempFile)
@@ -81,13 +81,13 @@ function parseUrlList(urlList,prikey){
         }
     })
     console.log('serviceList',serviceList);
-    
+
     return serviceList
 }
 function parseUrl(item){
     console.log(item,'item');
     const {url,label} = item
-    const [x,interfaceType,serviceType,functionName]=url.split('/')
+    const [,interfaceType,serviceType,functionName]=url.split('/')
     console.log(interfaceType,serviceType,functionName);
     return {
         ...item,
@@ -97,7 +97,7 @@ function parseUrl(item){
             functionName
         }
     }
-    
+
     // if(item.label == TABLE_FUNCTION_ENUM.QUERY_LIST){
     //     const  queryUrl = item.queryUrl
     //     return {
@@ -208,7 +208,7 @@ function genPageParams(menuItemInfo,pageList,dataModel){
         return null
     }
     const {functionModel,elementConfig} = pageInfo
-    
+
     if(pageInfo.type ==  TEMPLATE_ENUM.CRUD_TABLE){
         //
         const templateStruct = TEMPLATE_DATA[pageInfo.type]
@@ -288,6 +288,5 @@ function parseTemplateParams(menuData){
 }
 
 
-    const genData = parseTemplateParams(menuInfo)
-    console.log(genData,'xxxx',genData.pageList[0]);
-
+const genData = parseTemplateParams(menuInfo)
+console.log(genData,'xxxx',genData.pageList[0]);

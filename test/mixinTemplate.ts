@@ -1,4 +1,6 @@
+import { genCode } from '../src/modules/extends/generate/utils/common';
 import * as changeCase from 'change-case';
+import { join } from 'path';
 const fse = require('fs-extra')
 const path = require('path')
 const ejs = require('ejs')
@@ -7,6 +9,13 @@ const fs = require('fs/promises');
 function mockData(){
     return {
         initOptionList:[
+            {
+                prop:'bindAbi',
+                functionName:'getAbiOption',
+                serviceName:'AbiService',
+                interfaceName:'queryList',
+                variableName:'abiOption'
+            },
             {
                 prop:'stage',
                 functionName:'getStageOption',
@@ -23,8 +32,12 @@ function mockData(){
             displayType:'select',
             label:'所属能力',
             prop:'bindAbi',
-            selectType:'dict',
-            dictCode:'project_enum'
+            // selectType:'dict',
+            // dictCode:'project_enum'
+            selectType:'entity',
+            dictCode:'project_enum',
+            entityKey:'bindAbiId',
+            entityLabel:'abiName',
         },{
             displayType:'select',
             label:'项目阶段',
@@ -33,7 +46,6 @@ function mockData(){
             dictCode:'project_enum',
             entityKey:'bindStageId',
             entityLabel:'name',
-
         }],
         toolbarBtnList:[{
             type:'success',
@@ -48,12 +60,18 @@ function mockData(){
         }]
     }
 }
-function getInitTemplate(mockData){
+async function getInitTemplate(mockData){
     // const serviceRenderTempFile = fse.readFileSync('public/template/v1/queryFrom.ejs','utf8',);
-    const content = ejs.renderFile('public/template/v1/queryFrom.ejs',mockData)
+    const content = await ejs.renderFile('public/template/v1/queryFrom.ejs',mockData)
     // const content = serviceRenderTemp(mockData)
-    console.log(content);
-    
+    console.log(typeof content);
+    genCode([{
+        filePath:join(__dirname,'./Query.vue'),
+        content
+    }])
+
 }
 
-getInitTemplate(mockData())
+!(async()=>{
+    await getInitTemplate(mockData())
+})()
