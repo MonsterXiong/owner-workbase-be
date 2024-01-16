@@ -12,7 +12,7 @@ const path = require('path');
 const download = require('download-git-repo');
 const userHomeDir = require('os').homedir();
 const fse = require('fs-extra');
-
+const {execCodeGenTest}= require('../../../gen/genCode.js')
 const userHomePath = path.resolve(userHomeDir, '.workflow-space');
 
 const simpleGit = require('simple-git');
@@ -75,6 +75,7 @@ async function initRepo({
   await fse.removeSync(path.resolve(projectPath, '.git'));
   // 创建git仓库
   const repoInfo = await gitServer.createRepo(repoName);
+
   // 初始化git & remote 远程仓库源
   await initGitAndRemote(gitInstance, repoInfo);
   // 提交代码
@@ -102,7 +103,7 @@ async function checkNotCommitted(gitInstance) {
   return not_added.length ||created.length || deleted.length || modified.length || renamed.length
 }
 async function checkCache({projectPath,repoInfo}) {
-  // 不满足缓存条件 
+  // 不满足缓存条件
   // 是否存在当前目录下的git文件
   if(!fse.pathExistsSync(path.resolve(projectPath,'.git'))){
     return false
@@ -178,10 +179,10 @@ export class GithubController {
       const gitInstance = simpleGit(projectPath);
       // 获取repoinfo
       let repoInfo = await getRepos(gitServer, projectInfo);
-      
       if (!repoInfo) {
         repoInfo = await initRepo({repoName,gitServer,projectPath,frameworkType,gitInstance});
       }
+
 
       if (await checkCache({projectPath,repoInfo})) {
         // 拉取最新代码
@@ -196,10 +197,17 @@ export class GithubController {
     // ---------------提交流程-------------
     // 生成开发分支
     // 生成代码
-    // await execGenCode()
+    const code = await execCodeGenTest()
+
     projectParma.projectInfo.outputPath = projectPath.toString();
-    
-    const fileList = await this.generateService.genCode(projectParma);
+    const fileList=code.map(item=>{
+      return {
+        ...item,
+        filePath:path.resolve(projectParma.projectInfo.outputPath,item.filePath)
+      }
+    })
+    // const fileList = await this.generateService.genCode(projectParma);
+    // await genCode(fileList);
     await genCode(fileList);
     // TODO:检查stash区
     // 检查代码冲突
@@ -220,7 +228,7 @@ export class GithubController {
     }
     } catch (error) {
         console.log(error,'error');
-        
+
     }
   }
 }
