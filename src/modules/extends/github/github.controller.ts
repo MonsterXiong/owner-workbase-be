@@ -8,11 +8,12 @@ import { ParamsDto } from '../generate/dto/param.dto';
 import { genCode } from '../generate/utils/common';
 import { FE_FRAMEWORK_DATA, FE_FRAMEWORK_TYPE } from '../generate/framework';
 import { getConfiguration } from '@/config/configuration';
+import { getGenCode } from '@/gen/genCode';
 const path = require('path');
 const download = require('download-git-repo');
 const userHomeDir = require('os').homedir();
 const fse = require('fs-extra');
-const {execCodeGenTest}= require('../../../gen/genCode.js')
+const fs = require('fs');
 const userHomePath = path.resolve(userHomeDir, '.workflow-space');
 
 const simpleGit = require('simple-git');
@@ -99,13 +100,13 @@ async function checkConflicted(gitInstance) {
 // 检查未提交情况
 async function checkNotCommitted(gitInstance) {
   const status = await gitInstance.status();
-  const {not_added,created,deleted,modified,renamed} = status
-  return not_added.length ||created.length || deleted.length || modified.length || renamed.length
+  const { not_added, created, deleted, modified, renamed } = status
+  return not_added.length || created.length || deleted.length || modified.length || renamed.length
 }
-async function checkCache({projectPath,repoInfo}) {
+async function checkCache({ projectPath, repoInfo }) {
   // 不满足缓存条件
   // 是否存在当前目录下的git文件
-  if(!fse.pathExistsSync(path.resolve(projectPath,'.git'))){
+  if (!fse.pathExistsSync(path.resolve(projectPath, '.git'))) {
     return false
   }
   // false
@@ -122,7 +123,7 @@ async function gitPull(gitInstance) {
   gitInstance.pull('origin', 'master');
 }
 
-function getCloneUrlByRepoInfo(repoInfo){
+function getCloneUrlByRepoInfo(repoInfo) {
   return repoInfo.clone_url
 }
 async function createCache({ gitInstance, projectPath, repoInfo }) {
@@ -161,16 +162,16 @@ export class GithubController {
   constructor(
     private readonly githubService: GithubService,
     private readonly generateService: GenerateService,
-  ) {}
+  ) { }
 
   @Post('gen')
   @ApiOperation({ summary: '代码生成整体流程' })
   async flow(@Body() projectInfo: ProjectInfo) {
     try {
-      const { repoName, frameworkType, projectParma} = projectInfo;
+      const { repoName, frameworkType, projectParma } = projectInfo;
       // 本地项目路径
       const projectPath = path.resolve(userHomePath, repoName);
-      if(!fse.pathExistsSync(projectPath)){
+      if (!fse.pathExistsSync(projectPath)) {
         fse.ensureDirSync(projectPath);
       }
       // 初始化github server
@@ -180,11 +181,11 @@ export class GithubController {
       // 获取repoinfo
       let repoInfo = await getRepos(gitServer, projectInfo);
       if (!repoInfo) {
-        repoInfo = await initRepo({repoName,gitServer,projectPath,frameworkType,gitInstance});
+        repoInfo = await initRepo({ repoName, gitServer, projectPath, frameworkType, gitInstance });
       }
 
 
-      if (await checkCache({projectPath,repoInfo})) {
+      if (await checkCache({ projectPath, repoInfo })) {
         // 拉取最新代码
         await gitPull(gitInstance);
       } else {
@@ -194,40 +195,78 @@ export class GithubController {
           gitInstance,
         });
       }
-    // ---------------提交流程-------------
-    // 生成开发分支
-    // 生成代码
-    const code = await execCodeGenTest()
+      // ---------------提交流程-------------
+      // 生成开发分支
+      // 生成代码
+      const code = await getGenCode()
 
-    projectParma.projectInfo.outputPath = projectPath.toString();
-    const fileList=code.map(item=>{
-      return {
-        ...item,
-        filePath:path.resolve(projectParma.projectInfo.outputPath,item.filePath)
+      projectParma.projectInfo.outputPath = projectPath.toString();
+
+      const fileList = code.map(item => {
+        return {
+          ...item,
+          filePath: path.resolve(projectParma.projectInfo.outputPath, item.filePath)
+        }
+      })
+      // const fileList=code.map(item=>{
+      //   return {
+      //     ...item,
+      //     filePath:path.resolve(projectParma.projectInfo.outputPath,item.filePath)
+      //   }
+      // })
+      // // const fileList = await this.generateService.genCode(projectParma);
+      // // await genCode(fileList);
+      await genCode(fileList);
+      // TODO:检查stash区
+      // 检查代码冲突
+      await checkConflicted(gitInstance);
+      // 检查未提交情况
+      if (await checkNotCommitted(gitInstance)) {
+        // 切换开发分支
+        // 合并远程master分支和开发分支代码
+        // 将开发分支推送到远程仓库
+        // ---------------发布流程-------------
+        //   打tag
+        //   切换分支到master
+        //   将代码合并到master
+        //   将代码推送到远程master
+        //   删除本地分支
+        //   删除远程分支
+        await gitPush(gitInstance, 'auto:生成代码')
       }
-    })
-    // const fileList = await this.generateService.genCode(projectParma);
-    // await genCode(fileList);
-    await genCode(fileList);
-    // TODO:检查stash区
-    // 检查代码冲突
-    await checkConflicted(gitInstance);
-    // 检查未提交情况
-    if(await checkNotCommitted(gitInstance)){
-      // 切换开发分支
-      // 合并远程master分支和开发分支代码
-      // 将开发分支推送到远程仓库
-      // ---------------发布流程-------------
-      //   打tag
-      //   切换分支到master
-      //   将代码合并到master
-      //   将代码推送到远程master
-      //   删除本地分支
-      //   删除远程分支
-      await gitPush(gitInstance,'auto:生成代码')
-    }
     } catch (error) {
-        console.log(error,'error');
+      console.log(error, 'error');
+
+    }
+  }
+
+  @Post('genByJson')
+  @ApiOperation({ summary: '代码生成通过json' })
+  async genByJson(@Body() jsonData) {
+    try {
+      const { projectInfo } = jsonData;
+      const { project_outputDir } = projectInfo
+
+      // 本地项目路径
+      const projectPath = path.join(project_outputDir, 'fe');
+      if (!fse.pathExistsSync(projectPath)) {
+        fse.ensureEmptyDirSync(projectPath);
+
+      }
+      const code = await getGenCode(jsonData)
+
+      const fileList = code.map(item => {
+        return {
+          ...item,
+          filePath: path.resolve(projectPath.toString(), item.filePath)
+        }
+      })
+
+      await genCode(fileList);
+
+      return fileList
+    } catch (error) {
+      console.log(error, 'error');
 
     }
   }
