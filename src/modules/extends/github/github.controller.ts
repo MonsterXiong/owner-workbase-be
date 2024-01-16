@@ -9,6 +9,7 @@ import { genCode } from '../generate/utils/common';
 import { FE_FRAMEWORK_DATA, FE_FRAMEWORK_TYPE } from '../generate/framework';
 import { getConfiguration } from '@/config/configuration';
 import { getGenCode } from '@/gen/genCode';
+import { compress, uncompress } from '../generate/fe/utils';
 const path = require('path');
 const download = require('download-git-repo');
 const userHomeDir = require('os').homedir();
@@ -155,6 +156,28 @@ export class ProjectInfo {
   })
   projectParma: ParamsDto;
 }
+class JsonData{
+
+  @ApiProperty({
+    description: 'json',
+  })
+  projectInfo:any
+
+  @ApiProperty({
+    description: 'json',
+  })
+  menuInfo:any
+
+  @ApiProperty({
+    description: 'json',
+  })
+  dataModel:Object
+
+  @ApiProperty({
+    description: 'json',
+  })
+  componentInfo:Object
+}
 
 @ApiTags('github api')
 @Controller('github')
@@ -242,7 +265,17 @@ export class GithubController {
 
   @Post('genByJson')
   @ApiOperation({ summary: '代码生成通过json' })
-  async genByJson(@Body() jsonData) {
+  async genByJson(@Body() jsonData:JsonData) {
+    try {
+      return await getGenCode(jsonData)
+    } catch (error) {
+      console.log(error, 'error');
+    }
+  }
+
+  @Post('genProejct')
+  @ApiOperation({ summary: '通过json生成好的代码进行下载' })
+  async genProjectAndDowload(@Body() jsonData:JsonData) {
     try {
       const { projectInfo } = jsonData;
       const { project_outputDir } = projectInfo
@@ -250,8 +283,9 @@ export class GithubController {
       // 本地项目路径
       const projectPath = path.join(project_outputDir, 'fe');
       if (!fse.pathExistsSync(projectPath)) {
-        fse.ensureEmptyDirSync(projectPath);
-
+        fse.emptyDirSync(projectPath);
+        // 拷贝项目
+        await uncompress('public/txsj-fe-template-master.zip',projectPath)
       }
       const code = await getGenCode(jsonData)
 
@@ -264,6 +298,9 @@ export class GithubController {
 
       await genCode(fileList);
 
+      // await compress(projectPath,'public/temp/code.zip')
+
+      // await fse.removeSync(project_outputDir,true);
       return fileList
     } catch (error) {
       console.log(error, 'error');
