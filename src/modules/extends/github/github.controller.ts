@@ -221,7 +221,9 @@ export class GithubController {
       // ---------------提交流程-------------
       // 生成开发分支
       // 生成代码
-      const code = await getGenCode()
+
+      const jsonData = fs.readFileSync('public/template/v3/mockJson.json','utf8')
+      const code = await getGenCode(JSON.parse(jsonData))
 
       projectParma.projectInfo.outputPath = projectPath.toString();
 
