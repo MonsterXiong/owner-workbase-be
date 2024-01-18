@@ -1,0 +1,3 @@
+[submodule "submodule/genCode-utils"]
+	path = submodule/genCode-utils
+	url = https://github.com/MonsterXiong/genCode-utils.git

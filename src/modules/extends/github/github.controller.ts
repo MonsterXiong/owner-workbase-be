@@ -8,7 +8,7 @@ import { ParamsDto } from '../generate/dto/param.dto';
 import { genCode } from '../generate/utils/common';
 import { FE_FRAMEWORK_DATA, FE_FRAMEWORK_TYPE } from '../generate/framework';
 import { getConfiguration } from '@/config/configuration';
-import { getGenCode } from '@/gen/genCode';
+import { getGenCode } from '../../../../submodule/genCode-utils/src/genCode';
 import { compress, uncompress } from '../generate/fe/utils';
 const path = require('path');
 const download = require('download-git-repo');
