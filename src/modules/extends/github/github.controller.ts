@@ -10,6 +10,7 @@ import { FE_FRAMEWORK_DATA, FE_FRAMEWORK_TYPE } from '../generate/framework';
 import { getConfiguration } from '@/config/configuration';
 import { getGenCode } from '../../../../submodule/genCode-utils/src/genCode';
 import { compress, uncompress } from '../generate/fe/utils';
+import { FRAMEWORK_CONFIG } from 'submodule/genCode-utils/src/config/frameworkConfig';
 const path = require('path');
 const download = require('download-git-repo');
 const userHomeDir = require('os').homedir();
@@ -306,9 +307,8 @@ export class GithubController {
     try {
       const { projectInfo } = jsonData;
       const { project_outputDir } = projectInfo
-      const outputDir = project_outputDir || './temp'
+      const projectPath = project_outputDir || FRAMEWORK_CONFIG.CODE_OUTPUT_ROOT_PATH
       // 本地项目路径
-      const projectPath = path.join(outputDir, 'fe');
       if (!fse.pathExistsSync(projectPath)) {
         fse.emptyDirSync(projectPath);
         // 拷贝项目
@@ -325,7 +325,7 @@ export class GithubController {
 
       await genCode(fileList);
 
-      compress(projectPath,path.join(outputDir,'code.zip'))
+      compress(projectPath,path.join(projectPath,'code.zip'))
 
       // await fse.removeSync(project_outputDir,true);
       return fileList
