@@ -310,9 +310,10 @@ export class GithubController {
       const projectPath = project_outputDir || FRAMEWORK_CONFIG.CODE_OUTPUT_ROOT_PATH
       // 本地项目路径
       if (!fse.pathExistsSync(projectPath)) {
-        fse.emptyDirSync(projectPath);
+        // fse.emptyDirSync(projectPath);
+        fse.ensureDirSync(projectPath);
         // 拷贝项目
-        // await uncompress('public/txsj-fe-template-master.zip',projectPath)
+        await uncompress('public/txsj-fe-template-master.zip',projectPath)
       }
       const code = await getGenCode(jsonData)
 
