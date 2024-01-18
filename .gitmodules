@@ -1,3 +1,6 @@
 [submodule "submodule/genCode-utils"]
 	path = submodule/genCode-utils
 	url = https://github.com/MonsterXiong/genCode-utils.git
+[submodule "submodule/txsj-fe-template"]
+	path = submodule/txsj-fe-template
+	url = https://github.com/MonsterXiong/txsj-fe-template.git
