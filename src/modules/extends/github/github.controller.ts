@@ -313,7 +313,7 @@ export class GithubController {
         fse.emptyDirSync(projectPath);
         // fse.ensureDirSync(projectPath);
         // 拷贝项目
-        await uncompress('public/txsj-fe-template-master.zip',projectPath)
+        // await uncompress('public/txsj-fe-template-master.zip',projectPath)
       }
       const code = await getGenCode(jsonData)
 
@@ -326,7 +326,7 @@ export class GithubController {
 
       await genCode(fileList);
 
-      compress(projectPath,path.join(projectPath,'code.zip'))
+      // compress(projectPath,path.join(projectPath,'code.zip'))
 
       // await fse.removeSync(project_outputDir,true);
       return fileList
