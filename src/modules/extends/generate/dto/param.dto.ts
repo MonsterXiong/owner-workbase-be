@@ -1,4 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger"
+import { FE_FRAMEWORK_TYPE } from "../framework";
 
 export class Project {
   @ApiProperty({
@@ -11,6 +12,7 @@ export class Project {
   @ApiProperty({
     description:'输出路径',
     required: true,
+    default: './',
   })
   outputPath: string
 }
@@ -21,4 +23,26 @@ export class ParamsDto {
     required: true,
   })
   projectInfo:Project
+}
+
+export class ProjectInfoDto {
+  @ApiProperty({
+    description: '前端仓库名称',
+    required: true,
+    default: 'monster-test',
+  })
+  readonly repoName: string;
+
+  @ApiProperty({
+    description: '项目框架类型',
+    required: true,
+    default: FE_FRAMEWORK_TYPE.TXSJ,
+  })
+  readonly frameworkType: string;
+
+  @ApiProperty({
+    description: '项目框架类型',
+    required: true,
+  })
+  projectParma: ParamsDto;
 }

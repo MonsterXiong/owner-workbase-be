@@ -7,7 +7,7 @@ import { genCode } from './utils/common';
 import {funcList} from '../../../mock/funcList'
 const path = require('path');
 
-@ApiTags('gen')
+@ApiTags('gen(old)')
 @Controller('generate')
 export class GenerateController {
   constructor(private readonly generateService: GenerateService) {}

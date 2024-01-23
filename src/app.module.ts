@@ -10,6 +10,7 @@ import {
   generatorDatabaseConfig,
 } from './config/database.config';
 import { GithubModule } from './modules/extends/github/github.module';
+import { GenModule } from './modules/extends/gen/gen.module';
 
 
 @Module({
@@ -38,6 +39,7 @@ import { GithubModule } from './modules/extends/github/github.module';
     GenerateModule,
     ...ModuleList,
     GithubModule,
+    GenModule,
   ],
   controllers: [],
   providers: [],

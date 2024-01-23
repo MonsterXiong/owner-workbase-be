@@ -1,16 +1,12 @@
-import { GenerateService } from './../generate/generate.service';
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
 import { GithubService } from './github.service';
-import axios from 'axios';
-import { ApiOperation, ApiProperty, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import Github from './utils/Github';
-import { ParamsDto } from '../generate/dto/param.dto';
+import { ProjectInfoDto } from '../generate/dto/param.dto';
 import { genCode } from '../generate/utils/common';
-import { FE_FRAMEWORK_DATA, FE_FRAMEWORK_TYPE } from '../generate/framework';
+import { FE_FRAMEWORK_DATA } from '../generate/framework';
 import { getConfiguration } from '@/config/configuration';
-import { getGenCode } from '../../../../submodule/genCode-utils/src/genCode';
-import { compress, uncompress } from '../generate/fe/utils';
-import { FRAMEWORK_CONFIG } from 'submodule/genCode-utils/src/config/frameworkConfig';
+import { GenService } from '../gen/gen.service';
 const path = require('path');
 const download = require('download-git-repo');
 const userHomeDir = require('os').homedir();
@@ -136,61 +132,19 @@ async function createCache({ gitInstance, projectPath, repoInfo }) {
   await gitInstance.clone(gitCloneUrl, '.');
 }
 
-export class ProjectInfo {
-  @ApiProperty({
-    description: '前端仓库名称',
-    required: true,
-    default: 'monster-test',
-  })
-  readonly repoName: string;
 
-  @ApiProperty({
-    description: '项目框架类型',
-    required: true,
-    default: FE_FRAMEWORK_TYPE.TXSJ,
-  })
-  readonly frameworkType: string;
-
-  @ApiProperty({
-    description: '项目框架类型',
-    required: true,
-  })
-  projectParma: ParamsDto;
-}
-class JsonData{
-
-  @ApiProperty({
-    description: 'json',
-  })
-  projectInfo:any
-
-  @ApiProperty({
-    description: 'json',
-  })
-  menuInfo:any
-
-  @ApiProperty({
-    description: 'json',
-  })
-  dataModel:Object
-
-  @ApiProperty({
-    description: 'json',
-  })
-  componentInfo:Object
-}
 
 @ApiTags('github api')
 @Controller('github')
 export class GithubController {
   constructor(
     private readonly githubService: GithubService,
-    private readonly generateService: GenerateService,
+    private readonly genService: GenService,
   ) { }
 
   @Post('gen')
   @ApiOperation({ summary: '代码生成整体流程' })
-  async flow(@Body() projectInfo: ProjectInfo) {
+  async flow(@Body() projectInfo: ProjectInfoDto) {
     try {
       const { repoName, frameworkType, projectParma } = projectInfo;
       // 本地项目路径
@@ -224,7 +178,7 @@ export class GithubController {
       // 生成代码
 
       const jsonData = fs.readFileSync('public/template/v3/mockJson.json','utf8')
-      const code = await getGenCode(JSON.parse(jsonData))
+      const code = await this.genService.getGenCode(JSON.parse(jsonData))
 
       projectParma.projectInfo.outputPath = projectPath.toString();
 
@@ -234,14 +188,6 @@ export class GithubController {
           filePath: path.resolve(projectParma.projectInfo.outputPath, item.filePath)
         }
       })
-      // const fileList=code.map(item=>{
-      //   return {
-      //     ...item,
-      //     filePath:path.resolve(projectParma.projectInfo.outputPath,item.filePath)
-      //   }
-      // })
-      // // const fileList = await this.generateService.genCode(projectParma);
-      // // await genCode(fileList);
       await genCode(fileList);
       // TODO:检查stash区
       // 检查代码冲突
@@ -260,76 +206,6 @@ export class GithubController {
         //   删除远程分支
         await gitPush(gitInstance, 'auto:生成代码')
       }
-    } catch (error) {
-      console.log(error, 'error');
-
-    }
-  }
-
-  @Post('genByJson')
-  @ApiOperation({ summary: '代码生成通过json' })
-  async genByJson(@Body() jsonData:JsonData) {
-    try {
-      this.genProjectAndDowload(jsonData)
-      const code = await getGenCode(jsonData)
-      const result = code.map(item =>{
-        const { filePath } = item
-        let filepath = filePath
-        let dirPath = ''
-        let fileName = ''
-        let lastSlashIndex = -1
-        if (filepath.endsWith('.vue')){
-          filepath=filepath.replace(/\\/g,'/');
-        }
-        lastSlashIndex = filepath.lastIndexOf('/');
-        if (lastSlashIndex == -1) {
-          fileName = filepath
-        } else {
-          dirPath = filepath.substring(0, lastSlashIndex)
-          fileName = filepath.substring(lastSlashIndex+1)
-        }
-        return {
-          ...item,
-          dirPath,
-          fileName
-        }
-      })
-      return result
-
-    } catch (error) {
-      console.log(error, 'error');
-    }
-  }
-
-  @Post('genProejct')
-  @ApiOperation({ summary: '通过json生成好的代码进行下载' })
-  async genProjectAndDowload(@Body() jsonData:JsonData) {
-    try {
-      const { projectInfo } = jsonData;
-      const { project_outputDir } = projectInfo
-      const projectPath = project_outputDir || FRAMEWORK_CONFIG.CODE_OUTPUT_ROOT_PATH
-      // 本地项目路径
-      if (!fse.pathExistsSync(projectPath)) {
-        fse.emptyDirSync(projectPath);
-        // fse.ensureDirSync(projectPath);
-        // 拷贝项目
-        // await uncompress('public/txsj-fe-template-master.zip',projectPath)
-      }
-      const code = await getGenCode(jsonData)
-
-      const fileList = code.map(item => {
-        return {
-          ...item,
-          filePath: path.resolve(projectPath.toString(), item.filePath)
-        }
-      })
-
-      await genCode(fileList);
-
-      // compress(projectPath,path.join(projectPath,'code.zip'))
-
-      // await fse.removeSync(project_outputDir,true);
-      return fileList
     } catch (error) {
       console.log(error, 'error');
 
