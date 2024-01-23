@@ -5,7 +5,7 @@
       <el-input v-model.trim="<%=formData%>.<%=formItem.prop%>" placeholder="请输入<%=formItem.label%>"></el-input>
       <%_ } else if (formItem.displayType=='inputNumber' ){ -%>
       <el-input-number v-model="<%=formData%>.<%=formItem.prop%>"></el-input-number>
-      <%_ } else if (['singleSelect','multipleSelect'].includes(formItem.displayType)) { -%>
+      <%_ } else if (['select','enum'].includes(formItem.displayType)) { -%>
       <el-select v-model="<%=formData%>.<%=formItem.prop%>" <%if(formItem.displayType =='multipleSelect'){-%>multiple<%_}-%> clearable placeholder="请选择<%=formItem.label%>">
         <el-option v-for="item in <%=formItem.prop%>Option" :key="item.id" :label="item.name" :value="item.id"></el-option>
       </el-select>
@@ -16,9 +16,9 @@
         <el-radio v-for="item in <%=formItem.prop%>Option" :key="item.id" :label="item.id">{{item.name}}</el-radio>
       </el-radio-group>
       <%_ } else if (formItem.displayType == 'datetime') { -%>
-      <el-date-picker v-model="<%=formData%>.<%=formItem.prop%>" type="datetime" placeholder="请选择<%=formItem.label%>"></el-date-picker>  
+      <el-date-picker v-model="<%=formData%>.<%=formItem.prop%>" type="datetime" placeholder="请选择<%=formItem.label%>"></el-date-picker>
       <%_ } else if (formItem.displayType == 'date') { -%>
-      <el-date-picker v-model="<%=formData%>.<%=formItem.prop%>" type="date" placeholder="请选择<%=formItem.label%>"></el-date-picker>  
+      <el-date-picker v-model="<%=formData%>.<%=formItem.prop%>" type="date" placeholder="请选择<%=formItem.label%>"></el-date-picker>
       <%_ } else if (formItem.displayType == 'time') { -%>
       <el-time-picker v-model="<%=formData%>.<%=formItem.prop%>""></el-time-picker>
       <%_ } else if (formItem.displayType == 'checkbox') { -%>
@@ -26,13 +26,18 @@
         <el-checkbox v-for="item in <%=formItem.prop%>Option" :key="item.id" :label="item.id">{{item.name}}</el-checkbox>
       </el-checkbox-group>
       <%_ } else if (formItem.displayType == 'switch') { -%>
-      <el-switch v-model="<%=formData%>.<%=formItem.prop%>" active-value="0" inactive-value="1"></el-switch>
+      <el-switch v-model="<%=formData%>.<%=formItem.prop%>" :active-value="1" :inactive-value="0"></el-switch>
       <%_ } else if (formItem.displayType == 'colorPicker') { -%>
       <el-color-picker v-model="<%=formData%>.<%=formItem.prop%>"></el-color-picker>
       <%_ } else if (formItem.displayType == 'rate') { -%>
       <el-rate v-model="<%=formData%>.<%=formItem.prop%>"></el-rate>
       <%_ } else if (formItem.displayType == 'slider') { -%>
       <el-slider v-model="<%=formData%>.<%=formItem.prop%>"></el-slider>
+      <%_ } else if (formItem.displayType == 'image') { -%>
+      <el-upload with-credentials class="image-uploader" action="#" :http-request="handleUploadFile" accept='.jpg,.png,jpeg,.bmp' :show-file-list="false">
+        <img v-if="<%=formData%>.<%=formItem.prop%>" :src="<%=formData%>.<%=formItem.prop%>" class="image" />
+        <i v-else class="el-icon-plus image-uploader-icon"></i>
+      </el-upload>
       <%_ } else {  -%>
       <el-input v-model.trim="<%=formData%>.<%=formItem.prop%>" placeholder="请输入<%=formItem.label%>"></el-input>
       <%_ } -%>

@@ -4,9 +4,7 @@
     <%_ if(hasDeleteBatch){ -%>
       <el-table-column type="selection" align="center" label="序号" width="80"> </el-table-column>
     <%_ } -%>
-    <%_ fields.forEach(function(field){ -%>
-      <el-table-column prop="<%= field.key %>" align="center" label="<%= field.label %>"></el-table-column>
-      <%_ }); -%>
+      <%_ if (fields.length > 0) { -%><%- include("../common/table-column.ejs",{list:fields}) -%><%_ } -%>
       <%_ if(isShowOperate){ -%>
       <el-table-column label="操作" width="auto" fixed="right">
         <template slot-scope="scope">
