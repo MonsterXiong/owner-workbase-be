@@ -1,636 +1,644 @@
 {
-    "projectInfo": {
-      "project_name": "项目管理平台",
-      "project_code": "pm",
-      "project_version": "1.0.0",
-      "project_description": "这是个项目管理平台",
-      "project_port": "8098",
-      "project_outputDir": null,
-      "project_frameworkType": null,
-      "db_type": "mysql",
-      "db_name": "pm_db",
-      "db_ip": "192.168.2.204",
-      "db_port": "3306",
-      "db_username": "root",
-      "db_password": "123456",
-      "db_encoding": "utf-8",
-      "db_timezone": "Asia/Shanghai",
-      "pom_groupId": "com.ltsj",
-      "pom_artifactId": "com.tixi.pm.boot",
-      "pom_packaging": "jar"
+  "projectInfo": {
+    "project_name": "项目管理平台",
+    "project_code": "pm",
+    "project_version": "1.0.0",
+    "project_description": "这是个项目管理平台",
+    "project_port": "8098",
+    "project_outputDir": null,
+    "project_frameworkType": null,
+    "db_type": "mysql",
+    "db_name": "pm_db",
+    "db_ip": "192.168.2.204",
+    "db_port": "3306",
+    "db_username": "root",
+    "db_password": "123456",
+    "db_encoding": "utf-8",
+    "db_timezone": "Asia/Shanghai",
+    "pom_groupId": "com.ltsj",
+    "pom_artifactId": "com.tixi.pm.boot",
+    "pom_packaging": "jar"
+  },
+  "menuInfo": [
+    {
+      "id": "bc9dd14e2f8a489eaf6fbf2d5c575a2a",
+      "code": "xmjbxx",
+      "name": "项目基本信息",
+      "menuType": "page",
+      "icon": null,
+      "parentId": ""
     },
-    "menuInfo": [
-      {
-        "id": "784e2005d3f544daa624f80c8148f382",
-        "code": "project",
-        "name": "项目",
-        "menuType": "module",
-        "icon": null,
-        "parentId": ""
-      },
-      {
-        "id": "bc9dd14e2f8a489eaf6fbf2d5c575a2a",
-        "code": "xmjbxx",
-        "name": "项目基本信息",
-        "menuType": "page",
-        "icon": null,
-        "parentId": "784e2005d3f544daa624f80c8148f382"
-      },
-      {
-        "id": "93d6249d401b4e5099d100e267d2fb95",
-        "code": "jszbyq",
-        "name": "技术指标要求",
-        "menuType": "page",
-        "icon": null,
-        "parentId": "784e2005d3f544daa624f80c8148f382"
-      },
-      {
-        "id": "65c46802a8a9457299f84c362520722a",
-        "code": "yywd",
-        "name": "引用文档",
-        "menuType": "page",
-        "icon": null,
-        "parentId": "784e2005d3f544daa624f80c8148f382"
-      },
-      {
-        "id": "c58b5c17841243628a1fb853fc869a2a",
-        "code": "xmsy",
-        "name": "项目术语",
-        "menuType": "page",
-        "icon": null,
-        "parentId": "784e2005d3f544daa624f80c8148f382"
-      },
-      {
-        "id": "5fdbfefd0d0d4d8b9a1fabb8821e0faf",
-        "code": "xmtd",
-        "name": "项目团队",
-        "menuType": "page",
-        "icon": null,
-        "parentId": "784e2005d3f544daa624f80c8148f382"
-      }
-    ],
-    "dataInfo": [
-      {
-        "code": "pm_project_role",
-        "remark": "项目角色",
-        "modelType": "enum",
-        "columns": [
-          {
-            "code": "TM",
-            "dataType": null,
-            "length": null,
-            "isPrimary": null,
-            "isNull": null,
-            "isDisplay": null,
-            "defaultValue": null,
-            "remark": "公司高层",
-            "quoteData": null
-          },
-          {
-            "code": "PM",
-            "dataType": null,
-            "length": null,
-            "isPrimary": null,
-            "isNull": null,
-            "isDisplay": null,
-            "defaultValue": null,
-            "remark": "项目经理",
-            "quoteData": null
-          },
-          {
-            "code": "PE",
-            "dataType": null,
-            "length": null,
-            "isPrimary": null,
-            "isNull": null,
-            "isDisplay": null,
-            "defaultValue": null,
-            "remark": "产品工程师",
-            "quoteData": null
-          },
-          {
-            "code": "AE",
-            "dataType": null,
-            "length": null,
-            "isPrimary": null,
-            "isNull": null,
-            "isDisplay": null,
-            "defaultValue": null,
-            "remark": "系统架构师",
-            "quoteData": null
-          },
-          {
-            "code": "FDE",
-            "dataType": null,
-            "length": null,
-            "isPrimary": null,
-            "isNull": null,
-            "isDisplay": null,
-            "defaultValue": null,
-            "remark": "前端研发工程师",
-            "quoteData": null
-          },
-          {
-            "code": "BDE",
-            "dataType": null,
-            "length": null,
-            "isPrimary": null,
-            "isNull": null,
-            "isDisplay": null,
-            "defaultValue": null,
-            "remark": "后端研发工程师",
-            "quoteData": null
-          },
-          {
-            "code": "TE",
-            "dataType": null,
-            "length": null,
-            "isPrimary": null,
-            "isNull": null,
-            "isDisplay": null,
-            "defaultValue": null,
-            "remark": "测试工程师",
-            "quoteData": null
-          },
-          {
-            "code": "DE",
-            "dataType": null,
-            "length": null,
-            "isPrimary": null,
-            "isNull": null,
-            "isDisplay": null,
-            "defaultValue": null,
-            "remark": "运维工程师",
-            "quoteData": null
-          }
-        ]
-      },
-      {
-        "code": "pm_project_member",
-        "remark": "项目成员",
-        "modelType": "obj",
-        "columns": [
-          {
-            "code": "member_id",
-            "dataType": "varchar",
-            "length": 32,
-            "isPrimary": true,
-            "isNull": false,
-            "isDisplay": false,
-            "defaultValue": null,
-            "remark": "成员ID",
-            "quoteData": null
-          },
-          {
-            "code": "member_name",
-            "dataType": "varchar",
-            "length": 50,
-            "isPrimary": false,
-            "isNull": false,
-            "isDisplay": false,
-            "defaultValue": null,
-            "remark": "成员姓名",
-            "quoteData": null
-          },
-          {
-            "code": "member_code",
-            "dataType": "varchar",
-            "length": 50,
-            "isPrimary": false,
-            "isNull": false,
-            "isDisplay": false,
-            "defaultValue": null,
-            "remark": "成员编号",
-            "quoteData": null
-          },
-          {
-            "code": "member_signature",
-            "dataType": "varchar",
-            "length": 200,
-            "isPrimary": false,
-            "isNull": true,
-            "isDisplay": false,
-            "defaultValue": null,
-            "remark": "成员签名",
-            "quoteData": null
-          },
-          {
-            "code": "member_obligation",
-            "dataType": "varchar",
-            "length": 200,
-            "isPrimary": false,
-            "isNull": true,
-            "isDisplay": false,
-            "defaultValue": null,
-            "remark": "成员职责",
-            "quoteData": null
-          },
-          {
-            "code": "is_outside",
-            "dataType": "int",
-            "length": 1,
-            "isPrimary": false,
-            "isNull": false,
-            "isDisplay": false,
-            "defaultValue": "0",
-            "remark": "是否编外人员",
-            "quoteData": null
-          },
-          {
-            "code": "bind_role",
-            "dataType": "varchar",
-            "length": 50,
-            "isPrimary": false,
-            "isNull": false,
-            "isDisplay": false,
-            "defaultValue": null,
-            "remark": "所属角色",
-            "quoteData": "pm_project_role"
-          }
-        ]
-      }
-    ],
-    "componentInfo": [
-      {
-        "label": "table_general",
-        "name": "项目团队表格",
-        "code": "projectMangerTable",
-        "bindMenu": "5fdbfefd0d0d4d8b9a1fabb8821e0faf",
-        "param": {},
-        "function": [
-          {
-            "label": "queryList",
-            "name": "查询项目成员列表",
-            "code": "queryProjectMemberList",
-            "queryUrl": null,
-            "operateUrl": "/base/xmtd/projectMangerTable/queryProjectMemberList",
-            "elements": [
-              {
-                "label": "listElement",
-                "primary": null,
-                "param": {},
-                "data": [
-                  {
-                    "bindObj": "pm_project_member",
-                    "bindAttr": "member_id",
-                    "name": "成员ID",
-                    "code": "memberId",
-                    "param": {
-                      "displayType": "text",
-                      "isHidden": true,
-                      "isMajorKey": true,
-                      "isSearch": false
-                    },
-                    "selectUrl": ""
+    {
+      "id": "93d6249d401b4e5099d100e267d2fb95",
+      "code": "jszbyq",
+      "name": "技术指标要求",
+      "menuType": "page",
+      "icon": null,
+      "parentId": ""
+    },
+    {
+      "id": "65c46802a8a9457299f84c362520722a",
+      "code": "yywd",
+      "name": "引用文档",
+      "menuType": "page",
+      "icon": null,
+      "parentId": ""
+    },
+    {
+      "id": "c58b5c17841243628a1fb853fc869a2a",
+      "code": "xmsy",
+      "name": "项目术语",
+      "menuType": "page",
+      "icon": null,
+      "parentId": ""
+    },
+    {
+      "id": "5fdbfefd0d0d4d8b9a1fabb8821e0faf",
+      "code": "xmtd",
+      "name": "项目团队",
+      "menuType": "page",
+      "icon": null,
+      "parentId": ""
+    }
+  ],
+  "dataInfo": [
+    {
+      "code": "pm_project_role",
+      "remark": "项目角色",
+      "modelType": "enum",
+      "columns": [
+        {
+          "code": "TM",
+          "dataType": null,
+          "length": null,
+          "isPrimary": null,
+          "isNull": null,
+          "isDisplay": null,
+          "defaultValue": null,
+          "remark": "公司高层",
+          "quoteData": null
+        },
+        {
+          "code": "PM",
+          "dataType": null,
+          "length": null,
+          "isPrimary": null,
+          "isNull": null,
+          "isDisplay": null,
+          "defaultValue": null,
+          "remark": "项目经理",
+          "quoteData": null
+        },
+        {
+          "code": "PE",
+          "dataType": null,
+          "length": null,
+          "isPrimary": null,
+          "isNull": null,
+          "isDisplay": null,
+          "defaultValue": null,
+          "remark": "产品工程师",
+          "quoteData": null
+        },
+        {
+          "code": "AE",
+          "dataType": null,
+          "length": null,
+          "isPrimary": null,
+          "isNull": null,
+          "isDisplay": null,
+          "defaultValue": null,
+          "remark": "系统架构师",
+          "quoteData": null
+        },
+        {
+          "code": "FDE",
+          "dataType": null,
+          "length": null,
+          "isPrimary": null,
+          "isNull": null,
+          "isDisplay": null,
+          "defaultValue": null,
+          "remark": "前端研发工程师",
+          "quoteData": null
+        },
+        {
+          "code": "BDE",
+          "dataType": null,
+          "length": null,
+          "isPrimary": null,
+          "isNull": null,
+          "isDisplay": null,
+          "defaultValue": null,
+          "remark": "后端研发工程师",
+          "quoteData": null
+        },
+        {
+          "code": "TE",
+          "dataType": null,
+          "length": null,
+          "isPrimary": null,
+          "isNull": null,
+          "isDisplay": null,
+          "defaultValue": null,
+          "remark": "测试工程师",
+          "quoteData": null
+        },
+        {
+          "code": "DE",
+          "dataType": null,
+          "length": null,
+          "isPrimary": null,
+          "isNull": null,
+          "isDisplay": null,
+          "defaultValue": null,
+          "remark": "运维工程师",
+          "quoteData": null
+        }
+      ]
+    },
+    {
+      "code": "pm_project_member",
+      "remark": "项目成员",
+      "modelType": "obj",
+      "columns": [
+        {
+          "code": "member_id",
+          "dataType": "varchar",
+          "length": 32,
+          "isPrimary": true,
+          "isNull": false,
+          "isDisplay": false,
+          "defaultValue": null,
+          "remark": "成员ID",
+          "quoteData": null
+        },
+        {
+          "code": "member_name",
+          "dataType": "varchar",
+          "length": 50,
+          "isPrimary": false,
+          "isNull": false,
+          "isDisplay": false,
+          "defaultValue": null,
+          "remark": "成员姓名",
+          "quoteData": null
+        },
+        {
+          "code": "member_code",
+          "dataType": "varchar",
+          "length": 50,
+          "isPrimary": false,
+          "isNull": false,
+          "isDisplay": false,
+          "defaultValue": null,
+          "remark": "成员编号",
+          "quoteData": null
+        },
+        {
+          "code": "member_signature",
+          "dataType": "varchar",
+          "length": 200,
+          "isPrimary": false,
+          "isNull": true,
+          "isDisplay": false,
+          "defaultValue": null,
+          "remark": "成员签名",
+          "quoteData": null
+        },
+        {
+          "code": "member_obligation",
+          "dataType": "varchar",
+          "length": 200,
+          "isPrimary": false,
+          "isNull": true,
+          "isDisplay": false,
+          "defaultValue": null,
+          "remark": "成员职责",
+          "quoteData": null
+        },
+        {
+          "code": "is_outside",
+          "dataType": "int",
+          "length": 1,
+          "isPrimary": false,
+          "isNull": false,
+          "isDisplay": false,
+          "defaultValue": "0",
+          "remark": "是否编外人员",
+          "quoteData": null
+        },
+        {
+          "code": "bind_role",
+          "dataType": "varchar",
+          "length": 50,
+          "isPrimary": false,
+          "isNull": false,
+          "isDisplay": false,
+          "defaultValue": null,
+          "remark": "所属角色",
+          "quoteData": "pm_project_role"
+        }
+      ]
+    }
+  ],
+  "componentInfo": [
+    {
+      "label": "table_general",
+      "name": "项目团队表格",
+      "code": "projectMangerTable",
+      "bindMenu": "5fdbfefd0d0d4d8b9a1fabb8821e0faf",
+      "param": {},
+      "function": [
+        {
+          "label": "queryList",
+          "name": "查询项目成员列表",
+          "code": "queryProjectMemberList",
+          "queryUrl": null,
+          "operateUrl": "/base/xmtd/projectMangerTable/queryProjectMemberList",
+          "elements": [
+            {
+              "label": "listElement",
+              "primary": null,
+              "param": {},
+              "data": [
+                {
+                  "bindObj": "pm_project_member",
+                  "bindAttr": "member_id",
+                  "name": "成员ID",
+                  "code": "memberId",
+                  "param": {
+                    "displayType": "text",
+                    "isHidden": true,
+                    "isMajorKey": true,
+                    "isSearch": false
                   },
-                  {
-                    "bindObj": "pm_project_member",
-                    "bindAttr": "member_name",
-                    "name": "成员姓名",
-                    "code": "memberName",
-                    "param": {
-                      "displayType": "text",
-                      "isHidden": false,
-                      "isMajorKey": false,
-                      "isSearch": true,
-                      "displayTypeConfig": {
-                        "clearable": true
-                      }
-                    },
-                    "selectUrl": ""
+                  "selectUrl": ""
+                },
+                {
+                  "bindObj": "pm_project_member",
+                  "bindAttr": "member_name",
+                  "name": "成员姓名",
+                  "code": "memberName",
+                  "param": {
+                    "displayType": "text",
+                    "isHidden": false,
+                    "isMajorKey": false,
+                    "isSearch": true,
+                    "displayTypeConfig": {
+                      "clearable": true
+                    }
                   },
-                  {
-                    "bindObj": "pm_project_member",
-                    "bindAttr": "member_code",
-                    "name": "成员编号",
-                    "code": "memberCode",
-                    "param": {
-                      "displayType": "text",
-                      "isHidden": false,
-                      "isMajorKey": false,
-                      "isSearch": false
-                    },
-                    "selectUrl": ""
+                  "selectUrl": ""
+                },
+                {
+                  "bindObj": "pm_project_member",
+                  "bindAttr": "member_code",
+                  "name": "成员编号",
+                  "code": "memberCode",
+                  "param": {
+                    "displayType": "text",
+                    "isHidden": false,
+                    "isMajorKey": false,
+                    "isSearch": false
                   },
-                  {
-                    "bindObj": "pm_project_member",
-                    "bindAttr": "bind_role",
-                    "name": "所属角色",
-                    "code": "bindRole",
-                    "param": {
-                      "displayType": "enum",
-                      "isHidden": false,
-                      "isMajorKey": false,
-                      "isSearch": true
-                    },
-                    "selectUrl": "/base/xmtd/projectMangerTable/querySimplePmProjectRoleList"
+                  "selectUrl": ""
+                },
+                {
+                  "bindObj": "pm_project_member",
+                  "bindAttr": "member_signature",
+                  "name": "成员签名",
+                  "code": "memberSignature",
+                  "param": {
+                    "displayType": "image",
+                    "isHidden": false,
+                    "isMajorKey": false,
+                    "isSearch": false
                   },
-                  {
-                    "bindObj": "pm_project_member",
-                    "bindAttr": "member_signature",
-                    "name": "成员签名",
-                    "code": "memberSignature",
-                    "param": {
-                      "displayType": "image",
-                      "isHidden": false,
-                      "isMajorKey": false,
-                      "isSearch": false
-                    },
-                    "selectUrl": ""
+                  "selectUrl": ""
+                },
+                {
+                  "bindObj": "pm_project_member",
+                  "bindAttr": "member_obligation",
+                  "name": "成员职责",
+                  "code": "memberObligation",
+                  "param": {
+                    "isHidden": false,
+                    "isMajorKey": false,
+                    "displayType": "text",
+                    "isSearch": false
                   },
-                  {
-                    "bindObj": "pm_project_member",
-                    "bindAttr": "member_obligation",
-                    "name": "成员职责",
-                    "code": "memberObligation",
-                    "param": {
-                      "isHidden": false,
-                      "isMajorKey": false,
-                      "displayType": "text",
-                      "isSearch": false
-                    },
-                    "selectUrl": ""
+                  "selectUrl": ""
+                },
+                {
+                  "bindObj": "pm_project_member",
+                  "bindAttr": "is_outside",
+                  "name": "是否编外人员",
+                  "code": "isOutside",
+                  "param": {
+                    "displayType": "switch",
+                    "isHidden": false,
+                    "isMajorKey": false,
+                    "isSearch": false
                   },
-                  {
-                    "bindObj": "pm_project_member",
-                    "bindAttr": "is_outside",
-                    "name": "是否编外人员",
-                    "code": "isOutside",
-                    "param": {
-                      "displayType": "switch",
-                      "isHidden": false,
-                      "isMajorKey": false,
-                      "isSearch": false
-                    },
-                    "selectUrl": ""
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "label": "delete",
-            "name": "删除",
-            "code": "deleteProjectMember",
-            "queryUrl": null,
-            "operateUrl": "/base/xmtd/projectMangerTable/deleteProjectMember",
-            "elements": [
-              {
-                "label": "deleteElement",
-                "primary": null,
-                "param": {},
-                "data": [
-                  {
-                    "bindObj": "pm_project_member",
-                    "bindAttr": "member_id",
-                    "name": "成员ID",
-                    "code": "memberId",
-                    "param": {
-                      "displayType": "text",
-                      "isHidden": true,
-                      "isMajorKey": true
-                    },
-                    "selectUrl": ""
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "label": "deleteBatch",
-            "name": "批量删除",
-            "code": "deleteProjectMemberBatch",
-            "queryUrl": null,
-            "operateUrl": "/base/xmtd/projectMangerTable/deleteProjectMemberBatch",
-            "elements": [
-              {
-                "label": "deleteBatchElement",
-                "primary": null,
-                "param": {},
-                "data": [
-                  {
-                    "bindObj": "pm_project_member",
-                    "bindAttr": "member_id",
-                    "name": "成员ID",
-                    "code": "memberId",
-                    "param": {
-                      "displayType": "text",
-                      "isHidden": true,
-                      "isMajorKey": true
-                    },
-                    "selectUrl": ""
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "label": "insert",
-            "name": "新增",
-            "code": "addProjectMember",
-            "queryUrl": null,
-            "operateUrl": "/base/xmtd/projectMangerTable/addProjectMember",
-            "elements": [
-              {
-                "label": "insertElement",
-                "primary": null,
-                "param": {},
-                "data": [
-                  {
-                    "bindObj": "pm_project_member",
-                    "bindAttr": "member_id",
-                    "name": "成员ID",
-                    "code": "memberId",
-                    "param": {
-                      "displayType": "text",
-                      "isHidden": true,
-                      "isMajorKey": true
-                    },
-                    "selectUrl": ""
+                  "selectUrl": ""
+                },
+                {
+                  "bindObj": "pm_project_member",
+                  "bindAttr": "bind_role",
+                  "name": "所属角色",
+                  "code": "bindRole",
+                  "param": {
+                    "displayType": "select",
+                    "isHidden": false,
+                    "isMajorKey": false,
+                    "isSearch": true
                   },
-                  {
-                    "bindObj": "pm_project_member",
-                    "bindAttr": "member_name",
-                    "name": "成员姓名",
-                    "code": "memberName",
-                    "param": {
-                      "isHidden": false,
-                      "isMajorKey": false,
-                      "displayType": "text",
-                      "isSearch": false
-                    },
-                    "selectUrl": ""
+                  "selectUrl": "/base/xmtd/projectMangerTable/querySimplePmProjectRoleList"
+                },
+                {
+                  "bindObj": "pm_project_member",
+                  "bindAttr": "bind_project",
+                  "name": "所属项目",
+                  "code": "bindProject",
+                  "param": {
+                    "displayType": "text",
+                    "isHidden": false,
+                    "isMajorKey": false,
+                    "isSearch": true,
+                    "paramConfig": {
+                      "extend": "projectId"
+                    }
                   },
-                  {
-                    "bindObj": "pm_project_member",
-                    "bindAttr": "member_code",
-                    "name": "成员编号",
-                    "code": "memberCode",
-                    "param": {
-                      "isHidden": false,
-                      "isMajorKey": false,
-                      "displayType": "text",
-                      "isSearch": false
-                    },
-                    "selectUrl": ""
+                  "selectUrl": ""
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "label": "delete",
+          "name": "删除",
+          "code": "deleteProjectMember",
+          "queryUrl": null,
+          "operateUrl": "/base/xmtd/projectMangerTable/deleteProjectMember",
+          "elements": [
+            {
+              "label": "deleteElement",
+              "primary": null,
+              "param": {},
+              "data": [
+                {
+                  "bindObj": "pm_project_member",
+                  "bindAttr": "member_id",
+                  "name": "成员ID",
+                  "code": "memberId",
+                  "param": {
+                    "displayType": "text",
+                    "isHidden": true,
+                    "isMajorKey": true
                   },
-                  {
-                    "bindObj": "pm_project_member",
-                    "bindAttr": "bind_role",
-                    "name": "所属角色",
-                    "code": "bindRole",
-                    "param": {
-                      "displayType": "select",
-                      "isHidden": false,
-                      "isMajorKey": false
-                    },
-                    "selectUrl": "/base/xmtd/projectMangerTable/querySimplePmProjectRoleList"
+                  "selectUrl": ""
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "label": "deleteBatch",
+          "name": "批量删除",
+          "code": "deleteProjectMemberBatch",
+          "queryUrl": null,
+          "operateUrl": "/base/xmtd/projectMangerTable/deleteProjectMemberBatch",
+          "elements": [
+            {
+              "label": "deleteBatchElement",
+              "primary": null,
+              "param": {},
+              "data": [
+                {
+                  "bindObj": "pm_project_member",
+                  "bindAttr": "member_id",
+                  "name": "成员ID",
+                  "code": "memberId",
+                  "param": {
+                    "displayType": "text",
+                    "isHidden": true,
+                    "isMajorKey": true
                   },
-                  {
-                    "bindObj": "pm_project_member",
-                    "bindAttr": "member_signature",
-                    "name": "成员签名",
-                    "code": "memberSignature",
-                    "param": {
-                      "displayType": "image",
-                      "isHidden": false,
-                      "isMajorKey": false
-                    },
-                    "selectUrl": ""
+                  "selectUrl": ""
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "label": "insert",
+          "name": "新增",
+          "code": "addProjectMember",
+          "queryUrl": null,
+          "operateUrl": "/base/xmtd/projectMangerTable/addProjectMember",
+          "elements": [
+            {
+              "label": "insertElement",
+              "primary": null,
+              "param": {},
+              "data": [
+                {
+                  "bindObj": "pm_project_member",
+                  "bindAttr": "member_id",
+                  "name": "成员ID",
+                  "code": "memberId",
+                  "param": {
+                    "displayType": "text",
+                    "isHidden": true,
+                    "isMajorKey": true
                   },
-                  {
-                    "bindObj": "pm_project_member",
-                    "bindAttr": "member_obligation",
-                    "name": "成员职责",
-                    "code": "memberObligation",
-                    "param": {
-                      "isHidden": false,
-                      "isMajorKey": false,
-                      "displayType": "text",
-                      "isSearch": false
-                    },
-                    "selectUrl": ""
+                  "selectUrl": ""
+                },
+                {
+                  "bindObj": "pm_project_member",
+                  "bindAttr": "member_name",
+                  "name": "成员姓名",
+                  "code": "memberName",
+                  "param": {
+                    "isHidden": false,
+                    "isMajorKey": false,
+                    "displayType": "text",
+                    "isSearch": false
                   },
-                  {
-                    "bindObj": "pm_project_member",
-                    "bindAttr": "is_outside",
-                    "name": "是否编外人员",
-                    "code": "isOutside",
-                    "param": {
-                      "displayType": "switch",
-                      "isHidden": false,
-                      "isMajorKey": false
-                    },
-                    "selectUrl": ""
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "label": "update",
-            "name": "编辑",
-            "code": "updateProjectMember",
-            "queryUrl": null,
-            "operateUrl": "/base/xmtd/projectMangerTable/updateProjectMember",
-            "elements": [
-              {
-                "label": "updateElement",
-                "primary": null,
-                "param": {},
-                "data": [
-                  {
-                    "bindObj": "pm_project_member",
-                    "bindAttr": "member_id",
-                    "name": "成员ID",
-                    "code": "memberId",
-                    "param": {
-                      "displayType": "text",
-                      "isHidden": true,
-                      "isMajorKey": true
-                    },
-                    "selectUrl": ""
+                  "selectUrl": ""
+                },
+                {
+                  "bindObj": "pm_project_member",
+                  "bindAttr": "member_code",
+                  "name": "成员编号",
+                  "code": "memberCode",
+                  "param": {
+                    "isHidden": false,
+                    "isMajorKey": false,
+                    "displayType": "text",
+                    "isSearch": false
                   },
-                  {
-                    "bindObj": "pm_project_member",
-                    "bindAttr": "member_name",
-                    "name": "成员姓名",
-                    "code": "memberName",
-                    "param": {
-                      "isHidden": false,
-                      "isMajorKey": false,
-                      "displayType": "text",
-                      "isSearch": false
-                    },
-                    "selectUrl": ""
+                  "selectUrl": ""
+                },
+                {
+                  "bindObj": "pm_project_member",
+                  "bindAttr": "member_signature",
+                  "name": "成员签名",
+                  "code": "memberSignature",
+                  "param": {
+                    "displayType": "image",
+                    "isHidden": false,
+                    "isMajorKey": false
                   },
-                  {
-                    "bindObj": "pm_project_member",
-                    "bindAttr": "member_code",
-                    "name": "成员编号",
-                    "code": "memberCode",
-                    "param": {
-                      "isHidden": false,
-                      "isMajorKey": false,
-                      "displayType": "text",
-                      "isSearch": false
-                    },
-                    "selectUrl": ""
+                  "selectUrl": ""
+                },
+                {
+                  "bindObj": "pm_project_member",
+                  "bindAttr": "member_obligation",
+                  "name": "成员职责",
+                  "code": "memberObligation",
+                  "param": {
+                    "isHidden": false,
+                    "isMajorKey": false,
+                    "displayType": "text",
+                    "isSearch": false
                   },
-                  {
-                    "bindObj": "pm_project_member",
-                    "bindAttr": "member_obligation",
-                    "name": "成员职责",
-                    "code": "memberObligation",
-                    "param": {
-                      "isHidden": false,
-                      "isMajorKey": false,
-                      "displayType": "text",
-                      "isSearch": false
-                    },
-                    "selectUrl": ""
+                  "selectUrl": ""
+                },
+                {
+                  "bindObj": "pm_project_member",
+                  "bindAttr": "is_outside",
+                  "name": "是否编外人员",
+                  "code": "isOutside",
+                  "param": {
+                    "displayType": "switch",
+                    "isHidden": false,
+                    "isMajorKey": false
                   },
-                  {
-                    "bindObj": "pm_project_member",
-                    "bindAttr": "bind_role",
-                    "name": "所属角色",
-                    "code": "bindRole",
-                    "param": {
-                      "displayType": "select",
-                      "isHidden": false,
-                      "isMajorKey": false
-                    },
-                    "selectUrl": "/base/xmtd/projectMangerTable/querySimplePmProjectRoleList"
+                  "selectUrl": ""
+                },
+                {
+                  "bindObj": "pm_project_member",
+                  "bindAttr": "bind_role",
+                  "name": "所属角色",
+                  "code": "bindRole",
+                  "param": {
+                    "displayType": "select",
+                    "isHidden": false,
+                    "isMajorKey": false
                   },
-                  {
-                    "bindObj": "pm_project_member",
-                    "bindAttr": "member_signature",
-                    "name": "成员签名",
-                    "code": "memberSignature",
-                    "param": {
-                      "displayType": "image",
-                      "isHidden": false,
-                      "isMajorKey": false
-                    },
-                    "selectUrl": ""
+                  "selectUrl": "/base/xmtd/projectMangerTable/querySimplePmProjectRoleList"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "label": "update",
+          "name": "编辑",
+          "code": "updateProjectMember",
+          "queryUrl": null,
+          "operateUrl": "/base/xmtd/projectMangerTable/updateProjectMember",
+          "elements": [
+            {
+              "label": "updateElement",
+              "primary": null,
+              "param": {},
+              "data": [
+                {
+                  "bindObj": "pm_project_member",
+                  "bindAttr": "member_id",
+                  "name": "成员ID",
+                  "code": "memberId",
+                  "param": {
+                    "displayType": "text",
+                    "isHidden": true,
+                    "isMajorKey": true
                   },
-                  {
-                    "bindObj": "pm_project_member",
-                    "bindAttr": "is_outside",
-                    "name": "是否编外人员",
-                    "code": "isOutside",
-                    "param": {
-                      "displayType": "switch",
-                      "isHidden": false,
-                      "isMajorKey": false
-                    },
-                    "selectUrl": ""
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      }
-    ]
-  }
+                  "selectUrl": ""
+                },
+                {
+                  "bindObj": "pm_project_member",
+                  "bindAttr": "member_name",
+                  "name": "成员姓名",
+                  "code": "memberName",
+                  "param": {
+                    "isHidden": false,
+                    "isMajorKey": false,
+                    "displayType": "text",
+                    "isSearch": false
+                  },
+                  "selectUrl": ""
+                },
+                {
+                  "bindObj": "pm_project_member",
+                  "bindAttr": "member_code",
+                  "name": "成员编号",
+                  "code": "memberCode",
+                  "param": {
+                    "isHidden": false,
+                    "isMajorKey": false,
+                    "displayType": "text",
+                    "isSearch": false
+                  },
+                  "selectUrl": ""
+                },
+                {
+                  "bindObj": "pm_project_member",
+                  "bindAttr": "member_obligation",
+                  "name": "成员职责",
+                  "code": "memberObligation",
+                  "param": {
+                    "isHidden": false,
+                    "isMajorKey": false,
+                    "displayType": "text",
+                    "isSearch": false
+                  },
+                  "selectUrl": ""
+                },
+                {
+                  "bindObj": "pm_project_member",
+                  "bindAttr": "member_signature",
+                  "name": "成员签名",
+                  "code": "memberSignature",
+                  "param": {
+                    "displayType": "image",
+                    "isHidden": false,
+                    "isMajorKey": false
+                  },
+                  "selectUrl": ""
+                },
+                {
+                  "bindObj": "pm_project_member",
+                  "bindAttr": "is_outside",
+                  "name": "是否编外人员",
+                  "code": "isOutside",
+                  "param": {
+                    "displayType": "switch",
+                    "isHidden": false,
+                    "isMajorKey": false
+                  },
+                  "selectUrl": ""
+                },
+                {
+                  "bindObj": "pm_project_member",
+                  "bindAttr": "bind_role",
+                  "name": "所属角色",
+                  "code": "bindRole",
+                  "param": {
+                    "displayType": "select",
+                    "isHidden": false,
+                    "isMajorKey": false
+                  },
+                  "selectUrl": "/base/xmtd/projectMangerTable/querySimplePmProjectRoleList"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -46,7 +46,7 @@
     <<%=pageName%>UpdateDialog ref="updateDialogRef" @refresh="queryTableData"></<%=pageName%>UpdateDialog>
     <%_}-%>
     <%_if(hasAdd){-%>
-    <<%=pageName%>AddDialog ref="addDialogRef" @refresh="queryTableData"></<%=pageName%>AddDialog>
+    <<%=pageName%>AddDialog ref="addDialogRef" <% extendParamList.forEach(function(field){ -%>:<%=field%>="<%=field%>" <%});-%> @refresh="queryTableData"></<%=pageName%>AddDialog>
     <%_}-%>
   </TableLayout>
 </template>
