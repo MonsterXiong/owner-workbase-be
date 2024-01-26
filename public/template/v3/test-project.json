@@ -349,7 +349,7 @@
                   "name": "所属角色",
                   "code": "bindRole",
                   "param": {
-                    "displayType": "select",
+                    "displayType": "enum",
                     "isHidden": false,
                     "isMajorKey": false,
                     "isSearch": true
@@ -362,7 +362,7 @@
                   "name": "所属项目",
                   "code": "bindProject",
                   "param": {
-                    "displayType": "text",
+                    "displayType": "select",
                     "isHidden": false,
                     "isMajorKey": false,
                     "isSearch": true,
@@ -370,7 +370,7 @@
                       "extend": "projectId"
                     }
                   },
-                  "selectUrl": ""
+                  "selectUrl": "/base/xmtd/projectMangerTable/querySimplePmProjectRoleList?displayAttr=name"
                 }
               ]
             }
