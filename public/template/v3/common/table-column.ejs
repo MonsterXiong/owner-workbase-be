@@ -12,6 +12,12 @@
         <span>{{ <%= field.key %>EnumData(row,'<%= field.key %>') }}</span>
       </template>
     </el-table-column>
+    <%_ }else if (field.displayType == 'switch') { -%>
+    <el-table-column prop="<%= field.key %>" align="center" label="<%= field.label %>">
+      <template slot-scope="{ row }">
+        <i :class="[row.<%=field.key%>=='1'?'el-icon-check':'el-icon-close']"></i>
+      </template>
+    </el-table-column>
     <%_ } else{ -%>
     <el-table-column prop="<%= field.key %>" align="center" label="<%= field.label %>"></el-table-column>
     <%_ } -%>
