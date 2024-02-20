@@ -6,7 +6,7 @@
     "project_description": "这是个项目管理平台",
     "project_port": "8098",
     "project_outputDir": null,
-    "project_frameworkType": null,
+    "project_frameworkType": "txsj",
     "db_type": "mysql",
     "db_name": "pm_db",
     "db_ip": "192.168.2.204",
