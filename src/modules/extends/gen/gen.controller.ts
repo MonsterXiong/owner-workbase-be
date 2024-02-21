@@ -64,10 +64,10 @@ export class GenController {
       const { project_outputDir } = projectInfo
       const projectPath = project_outputDir || FRAMEWORK_CONFIG.CODE_OUTPUT_ROOT_PATH
       const codeList = await this.genService.getGenCode(jsonData)
-      // // 确保项目路径存在
-      // fse.ensureDirSync(projectPath);
-      // // 解压项目框架模板
-      // await uncompress('public/txsj-fe-template-master.zip',projectPath)
+      // 确保项目路径存在
+      fse.ensureDirSync(projectPath);
+      // 解压项目框架模板
+      await uncompress('public/txsj-fe-template-master.zip',projectPath)
       // 生成代码
       await genCode(codeList);
       // 压缩代码
