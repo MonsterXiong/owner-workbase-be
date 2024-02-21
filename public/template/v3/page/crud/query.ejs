@@ -1,6 +1,6 @@
 <template>
   <el-form <%if (hasQuery) { -%>:model="queryForm"<%_ } -%> size="small" :inline="true" class="query-form-container">
-    <%_ if (hasToolbar) { -%><%- include("../common/form.ejs",{list:queryList,formData:'queryForm'}) -%>
+    <%_ if (hasToolbar) { -%><%- include("../../common/form.ejs",{list:queryList,formData:'queryForm'}) -%>
     <el-form-item label="">
       <div class="btn-container">
         <%_if (hasQuery) { -%>
@@ -25,7 +25,7 @@
         <el-button type="primary" icon="el-icon-download" @click="<%=exportInfo.code%>"><%=exportInfo.name%></el-button>
         <%_ } -%>
         <%_ toolbarBtnList.forEach(function(btn){ -%>
-        <%- include("../common/btn.ejs",{...btn}) %>
+        <%- include("../../common/btn.ejs",{...btn}) %>
         <%_ }); -%>
       </div>
     </el-form-item>

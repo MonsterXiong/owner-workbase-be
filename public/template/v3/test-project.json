@@ -59,6 +59,14 @@
       "menuType": "page",
       "icon": null,
       "parentId": ""
+    },
+    {
+      "id": "5fdbfefd0d0d4d8b9a1fabb8821e0555",
+      "code": "hdynlys",
+      "name": "活动与能力映射",
+      "menuType": "page",
+      "icon": null,
+      "parentId": ""
     }
   ],
   "dataInfo": [
@@ -637,6 +645,47 @@
               ]
             }
           ]
+        }
+      ]
+    },
+    {
+      "label": "matrix_general",
+      "name": "活动与能力映射",
+      "code": "hdynlys",
+      "bindMenu": "5fdbfefd0d0d4d8b9a1fabb8821e0555",
+      "param": {},
+      "function": [
+        {
+          "label": "saveRel",
+          "name": "保存矩阵关联（作战活动与能力映射）",
+          "code": "saveRelXqfxActAbiRel",
+          "queryUrl": null,
+          "operateUrl": "/base/hdynlys/hdynlys/saveRelXqfxActAbiRel",
+          "elements": []
+        },
+        {
+          "label": "queryRow",
+          "name": "查询矩阵行（作战活动）",
+          "code": "queryRowXqfxBattleAct",
+          "queryUrl": null,
+          "operateUrl": "/base/hdynlys/hdynlys/queryRowXqfxBattleAct",
+          "elements": []
+        },
+        {
+          "label": "queryCol",
+          "name": "查询矩阵列（作战能力）",
+          "code": "queryColXqfxBattleAbi",
+          "queryUrl": null,
+          "operateUrl": "/base/hdynlys/hdynlys/queryColXqfxBattleAbi",
+          "elements": []
+        },
+        {
+          "label": "queryRel",
+          "name": "查询矩阵关联（作战活动与能力映射）",
+          "code": "queryRelXqfxActAbiRel",
+          "queryUrl": null,
+          "operateUrl": "/base/hdynlys/hdynlys/queryRelXqfxActAbiRel",
+          "elements": []
         }
       ]
     }

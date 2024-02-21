@@ -1,0 +1,68 @@
+<template>
+  <MatrixTable 
+    :treeData="colData"
+    :headerData="rowData"
+    :data="relationData"
+  ></MatrixTable>
+</template>
+
+<script>
+import MatrixTable from '@/components/matrixTable/MatrixTable'
+// import {XxxService} from '@/services'
+import { QueryConditionBuilder } from '@/utils/queryConditionBuilder'
+export default {
+  components:{
+    MatrixTable
+  },
+  data(){
+    return {
+      colData:[],
+      rowData:[],
+      relationData:[]
+    }
+  },
+  mounted(){
+    this.initData()
+  },
+  methods: {
+    async initData() {
+      await this.getRowData()
+      await this.getColData()
+      await this.getRelationData()
+    },
+    async getRowData(){
+        this.rowData=[{
+            id:1,
+            name:'1'
+        },
+        {
+            id:2,
+            name:'2'
+        }]
+    },
+    async getColData(){
+        this.colData=[{
+            id:3,
+            name:'3'
+        },
+        {
+            id:3,
+            name:'3'
+        }]
+    },
+    async getRelationData(){
+        this.relationData=[{
+            from:1,
+            to:3,
+            value:'x1'
+        },
+        {
+            from:2,
+            to:4,
+            value:'x2'
+        }]
+    },
+  },
+}
+</script>
+
