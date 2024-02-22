@@ -87,13 +87,15 @@ export class GenController {
          const readStream = fs.createReadStream(zipFilePath);
          readStream.pipe(res);
          readStream.on('end',()=>{
+          // 移除压缩包
           fse.removeSync(zipFilePath,true);
+          // 移除项目目录
+          fse.removeSync(projectPath,true);
           return '操作成功'
         });
+      }else{
+        return '操作失败'
       }
-      // 移除项目目录
-      // await fse.removeSync(projectPath,true);
-      // return '操作成功'
     } catch (error) {
       console.log(error, 'error');
     }
