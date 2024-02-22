@@ -11,6 +11,7 @@ import {
 } from './config/database.config';
 import { GithubModule } from './modules/extends/github/github.module';
 import { GenModule } from './modules/extends/gen/gen.module';
+import { GenToolModule } from './modules/extends/gen-tool/gen-tool.module';
 
 
 @Module({
@@ -40,6 +41,7 @@ import { GenModule } from './modules/extends/gen/gen.module';
     ...ModuleList,
     GithubModule,
     GenModule,
+    GenToolModule,
   ],
   controllers: [],
   providers: [],
