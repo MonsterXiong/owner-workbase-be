@@ -75,11 +75,6 @@ export class GenToolController {
   @Post('getCodeByJson')
   @ApiOperation({ summary: '通过json获取代码生成内容' })
   async getCodeByJson(@Body() jsonData: JsonData) {
-    try {
-      await quickGenAdapter(jsonData);
-    } catch (error) {
-      console.log(error);
-    }
     return await quickGenAdapter(jsonData);
   }
 }
