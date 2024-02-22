@@ -2,10 +2,7 @@ const prettier = require("prettier");
 const archiver = require('archiver');
 const  fs =require('fs');
 const compressing = require('compressing');
-// 创建 archiver 实例
-const archive = archiver('zip', {
-    zlib: { level: 9 } // 设置压缩级别（可选）
-});
+
 
 // 格式化路径符
 function formatPath(str) {
@@ -35,6 +32,10 @@ function getDirPath(tempPath, filePath) {
 
 
 function compress(source, target) {
+    // 创建 archiver 实例
+    const archive = archiver('zip', {
+        zlib: { level: 9 } // 设置压缩级别（可选）
+    });
     return new Promise((resolve, reject) => {
         const output = fs.createWriteStream(target);
         // 将输出流管道连接到 archiver

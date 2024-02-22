@@ -1,10 +1,14 @@
-import { Body, Controller, Get, Param, Post, Req } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Req, Res } from '@nestjs/common';
 import { GenService } from './gen.service';
 import { ApiOperation, ApiProperty, ApiTags } from '@nestjs/swagger';
 import { FRAMEWORK_CONFIG } from 'submodule/genCode-utils/src/config/frameworkConfig';
 import { genCode } from 'submodule/genCode-utils/src/common';
-import { uncompress } from '../generate/fe/utils';
+import { compress, uncompress } from '../generate/fe/utils';
+import { nanoid } from 'nanoid';
+import { Response } from 'express';
 const fse = require('fs-extra');
+const path = require('path');
+const fs = require('fs');
 
 class JsonData{
 
@@ -58,7 +62,7 @@ export class GenController {
 
   @Post('genProject')
   @ApiOperation({ summary: '通过json直接生成代码' })
-  async genProject(@Body() jsonData:JsonData){
+  async genProject(@Body() jsonData:JsonData,@Res() res:Response){
     try {
       const { projectInfo } = jsonData;
       const { project_outputDir } = projectInfo
@@ -71,10 +75,25 @@ export class GenController {
       // 生成代码
       await genCode(codeList);
       // 压缩代码
-      // compress(projectPath,path.join(projectPath,'code.zip'))
+      const zipFilePath = path.join(projectPath,'../zipTemp',nanoid()+'.zip')
+      const flag = await compress(projectPath,zipFilePath)
+      // 下载
+      if(flag){
+        res.set({
+          'Content-Type': 'application/zip',
+          'Content-Disposition': `attachment; filename="file.zip"`,
+        });
+         // 创建可读流并发送给客户端
+         const readStream = fs.createReadStream(zipFilePath);
+         readStream.pipe(res);
+         readStream.on('end',()=>{
+          fse.removeSync(zipFilePath,true);
+          return '操作成功'
+        });
+      }
       // 移除项目目录
       // await fse.removeSync(projectPath,true);
-      return '操作成功'
+      // return '操作成功'
     } catch (error) {
       console.log(error, 'error');
     }
