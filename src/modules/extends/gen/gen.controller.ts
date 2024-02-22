@@ -3,12 +3,9 @@ import { GenService } from './gen.service';
 import { ApiOperation, ApiProperty, ApiTags } from '@nestjs/swagger';
 import { FRAMEWORK_CONFIG } from 'submodule/genCode-utils/src/config/frameworkConfig';
 import { genCode } from 'submodule/genCode-utils/src/common';
-import { compress, uncompress } from '../generate/fe/utils';
-import { nanoid } from 'nanoid';
+import { downloadCodeFile, uncompress } from '../generate/fe/utils';
 import { Response } from 'express';
 const fse = require('fs-extra');
-const path = require('path');
-const fs = require('fs');
 
 class JsonData{
 
@@ -74,28 +71,7 @@ export class GenController {
       await uncompress('public/txsj-fe-template-master.zip',projectPath)
       // 生成代码
       await genCode(codeList);
-      // 压缩代码
-      const zipFilePath = path.join(projectPath,'../zipTemp',nanoid()+'.zip')
-      const flag = await compress(projectPath,zipFilePath)
-      // 下载
-      if(flag){
-        res.set({
-          'Content-Type': 'application/zip',
-          'Content-Disposition': `attachment; filename="file.zip"`,
-        });
-         // 创建可读流并发送给客户端
-         const readStream = fs.createReadStream(zipFilePath);
-         readStream.pipe(res);
-         readStream.on('end',()=>{
-          // 移除压缩包
-          fse.removeSync(zipFilePath,true);
-          // 移除项目目录
-          fse.removeSync(projectPath,true);
-          return '操作成功'
-        });
-      }else{
-        return '操作失败'
-      }
+      return await downloadCodeFile(projectPath,res)
     } catch (error) {
       console.log(error, 'error');
     }
