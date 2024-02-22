@@ -26,7 +26,7 @@ class elementDto {
   message: string;
 }
 
-class JsonData {
+class adapterDto {
   @ApiProperty({
     description: '适配器类型',
     required: true,
@@ -74,7 +74,7 @@ export class GenToolController {
   constructor(private readonly genToolService: GenToolService) {}
   @Post('getCodeByJson')
   @ApiOperation({ summary: '通过json获取代码生成内容' })
-  async getCodeByJson(@Body() jsonData: JsonData) {
+  async getCodeByJson(@Body() jsonData: adapterDto) {
     return await quickGenAdapter(jsonData);
   }
 }

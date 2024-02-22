@@ -31,6 +31,7 @@ function checkMustInfo(param){
         throw new Error('缺少<%=item.message%>')
     }
     <%_ }); -%>
+    return true
 }
 async function <%=adapterMethodName %>(menuInfo){
     const { fileParam } = getInitParam(menuInfo,PAGE_TYPE_ENUM.<%=pageTypeEnumName%>)

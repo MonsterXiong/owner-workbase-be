@@ -688,6 +688,23 @@
           "elements": []
         }
       ]
+    },
+    {
+      "label": "org_general",
+      "name": "引用文档",
+      "code": "yywd",
+      "bindMenu":"65c46802a8a9457299f84c362520722a",
+      "param": {},
+      "function":[
+        {
+          "label": "queryList",
+          "name": "查询（引用文档）",
+          "code": "queryYywd",
+          "queryUrl": null,
+          "operateUrl": "/base/yywd/yywd/queryYywd",
+          "elements": []
+        }
+      ]
     }
   ]
 }
