@@ -72,9 +72,9 @@ class adapterDto {
 @Controller('gen-tool')
 export class GenToolController {
   constructor(private readonly genToolService: GenToolService) {}
-  @Post('getCodeByJson')
+  @Post('quickGenAdapter')
   @ApiOperation({ summary: '通过json获取代码生成内容' })
-  async getCodeByJson(@Body() jsonData: adapterDto) {
+  async genAdapter(@Body() jsonData: adapterDto) {
     return await quickGenAdapter(jsonData);
   }
 }
