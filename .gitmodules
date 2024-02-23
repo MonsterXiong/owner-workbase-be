@@ -4,3 +4,6 @@
 [submodule "submodule/txsj-fe-template"]
 	path = submodule/txsj-fe-template
 	url = https://github.com/MonsterXiong/txsj-fe-template.git
+[submodule "submodule/owner-workbase"]
+	path = submodule/owner-workbase
+	url = https://github.com/MonsterXiong/owner-workbase.git
