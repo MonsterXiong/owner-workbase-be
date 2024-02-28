@@ -26,6 +26,22 @@ class elementDto {
   message: string;
 }
 
+class componentDto {
+  @ApiProperty({
+    description: '组件标识',
+    required: true,
+    default: '',
+  })
+  name: string;
+
+  @ApiProperty({
+    description: '组件模板',
+    required: false,
+    default: `<template>\n    <div>\${name}</div>\n</template>`,
+  })
+  componentTemplate: string;
+}
+
 class adapterDto {
   @ApiProperty({
     description: '适配器类型',
@@ -66,6 +82,13 @@ class adapterDto {
     ],
   })
   element: elementDto[];
+
+  // 子组件页面
+  @ApiProperty({
+    description: '子组件配置',
+    default: [],
+  })
+  subComponent:componentDto[]
 }
 
 @ApiTags('内部工具')
