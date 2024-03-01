@@ -1,7 +1,8 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { GenToolService } from './gen-tool.service';
 import { ApiOperation, ApiProperty, ApiTags } from '@nestjs/swagger';
-import { quickGenAdapter } from '../../../../submodule/genCode-utils/src/tool/quickGenAdapter/quickGenAdapter';
+import { quickGenAdapter } from 'submodule/genCode-utils/src/tool/quickGenAdapter/quickGenAdapter';
+import { quickGenCategoryType, quickGenComponentTemplate } from 'submodule/genCode-utils/src/tool/quickGenComponentTemplate/quickGenComponentTemplate';
 
 class elementDto {
   @ApiProperty({
@@ -91,6 +92,40 @@ class adapterDto {
   subComponent:componentDto[]
 }
 
+class genCategoryTypeDto{
+  @ApiProperty({
+    description: '类别名称',
+    required: true,
+  })
+  name: string;
+
+  @ApiProperty({
+    description: '类别标识',
+    required: true,
+  })
+  code: string;
+}
+
+class genComponentTemplateDto{
+  @ApiProperty({
+    description: '页面模板名称',
+    required: true,
+  })
+  name: string;
+
+  @ApiProperty({
+    description: '页面模板标识',
+    required: true,
+  })
+  code: string;
+
+  @ApiProperty({
+    description: '所属类别',
+    required: true,
+  })
+  categoryType: string;
+}
+
 @ApiTags('内部工具')
 @Controller('gen-tool')
 export class GenToolController {
@@ -100,15 +135,15 @@ export class GenToolController {
   async genAdapter(@Body() jsonData: adapterDto) {
     return await quickGenAdapter(jsonData);
   }
-}
 
-// @ApiTags('快速生成组件模板架子')
-// @Controller('gen-component-template')
-// export class GenToolController {
-//   constructor(private readonly genToolService: GenToolService) {}
-//   @Post('quickGenComponentTemplate')
-//   @ApiOperation({ summary: '通过json生成模板类别' })
-//   async genComponentTemplate(@Body() jsonData: adapterDto) {
-//     return await quickGenComponentTemplate(jsonData);
-//   }
-// }
+  @Post('quickGenComponentTemplate')
+  @ApiOperation({ summary: '快速生成组件模板架子' })
+  async genComponentTemplate(@Body() jsonData: genComponentTemplateDto) {
+    return await quickGenComponentTemplate(jsonData);
+  }
+  @Post('quickGenCategoryType')
+  @ApiOperation({ summary: '快速生成组件模板类别' })
+  async genCategoryType(@Body() jsonData: genCategoryTypeDto) {
+    return await quickGenCategoryType(jsonData);
+  }
+}
