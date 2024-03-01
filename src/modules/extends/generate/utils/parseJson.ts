@@ -116,16 +116,16 @@ const {projectInfo,menuInfo,dataModel,pages} = projectJson
 
 // const { functionModel, elementConfig } = pages
 
-const {project_frameworkType,project_name,project_code,project_version,project_description,project_port} = projectInfo
+const {projectFrameworkType,projectName,projectCode,projectVersion,projectDescription,projectPort} = projectInfo
 
 const need_project_data = {
-    frameworkType: project_frameworkType,
-    name:project_name,
-    code:project_code,
-    version:project_version,
-    description:project_description,
+    frameworkType: projectFrameworkType,
+    name:projectName,
+    code:projectCode,
+    version:projectVersion,
+    description:projectDescription,
     // 服务端口
-    port:project_port
+    port:projectPort
 }
 
 

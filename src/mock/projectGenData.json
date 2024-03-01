@@ -1,21 +1,21 @@
 {
   "projectInfo": {
-    "project_name": "测试软件平台",
-    "project_code": "csrjpt123",
-    "project_version": "1.0.0",
-    "project_description": "",
-    "project_port": 8080,
-    "project_outputDir": "./temp",
-    "project_frameworkType": "txsj",
-    "db_type": "mysql12",
-    "db_name": "sf_db",
-    "db_ip": "127.0.0.1",
-    "db_port": 3301,
-    "db_username": "root",
-    "db_password": "123",
-    "pom_groupId": "com.ltsj",
-    "pom_artifactId": "com.tixi.sf.boot",
-    "pom_packaging": "jar"
+    "projectName": "测试软件平台",
+    "projectCode": "csrjpt123",
+    "projectVersion": "1.0.0",
+    "projectDescription": "",
+    "projectPort": 8080,
+    "projectOutputDir": "./temp",
+    "projectFrameworkType": "txsj",
+    "dbType": "mysql12",
+    "dbName": "sf_db",
+    "dbIp": "127.0.0.1",
+    "dbPort": 3301,
+    "dbUsername": "root",
+    "dbPassword": "123",
+    "pomGroupId": "com.ltsj",
+    "pomArtifactId": "com.tixi.sf.boot",
+    "pomPackaging": "jar"
   },
   "menuInfo": [
     {
@@ -165,67 +165,74 @@
       ],
       "elementConfig": [
         {
-            "code":"listElement",
-            "bindFunction":"queryList",
-            "data":[{
-                "alias": "ID",
-                "aliasCode": "",
-                "bindObj": "db_index",
-                "bindAttr": "index_id",
-                "param":{
-                    "isSearch":false,
-                    "isHidden": true,
-                    "pk": true
-                }
-            },{
-                "alias": "指标名称",
-                "aliasCode": "",
-                "bindObj": "db_index",
-                "bindAttr": "name",
-                "param":{
-                    "isSearch":true,
-                    "isHidden": false,
-                    "pk": false
-                }
-            },{
-                "alias": "所属能力",
-                "aliasCode": "",
-                "bindObj": "db_index",
-                "bindAttr": "bind_abi",
-                "param":{
-                    "isSearch":true,
-                    "isHidden": false,
-                    "pk": false
-                }
-            }]
+          "code": "listElement",
+          "bindFunction": "queryList",
+          "data": [
+            {
+              "alias": "ID",
+              "aliasCode": "",
+              "bindObj": "db_index",
+              "bindAttr": "index_id",
+              "param": {
+                "isSearch": false,
+                "isHidden": true,
+                "pk": true
+              }
+            },
+            {
+              "alias": "指标名称",
+              "aliasCode": "",
+              "bindObj": "db_index",
+              "bindAttr": "name",
+              "param": {
+                "isSearch": true,
+                "isHidden": false,
+                "pk": false
+              }
+            },
+            {
+              "alias": "所属能力",
+              "aliasCode": "",
+              "bindObj": "db_index",
+              "bindAttr": "bind_abi",
+              "param": {
+                "isSearch": true,
+                "isHidden": false,
+                "pk": false
+              }
+            }
+          ]
         },
         {
-            "code":"updateElement",
-            "bindFunction":"update",
-            "data":[{
-                "alias": "指标ID",
-                "aliasCode": "indexId",
-                "bindObj": "db_index",
-                "bindAttr": "index_id",
-                "params":{
-                    "pk": true,
-                    "isHidden": true,
-                    "isSearch":true
-                }
-            },{
-                "alias": "指标名称",
-                "aliasCode": "indexName",
-                "bindObj": "db_index",
-                "bindAttr": "name",
-                "params":{
-                    "pk": true,
-                    "isHidden": true,
-                    "isSearch":true,
-                    "displayType":"textBox"
-                }
-            }]
+          "code": "updateElement",
+          "bindFunction": "update",
+          "data": [
+            {
+              "alias": "指标ID",
+              "aliasCode": "indexId",
+              "bindObj": "db_index",
+              "bindAttr": "index_id",
+              "params": {
+                "pk": true,
+                "isHidden": true,
+                "isSearch": true
+              }
+            },
+            {
+              "alias": "指标名称",
+              "aliasCode": "indexName",
+              "bindObj": "db_index",
+              "bindAttr": "name",
+              "params": {
+                "pk": true,
+                "isHidden": true,
+                "isSearch": true,
+                "displayType": "textBox"
+              }
+            }
+          ]
         }
-        ]
+      ]
     }
   ]
 }

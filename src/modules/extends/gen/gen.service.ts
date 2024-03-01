@@ -24,7 +24,7 @@ function transformResult(baseDir,codeList){
         dirPath = path.join('./', filepath.substring(0, lastSlashIndex))
         fileName = filepath.substring(lastSlashIndex+1)
       }
-      filepath = path.join(baseDir, filePath) 
+      filepath = path.join(baseDir, filePath)
       return {
         ...item,
         dirPath:formatUrl(dirPath),
@@ -40,19 +40,19 @@ export class GenService {
     /**
      * @description 通过json获取到生成的代码
      * @param {object} param json数据
-     * @returns 
+     * @returns
      */
   async getGenCode(param) {
     try {
       const { projectInfo } = param;
-      const { project_outputDir } = projectInfo;
-      const projectPath = project_outputDir || FRAMEWORK_CONFIG.CODE_OUTPUT_ROOT_PATH;
+      const { projectOutputDir } = projectInfo;
+      const projectPath = projectOutputDir || FRAMEWORK_CONFIG.CODE_OUTPUT_ROOT_PATH;
       const codeList = await getGenCode(param);
       // 清洗文件路径
       const fileList =transformResult(projectPath.toString(),codeList)
 
       return fileList
-      
+
     } catch (error) {
       console.log(error, '获取生成的代码错误');
     }

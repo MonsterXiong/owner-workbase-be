@@ -62,8 +62,8 @@ export class GenController {
   async genProject(@Body() jsonData:JsonData,@Res() res:Response){
     try {
       const { projectInfo } = jsonData;
-      const { project_outputDir } = projectInfo
-      const projectPath = project_outputDir || FRAMEWORK_CONFIG.CODE_OUTPUT_ROOT_PATH
+      const { projectOutputDir } = projectInfo
+      const projectPath = projectOutputDir || FRAMEWORK_CONFIG.CODE_OUTPUT_ROOT_PATH
       const codeList = await this.genService.getGenCode(jsonData)
       // 确保项目路径存在
       fse.ensureDirSync(projectPath);

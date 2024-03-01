@@ -1,23 +1,23 @@
 {
   "projectInfo": {
-    "project_name": "项目管理平台",
-    "project_code": "pm",
-    "project_version": "1.0.0",
-    "project_description": "这是个项目管理平台",
-    "project_port": "8098",
-    "project_outputDir": null,
-    "project_frameworkType": "txsj",
-    "db_type": "mysql",
-    "db_name": "pm_db",
-    "db_ip": "192.168.2.204",
-    "db_port": "3306",
-    "db_username": "root",
-    "db_password": "123456",
-    "db_encoding": "utf-8",
-    "db_timezone": "Asia/Shanghai",
-    "pom_groupId": "com.ltsj",
-    "pom_artifactId": "com.tixi.pm.boot",
-    "pom_packaging": "jar"
+    "projectName": "项目管理平台",
+    "projectCode": "pm",
+    "projectVersion": "1.0.0",
+    "projectDescription": "这是个项目管理平台",
+    "projectPort": "8098",
+    "projectOutputDir": null,
+    "projectFrameworkType": "txsj",
+    "dbType": "mysql",
+    "dbName": "pm_db",
+    "dbIp": "192.168.2.204",
+    "dbPort": "3306",
+    "dbUsername": "root",
+    "dbPassword": "123456",
+    "dbEncoding": "utf-8",
+    "dbTimezone": "Asia/Shanghai",
+    "pomGroupId": "com.ltsj",
+    "pomArtifactId": "com.tixi.pm.boot",
+    "pomPackaging": "jar"
   },
   "menuInfo": [
     {
@@ -693,9 +693,9 @@
       "label": "org_general",
       "name": "引用文档",
       "code": "yywd",
-      "bindMenu":"65c46802a8a9457299f84c362520722a",
+      "bindMenu": "65c46802a8a9457299f84c362520722a",
       "param": {},
-      "function":[
+      "function": [
         {
           "label": "queryList",
           "name": "查询（引用文档）",

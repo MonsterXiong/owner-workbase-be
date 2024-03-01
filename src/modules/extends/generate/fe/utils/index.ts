@@ -59,14 +59,14 @@ async function uncompress(source, targetDir) {
 }
 
 async function downloadCodeFile(dirPath, res) {
-  const zipFilePath = path.join(dirPath, '../', nanoid() + '.zip');
+  const zipFilePath = path.join(dirPath, '../fe.zip');
   const flag = await compress(dirPath, zipFilePath);
   return new Promise((resolve, reject) => {
     // 下载
     if (flag) {
       res.set({
         'Content-Type': 'application/zip',
-        'Content-Disposition': `attachment; filename="file.zip"`,
+        'Content-Disposition': `attachment; filename="fe.zip"`,
       });
       // 创建可读流并发送给客户端
       const readStream = fs.createReadStream(zipFilePath);
