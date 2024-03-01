@@ -101,3 +101,14 @@ export class GenToolController {
     return await quickGenAdapter(jsonData);
   }
 }
+
+@ApiTags('快速生成组件模板架子')
+@Controller('gen-component-template')
+export class GenToolController {
+  constructor(private readonly genToolService: GenToolService) {}
+  @Post('quickGenComponentTemplate')
+  @ApiOperation({ summary: '通过json生成模板类别' })
+  async genComponentTemplate(@Body() jsonData: adapterDto) {
+    return await quickGenComponentTemplate(jsonData);
+  }
+}
