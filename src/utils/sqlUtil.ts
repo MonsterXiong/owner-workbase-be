@@ -133,10 +133,22 @@ export async function queryParams(params, _this) {
   const resultFn = new Function('_this', `with(_this){return _this.repository.createQueryBuilder()${getCode(params)}${genPageCode(params)}.getMany()}`)
   const totalCount = await countFn(_this)
   const data = await resultFn(_this)
+  if(isSplitPage){
+    return data
+  }
   return {
     totalCount,
     data
   }
+}
+
+function isSplitPage(params){
+  const {pageNumber, pageSize }=params
+  let flag = false
+  if(pageNumber && pageSize){
+    flag =  true
+  }
+  return flag
 }
 
 function genPageCode(params){

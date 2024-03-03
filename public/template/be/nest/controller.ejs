@@ -14,6 +14,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { Response } from 'express';
 import * as xlsx from 'xlsx';
 import { QueryDto } from '@/common/query.dto';
+import { nanoid } from "nanoid";
 
 @ApiTags('<%= tableComment %>接口')
 @Controller('/<%= ApiPrefix %>/<%= tableName%>')
@@ -108,12 +109,20 @@ export class <%= TableName %>Controller {
   @Post('save<%= TableName %>')
   @ApiOperation({ summary: '保存<%= tableComment %>' })
   save<%= TableName %>(@Body() entity: <%= TableName %>) {
+    if(!entity.<%= primaryKey %>){
+      entity.<%= primaryKey %> = nanoid()
+    }
     return this.<%= tableName%>Service.save(entity);
   }
 
   @Post('save<%= TableName %>Batch')
   @ApiOperation({ summary: '保存<%= tableComment %>(批量)' })
   save<%= TableName %>Batch(@Body() entity: <%= TableName %>[]) {
+    entity.forEach(entityItem=>{
+      if(!entityItem.<%= primaryKey %>){
+        entityItem.<%= primaryKey %> = nanoid()
+      }
+    })
     return this.<%= tableName%>Service.saveBatch(entity);
   }
 
