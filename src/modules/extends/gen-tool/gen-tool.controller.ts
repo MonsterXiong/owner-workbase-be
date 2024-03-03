@@ -94,31 +94,19 @@ class adapterDto {
 
 class genCategoryTypeDto{
   @ApiProperty({
-    description: '类别名称',
+    description: '名称',
     required: true,
   })
   name: string;
 
   @ApiProperty({
-    description: '类别标识',
+    description: '标识',
     required: true,
   })
   code: string;
 }
 
-class genComponentTemplateDto{
-  @ApiProperty({
-    description: '页面模板名称',
-    required: true,
-  })
-  name: string;
-
-  @ApiProperty({
-    description: '页面模板标识',
-    required: true,
-  })
-  code: string;
-
+class genComponentTemplateDto extends genCategoryTypeDto{
   @ApiProperty({
     description: '所属类别',
     required: true,
