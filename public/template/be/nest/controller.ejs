@@ -13,7 +13,7 @@ import { <%= TableName %> } from './<%= tableName%>.entity';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Response } from 'express';
 import * as xlsx from 'xlsx';
-import { QueryDto } from '@/common/query.dto';
+import { QueryDto } from '../../../common/query.dto';
 import { nanoid } from "nanoid";
 
 @ApiTags('<%= tableComment %>接口')

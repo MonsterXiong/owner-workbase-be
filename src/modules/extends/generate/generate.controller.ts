@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import { GenerateService } from './generate.service';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { ParamsDto } from './dto/param.dto';
+import { ParamsDto,GenServiceDto } from './dto/param.dto';
 import { genCode } from './utils/common';
 
 import {funcList} from '../../../mock/funcList'
@@ -21,8 +21,13 @@ export class GenerateController {
 
   @Post('getServiceFe')
   @ApiOperation({ summary: '获取前端services代码' })
-  async getServiceFe(@Body() param: ParamsDto) {
-    return await this.generateService.getServiceFe(param)
+  async getServiceFe(@Body() param: GenServiceDto) {
+    const fileList = await this.generateService.getServiceFe(param)
+    if (param?.isWrite) {
+      return await genCode(fileList);
+    } else {
+      return fileList
+    }
   }
 
   @Get('getPages')

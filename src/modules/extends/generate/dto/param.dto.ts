@@ -17,6 +17,34 @@ export class Project {
   outputPath: string
 }
 
+export class GenServiceDto{
+  @ApiProperty({
+    description:'接口前缀',
+    required: false,
+    default: 'sfBase',
+  })
+  readonly prefix: string
+
+  @ApiProperty({
+    description:'输出路径',
+    required: true,
+    default: './',
+  })
+  outputPath: string
+
+  @ApiProperty({
+    description:'选择的表',
+  })
+  tableList: string[]
+
+  @ApiProperty({
+    description:'是否输出',
+    required: true,
+    default: false,
+  })
+  isWrite: boolean
+}
+
 export class ParamsDto {
   @ApiProperty({
     description:'项目信息',

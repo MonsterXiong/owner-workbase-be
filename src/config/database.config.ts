@@ -7,7 +7,8 @@ export const databaseConfig = {
   PORT: 3306,
   USERNAME: 'root',
   PASSWORD: '123456',
-  DATABASE: 'workflow_db',
+  // DATABASE: 'workflow_db',
+  DATABASE: 'software_factory_db',
   // DATABASE: 'sf_db',
 };
 

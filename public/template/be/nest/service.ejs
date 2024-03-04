@@ -2,10 +2,10 @@ import {  Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository  } from 'typeorm';
 import { <%= TableName %> } from "./<%= tableName %>.entity";
-import { queryParams } from '@/utils/sqlUtil'
+import { queryParams } from '../../../utils/sqlUtil'
 import * as xlsx from 'xlsx';
 import {Response} from 'express';
-import { QueryDto } from '@/common/query.dto';
+import { QueryDto } from '../../../common/query.dto';
 @Injectable()
 export class <%= TableName %>Service {
   constructor(

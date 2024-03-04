@@ -1,8 +1,8 @@
 const WHERE_TYPE = {
-  IN: 'In',
-  NOT_IN: 'NotIn',
-  LIKE: 'Like',
-  EQUAL: 'Equal',
+  IN: 'in',
+  NOT_IN: 'not in',
+  LIKE: 'like',
+  EQUAL: '=',
 }
 
 const SORT_TYPE = {
@@ -22,12 +22,18 @@ function genWhere(condition) {
   const { property, symbol, value, combine } = condition
 
   if (symbol == WHERE_TYPE.EQUAL) {
-    return `'${property} = :${property}',{${property} : ${value}}`
+    return `'${property} = :${property}',{${property} : "${value}"}`
   } else if (symbol == WHERE_TYPE.IN) {
-    const values = value && value.join(',')
+    let values = value
+    if (Array.isArray(value)) {
+      values = value.join(',')
+    }
     return `'${property} IN (:...${property}s)',{${property}s : [${values}]}`
   } else if (symbol == WHERE_TYPE.NOT_IN) {
-    const values = value && value.join(',')
+    let values = value
+    if (Array.isArray(value)) {
+      values = value.join(',')
+    }
     return `'${property} NOT IN (:...${property}s)',{${property}s : [${values}]}`
   } else if (symbol == WHERE_TYPE.LIKE) {
     return `'${property} LIKE :${property}',{${property} : '%${value}%'}`
@@ -133,7 +139,7 @@ export async function queryParams(params, _this) {
   const resultFn = new Function('_this', `with(_this){return _this.repository.createQueryBuilder()${getCode(params)}${genPageCode(params)}.getMany()}`)
   const totalCount = await countFn(_this)
   const data = await resultFn(_this)
-  if(isSplitPage){
+  if(!isSplitPage(params)){
     return data
   }
   return {
@@ -143,7 +149,7 @@ export async function queryParams(params, _this) {
 }
 
 function isSplitPage(params){
-  const {pageNumber, pageSize }=params
+  const { pageNumber, pageSize }=params
   let flag = false
   if(pageNumber && pageSize){
     flag =  true

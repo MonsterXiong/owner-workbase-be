@@ -27,14 +27,12 @@ export class QueryDto{
   @ApiProperty({
     description:'页码',
     required: false,
-    default: 1,
   })
   readonly pageNumber:number
 
   @ApiProperty({
     description:'页数大小',
     required: false,
-    default: 10,
   })
   readonly pageSize:number
 }

@@ -45,20 +45,27 @@ function getTemplateParams(tableInfo,prefix){
 }
 
 async function genServiceFe(param){
-    const { prefix } =  param
+  const { prefix, outputPath, tableList,isWrite } =  param
     // 获取table
-    const tableInfo = await getTableInfo()
-    const { serviceDirPath,templateDirPath } = getFilePath(FE_FRAMEWORK_TYPE.TXSJ)
-    const { serviceTemp } = await getGenTemp(templateDirPath);
-    const serviceList =getTemplateParams(tableInfo,prefix)
-    let result = []
-    for await (const service of serviceList) {
-          result.push({
-            filePath: path.join(serviceDirPath, `${service.tableName}Service.js`),
-            content: serviceTemp({ ...service }),
-          });
-      }
-    return result
+  let tableInfo = await getTableInfo()
+  if (tableList?.length) {
+    tableInfo = tableInfo.filter(item=>tableList.includes(item.TABLE_NAME))
+  }
+  const { serviceDirPath, templateDirPath } = getFilePath(FE_FRAMEWORK_TYPE.TXSJ)
+  let dirPath = serviceDirPath
+  const { serviceTemp } = await getGenTemp(templateDirPath);
+  const serviceList =getTemplateParams(tableInfo,prefix)
+  let result = []
+  if (outputPath) {
+    dirPath = path.join(outputPath, dirPath)
+  }
+  for await (const service of serviceList) {
+    result.push({
+      filePath: path.join(dirPath, `${changeCase.pascalCase(service.tableName)}Service.js`),
+      content: serviceTemp({ ...service }),
+    });
+  }
+  return result
 }
 
 export default genServiceFe

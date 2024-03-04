@@ -10,8 +10,7 @@ export class GenerateService {
     return await genInterface(param);
   }
   async getServiceFe(param) {
-    const { projectInfo } = param;
-    return await genServiceFe(projectInfo);
+    return await genServiceFe(param);
   }
   async getPage(list) {
     return await genPage(list);
