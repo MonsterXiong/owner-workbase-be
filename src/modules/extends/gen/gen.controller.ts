@@ -1,8 +1,8 @@
 import { Body, Controller, Get, Param, Post, Req, Res } from '@nestjs/common';
 import { GenService } from './gen.service';
 import { ApiOperation, ApiProperty, ApiTags } from '@nestjs/swagger';
-import { FRAMEWORK_CONFIG } from 'submodule/genCode-utils/src/config/frameworkConfig';
-import { genCode } from 'submodule/genCode-utils/src/common';
+import { FRAMEWORK_CONFIG } from '../../../../submodule/genCode-utils/src/config/frameworkConfig';
+import { genCode } from '../../../../submodule/genCode-utils/src/common';
 import { downloadCodeFile, uncompress } from '../generate/fe/utils';
 import { Response } from 'express';
 const fse = require('fs-extra');

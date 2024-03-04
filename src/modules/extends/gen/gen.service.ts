@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { FRAMEWORK_CONFIG } from 'submodule/genCode-utils/src/config/frameworkConfig';
-import { getGenCode } from 'submodule/genCode-utils/src/genCode';
+import { FRAMEWORK_CONFIG } from '../../../../submodule/genCode-utils/src/config/frameworkConfig';
+import { getGenCode } from '../../../../submodule/genCode-utils/src/genCode';
 
 const path = require('path');
 

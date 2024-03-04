@@ -1,8 +1,8 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { GenToolService } from './gen-tool.service';
 import { ApiOperation, ApiProperty, ApiTags } from '@nestjs/swagger';
-import { quickGenAdapter } from 'submodule/genCode-utils/src/tool/quickGenAdapter/quickGenAdapter';
-import { quickGenCategoryType, quickGenComponentTemplate } from 'submodule/genCode-utils/src/tool/quickGenComponentTemplate/quickGenComponentTemplate';
+import { quickGenAdapter } from '../../../../submodule/genCode-utils/src/tool/quickGenAdapter/quickGenAdapter';
+import { quickGenCategoryType, quickGenComponentTemplate } from '../../../../submodule/genCode-utils/src/tool/quickGenComponentTemplate/quickGenComponentTemplate';
 
 class elementDto {
   @ApiProperty({
