@@ -12,6 +12,8 @@ import {
 import { GithubModule } from './modules/extends/github/github.module';
 import { GenModule } from './modules/extends/gen/gen.module';
 import { GenToolModule } from './modules/extends/gen-tool/gen-tool.module';
+import { SfProjectExtendModule } from './modules/extends/sf-project-extend/sf-project-extend.module';
+import { SfMenuExtendModule } from './modules/extends/sf-menu-extend/sf-menu-extend.module';
 
 
 @Module({
@@ -42,6 +44,8 @@ import { GenToolModule } from './modules/extends/gen-tool/gen-tool.module';
     GithubModule,
     GenModule,
     GenToolModule,
+    SfProjectExtendModule,
+    SfMenuExtendModule,
   ],
   controllers: [],
   providers: [],

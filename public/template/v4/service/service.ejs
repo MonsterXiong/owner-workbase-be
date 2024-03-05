@@ -1,0 +1,117 @@
+import { service } from '@/services/http'
+/**
+ * 关于<%= name%>的基础服务
+ */
+export default class <%= pascalCaseName%>BaseService {
+  /**
+   * @description 新增<%= name%>
+   * @param {Object} <%= camelCaseName%>  <%= name%>对象
+   * @returns
+   */
+  static async insert<%= pascalCaseName%>(<%= camelCaseName%>) {
+    return service.post('/<%= prefix%>/<%= camelCaseName%>/insert<%= pascalCaseName%>', <%= camelCaseName%>)
+  }
+
+  /**
+   * @description 批量新增<%= name%>
+   * @param {Array} <%= camelCaseName%>List  <%= name%>对象数组
+   * @returns
+   */
+  static async insert<%= pascalCaseName%>Batch(<%= camelCaseName%>List) {
+    return service.post('/<%= prefix%>/<%= camelCaseName%>/insert<%= pascalCaseName%>Batch', <%= camelCaseName%>List)
+  }
+
+  /**
+   * @description 批量删除<%= name%>
+   * @param {Array} <%= camelCaseName%>IdList <%= name%>ID数组
+   * @returns
+   */
+  static async delete<%= pascalCaseName%>Batch(<%= camelCaseName%>IdList) {
+    if (!Array.isArray(<%= camelCaseName%>IdList)) {
+      <%= camelCaseName%>IdList = [<%= camelCaseName%>IdList]
+    }
+    return service.post('/<%= prefix%>/<%= camelCaseName%>/delete<%= pascalCaseName%>Batch', <%= camelCaseName%>IdList)
+  }
+
+  /**
+   * @description 保存<%= name%>
+   * @param {Object} <%= camelCaseName%>  <%= name%>对象
+   * @returns
+   */
+  static async save<%= pascalCaseName%>(<%= camelCaseName%>) {
+    return service.post('/<%= prefix%>/<%= camelCaseName%>/save<%= pascalCaseName%>', <%= camelCaseName%>)
+  }
+
+  /**
+   * @description 批量保存<%= name%>
+   * @param {Array} <%= camelCaseName%>List  <%= name%>对象数组
+   * @returns
+   */
+  static async save<%= pascalCaseName%>Batch(<%= camelCaseName%>List) {
+    return service.post('/<%= prefix%>/<%= camelCaseName%>/save<%= pascalCaseName%>Batch', <%= camelCaseName%>List)
+  }
+
+  /**
+   * @description 修改<%= name%>
+   * @param {Object} <%= camelCaseName%>  <%= name%>对象
+   * @returns
+   */
+  static async update<%= pascalCaseName%>(<%= camelCaseName%>) {
+    return service.post('/<%= prefix%>/<%= camelCaseName%>/update<%= pascalCaseName%>', <%= camelCaseName%>)
+  }
+
+  /**
+   * @description 批量修改<%= name%>
+   * @param {Array} <%= camelCaseName%>List  <%= name%>对象数组
+   * @returns
+   */
+  static async update<%= pascalCaseName%>Batch(<%= camelCaseName%>List) {
+    return service.post('/<%= prefix%>/<%= camelCaseName%>/update<%= pascalCaseName%>Batch', <%= camelCaseName%>List)
+  }
+
+  /**
+   * @description 根据ID查询<%= name%>详情
+   * @param {String} elementConfigId  <%= name%>ID
+   * @returns
+   */
+  static async get<%= pascalCaseName%>(elementConfigId) {
+    return service.postQuery('/<%= prefix%>/<%= camelCaseName%>/get<%= pascalCaseName%>', { elementConfigId })
+  }
+
+  /**
+   * @description 查询<%= name%>列表
+   * @param {Object} queryCondition 查询对象
+   * @returns
+   */
+  static async query<%= pascalCaseName%>(queryCondition) {
+    return service.post('/<%= prefix%>/<%= camelCaseName%>/query<%= pascalCaseName%>', queryCondition || {})
+  }
+
+  /**
+   * @description 导入 <%= name%>
+   * @param {File} 文件对象
+   * @returns
+   */
+  static async import<%= pascalCaseName%>(file) {
+    return service.postForm('/<%= prefix%>/<%= camelCaseName%>/import<%= pascalCaseName%>', { file })
+  }
+
+  /**
+   * @description <%= name%>导入模板下载
+   * @returns
+   */
+  static async download<%= pascalCaseName%>Template() {
+    return service.postFormData('/<%= prefix%>/<%= camelCaseName%>/download<%= pascalCaseName%>Template', {})
+  }
+
+  /**
+   * @description 导出<%= name%>
+   * @param {Object} queryCondition 查询条件
+   * @returns
+   */
+  static async export<%= pascalCaseName%>(queryCondition) {
+    return service.post('/<%= prefix%>/<%= camelCaseName%>/export<%= pascalCaseName%>', queryCondition, {
+      responseType: 'blob',
+    })
+  }
+}

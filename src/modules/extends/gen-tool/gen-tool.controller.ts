@@ -115,7 +115,7 @@ class genComponentTemplateDto extends genCategoryTypeDto{
 }
 
 @ApiTags('内部工具')
-@Controller('gen-tool')
+@Controller('genTool')
 export class GenToolController {
   constructor(private readonly genToolService: GenToolService) {}
   @Post('quickGenAdapter')

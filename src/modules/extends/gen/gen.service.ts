@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { FRAMEWORK_CONFIG } from '../../../../submodule/genCode-utils/src/config/frameworkConfig';
 import { getGenCode } from '../../../../submodule/genCode-utils/src/genCode';
+import { genContentByType, genPageCode, genServiceCode } from './genCodeUtil';
 
 const path = require('path');
 
@@ -56,5 +57,31 @@ export class GenService {
     } catch (error) {
       console.log(error, '获取生成的代码错误');
     }
+  }
+
+
+
+
+  async getSfGenCode(jsonData) {
+
+    const {projectInfo,menuList,routesConstantList,routeList,pageList,serviceList} = jsonData
+
+    const menuCodeList = genContentByType('menu',{ list:menuList })
+    const routeCodeList = genContentByType('route',{list:routeList})
+    const routesConstantCodeList = genContentByType('routesConstant', { list: routesConstantList })
+    // const serviceList = [{
+    //   prefix: 'sfBase',
+    //   camelCaseName: 'test',
+    //   pascalCaseName: 'Test',
+    //   name:'测试'
+    // }]
+    const serviceCodeList = serviceList.map(item=>{return {...item,prefix:'sfBase'}}).map(item => genServiceCode('service', item))
+    const pageCodeList = []
+    for await (const page of pageList) {
+      pageCodeList.push(await genPageCode(page))
+    }
+
+    return [menuCodeList, routeCodeList, routesConstantCodeList,...pageCodeList,...serviceCodeList]
+
   }
 }

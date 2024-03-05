@@ -6,6 +6,7 @@ import {
   Get,
   Param,
   Body,
+  Query,
 } from '@nestjs/common';
 import { DatabaseService } from './database.service';
 import { createConnection } from 'typeorm';
@@ -14,15 +15,52 @@ import {
   generatorQueryDatabaseSql,
   generatorQueryTableSql,
 } from './utils/sqlTool';
-import { ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiParam, ApiProperty, ApiQuery, ApiTags } from '@nestjs/swagger';
 
-const databaseConfig = {
+const databaseConfig:DbDto = {
   type: 'mysql',
   host: 'localhost',
   port: 3306,
   username: 'root',
   password: '123456',
 };
+
+class DbDto{
+  @ApiProperty({
+    description: '数据库类型',
+    required: true,
+    default:"mysql"
+  })
+  type: string
+
+  @ApiProperty({
+    description: '主机',
+    required: true,
+    default:"localhost"
+  })
+  host: string
+
+  @ApiProperty({
+    description: '端口',
+    required: true,
+    default:3306
+  })
+  port: number
+
+  @ApiProperty({
+    description: '数据库用户名',
+    required: true,
+    default:'root'
+  })
+  username: string
+
+  @ApiProperty({
+    description: '数据库密码',
+    required: true,
+    default:'123456'
+  })
+  password: string
+}
 
 function filterSystemDb(databseData) {
   const result = databseData
@@ -48,43 +86,7 @@ async function getConnection(params) {
   }
 }
 
-async function querySql(connction, sql) {
-  const data = await connction.query(sql);
-  connction.close();
-  return data;
-}
 
-async function getConnect() {
-  return await getConnection(databaseConfig);
-}
-
-// function parseFieldTypeAndLength(fieldDefinition) {
-  
-//   const matches = fieldDefinition.match(/([a-zA-Z]+)\((\d+)\)/);
-//   if (matches) {
-//     const type = matches[1];
-//     const length = parseInt(matches[2]);
-//     return { type, length };
-//   } else {
-//     return { type: fieldDefinition, length: null };
-//   }
-// }
-
-function parseFieldTypeAndLength(fieldDefinition) {
-  const matches = fieldDefinition.match(/([a-zA-Z]+)\(([^)]+)\)/);
-  if (matches) {
-    const type = matches[1];
-    let length = matches[2].split(",");
-    if(length && length.length>1){
-      length = JSON.stringify(length.map((value) => value.replace(/'/g, "")))
-    }else{
-      length = length[0]
-    }
-    return { type, length };
-  } else {
-    return { type: fieldDefinition, length: null };
-  }
-}
 
 @ApiTags('database')
 @Controller('database')
@@ -92,30 +94,6 @@ function parseFieldTypeAndLength(fieldDefinition) {
 export class DatabaseController {
   constructor(private readonly databaseService: DatabaseService) {}
 
-  @Post('db')
-  // 接收一个db连接配置=>
-  async getDbList() {
-    // 根据poolId就可以拿到数据库配置，从而回去数据库的数据
-    const connection = await getConnect();
-    const databaseList = await querySql(
-      connection,
-      generatorQueryDatabaseSql(),
-    );
-    return filterSystemDb(databaseList);
-  }
-
-  @Post('table')
-  async getTableListByDb(DbName) {
-    // 根据pooIId 加上DbName，获取表列表
-    const connection = await getConnect();
-    const databaseList = await querySql(
-      connection,
-      generatorQueryTableSql(DbName),
-    );
-    return filterSystemDb(databaseList);
-  }
-
-  //
   @Get(':database/:tableName')
   @ApiOperation({
     summary: '根据数据库名和表名获取字段',
@@ -132,22 +110,7 @@ export class DatabaseController {
     @Param('database') database: string,
     @Param('tableName') tableName: string,
   ) {
-    // 根据pooIId 加上DbName，获取表名，获取字段数据
-    const connection = await getConnect();
-    const field = await querySql(
-      connection,
-      generatorQueryColumnsSql(database, tableName),
-    );
-    const result = field.map(item=>{
-      const {type,length} = parseFieldTypeAndLength(item.Type)
-      return {
-        ...item,
-        _type:type,
-        _length:length
-      }
-    })
-    
-    return result 
+    return await this.databaseService.getFieldListByConfig(databaseConfig,database,tableName)
   }
 
 
@@ -170,8 +133,6 @@ export class DatabaseController {
       });
       let tableList = [];
       for (const database of databaseList) {
-        console.log(generatorQueryTableSql(database.name));
-
         const data = await connection.query(
           generatorQueryTableSql(database.name),
         );
@@ -189,8 +150,42 @@ export class DatabaseController {
       result.tableList = tableList;
       connection.close();
     return result
-
-    // return await querySql(generatorQueryDatabaseSql());
   }
-  // 根据项目id直接获取所有数据
+
+
+  @Post('db')
+  async getDbListByConfig(@Body() param:DbDto) {
+    return await this.databaseService.getDbListByConfig(param)
+  }
+
+  @Post('table')
+  @ApiQuery({
+    name: 'database',
+    description: '数据库名',
+  })
+  async getTableListByConfig(@Body() param: DbDto,@Query('database') database: string) {
+    console.log('database',database);
+    if (!database) {
+        return null
+    }
+
+
+    return await this.databaseService.getTableListByConfig(param,database)
+  }
+
+  @Post('field')
+  @ApiQuery({
+    name: 'database',
+    description: '数据库名',
+  })
+  @ApiQuery({
+    name: 'tableName',
+    description: '数据库表名',
+  })
+  async getFieldListByConfig(@Body() param: DbDto,@Query('database') database: string,@Query('tableName') tableName: string) {
+    if (!database || !tableName) {
+      return null
+    }
+    return await this.databaseService.getFieldListByConfig(param,database,tableName)
+  }
 }
