@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS `sf_menu` (
   PRIMARY KEY (`menu_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='菜单';
 
--- 正在导出表  software_factory_db.sf_menu 的数据：~0 rows (大约)
+-- 正在导出表  software_factory_db.sf_menu 的数据：~31 rows (大约)
 INSERT INTO `sf_menu` (`menu_id`, `menu_name`, `menu_code`, `english_name`, `parent_id`, `level_code`, `tag`, `menu_type`, `bind_project`, `status`, `sort`, `remark`, `isdel`, `creator`, `create_time`, `updater`, `update_time`) VALUES
 	('01862066c4374f48a32cd0805d7a5d28', '模板资源版本管理', 'templateVersionManage', NULL, 'f04b46be0acd415598e86b449a813501', '067004', NULL, 'page', 'DuKc8Et3ogtTxHPnhjVeO', '1', 3, NULL, '0', 'admin', '2024-03-04 15:26:17', 'admin', '2024-03-04 15:26:17'),
 	('09b7da772d2240c9a7f4475b0f35f3c9', '系统能力', 'systemAbility', NULL, '', '066', NULL, 'module', 'DuKc8Et3ogtTxHPnhjVeO', '1', 3, NULL, '0', 'admin', '2024-03-04 15:22:06', 'admin', '2024-03-04 15:22:12'),
@@ -75,6 +75,31 @@ INSERT INTO `sf_menu` (`menu_id`, `menu_name`, `menu_code`, `english_name`, `par
 	('fd782299f49344f68323d5f1d496e4bf', '作战能力设计', 'battleAbilityDesign', NULL, 'b6d1d1753a2641049b9d2b792ee44a40', '060005', NULL, 'page', 'DuKc8Et3ogtTxHPnhjVeO', '1', 4, NULL, '0', 'admin', '2024-03-04 15:30:43', 'admin', '2024-03-04 15:30:43'),
 	('fff9321e5d8e45469faebdf0b8fbc792', '装备模板资源管理', 'equipTemplateManage', NULL, 'f04b46be0acd415598e86b449a813501', '067003', NULL, 'page', 'DuKc8Et3ogtTxHPnhjVeO', '1', 2, NULL, '0', 'admin', '2024-03-04 15:25:33', 'admin', '2024-03-04 15:25:33');
 
+-- 导出  表 software_factory_db.sf_menu_detail 结构
+CREATE TABLE IF NOT EXISTS `sf_menu_detail` (
+  `menu_detail_id` varchar(32) NOT NULL COMMENT 'ID',
+  `menu_param` longtext COMMENT '参数配置',
+  `bind_menu` varchar(32) NOT NULL COMMENT '所属菜单',
+  `description` varchar(255) DEFAULT NULL COMMENT '描述',
+  `order_num` int(10) DEFAULT NULL COMMENT '排序',
+  `isdel` varchar(1) CHARACTER SET utf8 DEFAULT '0' COMMENT '是否删除',
+  `creator` varchar(32) CHARACTER SET utf8 DEFAULT NULL COMMENT '创建人',
+  `create_time` varchar(32) CHARACTER SET utf8 DEFAULT NULL COMMENT '创建时间',
+  `create_ip` varchar(32) CHARACTER SET utf8 DEFAULT NULL COMMENT '创建ip',
+  `updater` varchar(32) CHARACTER SET utf8 DEFAULT NULL COMMENT '修改人',
+  `update_time` varchar(32) CHARACTER SET utf8 DEFAULT NULL COMMENT '修改时间',
+  `update_ip` varchar(32) CHARACTER SET utf8 DEFAULT NULL COMMENT '修改ip',
+  PRIMARY KEY (`menu_detail_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='菜单详情';
+
+-- 正在导出表  software_factory_db.sf_menu_detail 的数据：~5 rows (大约)
+INSERT INTO `sf_menu_detail` (`menu_detail_id`, `menu_param`, `bind_menu`, `description`, `order_num`, `isdel`, `creator`, `create_time`, `create_ip`, `updater`, `update_time`, `update_ip`) VALUES
+	('5w-Pc_fMR462miguJS_Ia', '{"categoryType":"table","type":"treeTable"}', '33ce9fffe2e14814b73c89a823675e81', NULL, NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL),
+	('dzK02l79oruyWDMhubhPR', '{"categoryType":"table","type":"cardTable"}', 'f9dfc4e12f044e43b88adc25b2de5d73', NULL, NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL),
+	('frA00SM0-VxO5rwJZj08h', '{"categoryType":"table","type":"mergeTable"}', 'c46e6798ac714024bb6399749695022a', NULL, NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL),
+	('gOrKuwvMOK3bj6GFtwKMN', '{"categoryType":"table","type":"generalTable"}', '1b2c554b2b97467d82614a9957469866', NULL, NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL),
+	('RJkq44RulAFwY4pb9quJW', '{"categoryType":"table","type":"editTable"}', 'df348ebaddf9427ab4b33dda7855b6cf', NULL, NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL);
+
 -- 导出  表 software_factory_db.sf_project 结构
 CREATE TABLE IF NOT EXISTS `sf_project` (
   `project_id` varchar(32) NOT NULL COMMENT '项目id',
@@ -97,8 +122,28 @@ CREATE TABLE IF NOT EXISTS `sf_project` (
 
 -- 正在导出表  software_factory_db.sf_project 的数据：~1 rows (大约)
 INSERT INTO `sf_project` (`project_id`, `project_code`, `project_name`, `short_name`, `status`, `remark`, `project_description`, `system_name`, `system_code`, `sort`, `isdel`, `creator`, `create_time`, `updater`, `update_time`) VALUES
-	('CdAluWOdoQ174yuHldWIw', NULL, 'xxx', NULL, '1', NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL),
 	('DuKc8Et3ogtTxHPnhjVeO', NULL, '新一代', NULL, '1', NULL, NULL, NULL, NULL, 0, '0', NULL, NULL, NULL, NULL);
+
+-- 导出  表 software_factory_db.sf_project_config 结构
+CREATE TABLE IF NOT EXISTS `sf_project_config` (
+  `project_config_id` varchar(32) NOT NULL COMMENT 'ID',
+  `bind_project` varchar(32) NOT NULL COMMENT '所属项目',
+  `config_param` longtext COMMENT '参数配置',
+  `description` varchar(255) DEFAULT NULL COMMENT '描述',
+  `order_num` int(10) DEFAULT NULL COMMENT '排序',
+  `isdel` varchar(1) CHARACTER SET utf8 DEFAULT '0' COMMENT '是否删除',
+  `creator` varchar(32) CHARACTER SET utf8 DEFAULT NULL COMMENT '创建人',
+  `create_time` varchar(32) CHARACTER SET utf8 DEFAULT NULL COMMENT '创建时间',
+  `create_ip` varchar(32) CHARACTER SET utf8 DEFAULT NULL COMMENT '创建ip',
+  `updater` varchar(32) CHARACTER SET utf8 DEFAULT NULL COMMENT '修改人',
+  `update_time` varchar(32) CHARACTER SET utf8 DEFAULT NULL COMMENT '修改时间',
+  `update_ip` varchar(32) CHARACTER SET utf8 DEFAULT NULL COMMENT '修改ip',
+  PRIMARY KEY (`project_config_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='项目配置';
+
+-- 正在导出表  software_factory_db.sf_project_config 的数据：~1 rows (大约)
+INSERT INTO `sf_project_config` (`project_config_id`, `bind_project`, `config_param`, `description`, `order_num`, `isdel`, `creator`, `create_time`, `create_ip`, `updater`, `update_time`, `update_ip`) VALUES
+	('nb2iFt5_J7BjfWht6rXie', 'DuKc8Et3ogtTxHPnhjVeO', '{"host":"192.168.2.204","port":3306,"type":"mysql","username":"root","password":"123456","database":"sf_db"}', NULL, NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL);
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
