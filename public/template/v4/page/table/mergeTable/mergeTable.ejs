@@ -1,8 +1,126 @@
 <template>
-    <div><%=name%>-mergeTable</div>
+  <div class="common-page">
+    <MergeTable border :columns="tableCols" :data="tableData" />
+  </div>
 </template>
+
 <script>
+import MergeTable from '@/components/mergeTable/MergeTable.vue'
+import { uuid } from '@/utils/commonUtil'
 export default {
-    name:'<%= pageName%>'
+  name: '<%= pageName%>',
+  components: {
+    MergeTable,
+  },
+  data() {
+    return {
+      tableCols: [
+        // {
+        //   label: '序号',
+        //   type: 'index',
+        //   width: 60,
+        // },
+        {
+          prop: 'scene',
+          label: '任务场景',
+          merge: true,
+          minWidth: 150,
+        },
+        {
+          prop: 'ability1',
+          label: '一级作战能力(测试数据)',
+          merge: true,
+          minWidth: 150,
+        },
+        {
+          prop: 'ability2',
+          label: '二级级作战能力',
+          merge: true,
+          minWidth: 150,
+        },
+        {
+          prop: 'indexType',
+          label: '指标类型',
+          merge: true,
+          minWidth: 150,
+        },
+        {
+          prop: 'value',
+          label: '指标值',
+          minWidth: 150,
+        },
+      ],
+      tableData: [
+        {
+          id: uuid(),
+          scene: '对台打台任务',
+          ability1: '识别能力',
+          ability2: '传感器',
+          indexType: '效益型',
+          value: 5,
+        },
+
+        {
+          id: uuid(),
+          scene: '对台打台任务',
+          ability1: '打击能力',
+          ability2: '电磁保障能力',
+          indexType: '成本型',
+          value: 15,
+        },
+
+        {
+          id: uuid(),
+          scene: '对台打台任务',
+          ability1: '识别能力',
+          ability2: '打击安全',
+          indexType: '效益型',
+          value: 5,
+        },
+        {
+          id: uuid(),
+          scene: '对台登陆任务2',
+          ability1: '评估能力',
+          ability2: '协同能力',
+          indexType: '效益型',
+          value: 10,
+        },
+        {
+          id: uuid(),
+          scene: '对台登陆任务2',
+          ability1: '识别能力',
+          ability2: '协同能力',
+          indexType: '效益型',
+          value: 10,
+        },
+        {
+          id: uuid(),
+          scene: '对台打台任务',
+          ability1: '打击能力',
+          ability2: '协同信息处理能力',
+          indexType: '效益型',
+          value: 25,
+        },
+        {
+          id: uuid(),
+          scene: '对台登陆任务2',
+          ability1: '打击能力',
+          ability2: '作战管理能力',
+          indexType: '成本型',
+          value: 10,
+        },
+        {
+          id: uuid(),
+          scene: '对台打台任务',
+          ability1: '打击能力',
+          ability2: '电磁保障能力',
+          indexType: '效益型',
+          value: 15,
+        },
+      ],
+    }
+  },
+  methods: {},
 }
 </script>
+<style scoped lang="less"></style>

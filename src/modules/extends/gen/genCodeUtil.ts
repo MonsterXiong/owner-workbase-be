@@ -2,6 +2,8 @@ import { pascalCase } from 'change-case';
 import * as path from 'path'
 import * as fs from 'fs'
 import * as ejs from 'ejs'
+import * as glob from 'glob'
+import { MULTI_PAGE_LIST } from './multiList';
 const GEN_TYPE = {
     MENU: 'menu',
     ROUTE: 'route',
@@ -55,7 +57,10 @@ export function genServiceCode(type, param) {
         content:temp(param)
     }
 }
+
 export async function genPageCode(param) {
+    console.log('param',param);
+
     const { name, detailParam } = param
     let type = ''
     let categoryType = ''
@@ -66,20 +71,47 @@ export async function genPageCode(param) {
         categoryType = detailParam.categoryType
         type = detailParam.type
     }
-    if (type == 'empty') {
-        templatePath = getPath(`public/template/v4/page/${type}/${type}.ejs`)
-    } else {
-        templatePath = getPath(`public/template/v4/page/${categoryType}/${type}/${type}.ejs`)
-    }
     const pascalCaseName = pascalCase(name)
-    const temp = getEjsTemplate(templatePath);
-    // 参数自定义
+    const basePath = `public/template/v4/page/${categoryType}/${type}`
+    const pageDirPath = `pages/${name}`
+    const entryPath = `${pageDirPath}/${pascalCaseName}.vue`
+
     const templateParam = {
         name,
         pageName:pascalCaseName
     }
-    return {
-        filePath: `pages/${name}/${pascalCaseName}.vue`,
-        content:temp(templateParam)
+    if (MULTI_PAGE_LIST.includes(type)) {
+        const templatePathList = glob.sync(`${basePath}/**/*.{vue,ejs,less,js}`)
+        const pageCodeList = []
+        templatePathList.forEach(templatePathItem => {
+            const filePath = templatePathItem.slice(basePath.length + 1)
+            const ext = filePath.match(/\.\w+$/i)[0]
+            const fileName = filePath.replace(ext, '')
+            let outputFilePath = entryPath
+            if (fileName != type) {
+                const extName = ext === '.ejs'?'vue':ext
+                outputFilePath = `${pageDirPath}/${fileName}${extName}`
+            }
+            const temp = getEjsTemplate(templatePathItem);
+            pageCodeList.push({
+                filePath: outputFilePath,
+                content:temp(templateParam)
+            })
+        });
+        console.log('pageCodeList',pageCodeList);
+
+        return pageCodeList
+
+    } else {
+        if (type == 'empty') {
+            templatePath = getPath(`public/template/v4/page/${type}/${type}.ejs`)
+        } else {
+            templatePath = getPath(`${basePath}/${type}.ejs`)
+        }
+        const temp = getEjsTemplate(templatePath);
+        return {
+            filePath: entryPath,
+            content:temp(templateParam)
+        }
     }
 }

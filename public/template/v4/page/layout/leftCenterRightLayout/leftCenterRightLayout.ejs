@@ -1,8 +1,39 @@
 <template>
-    <div><%=name%>-leftCenterRightLayout</div>
+  <PanelLayout>
+    <!-- 左侧面板 -->
+    <template #left>
+      <div class="left-wrapper">左</div>
+    </template>
+    <!-- 中间面板 -->
+    <div class="main-wrapper">中--<%=name%></div>
+    <!-- 右侧区域 -->
+    <template #right>
+      <div class="right-wrapper">右</div>
+    </template>
+  </PanelLayout>
 </template>
 <script>
+import PanelLayout from '@/components/panelLayout/PanelLayout.vue'
 export default {
-    name:'<%= pageName%>'
+  name: '<%= pageName%>',
+  components: {
+    PanelLayout,
+  },
 }
 </script>
+<style lang="less" scoped>
+.left-wrapper,
+.main-wrapper,
+.right-wrapper {
+  height: 100%;
+}
+.left-wrapper {
+  background: red;
+}
+.main-wrapper {
+  background: green;
+}
+.right-wrapper {
+  background: yellow;
+}
+</style>

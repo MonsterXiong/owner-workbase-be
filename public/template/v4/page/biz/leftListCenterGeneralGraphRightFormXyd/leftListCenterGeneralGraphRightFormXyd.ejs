@@ -1,0 +1,50 @@
+<template>
+  <div>
+    <FloatPanelLayout ref="panelLayoutRef" :defaultLeftWidth="14" :isRight="isRight">
+      <template slot="left">
+        <ListComp isHeader headerTitle="数据链体系能力需求列表" v-model="curComponent" :listData="listData" />
+      </template>
+      <template slot="content">
+        <component :is="curComponent"></component>
+      </template>
+      <template v-if="curComponent === 'DemandModelDiagram'">
+        <template slot="right">
+          <OperationPanel />
+        </template>
+      </template>
+    </FloatPanelLayout>
+  </div>
+</template>
+<script>
+import FloatPanelLayout from './components/FloatPanelLayout.vue'
+import ListComp from './components/ListComp.vue'
+import OperationPanel from './components/demandDiagram/OperationPanel.vue'
+import DemandModelDiagram from './components/demandDiagram/DemandModelDiagram.vue'
+import DemandAnalyseTable from './components/demandAnalyseTable/DemandAnalyseTable.vue'
+export default {
+  name: '<%= pageName%>',
+  components: { FloatPanelLayout, ListComp, OperationPanel, DemandModelDiagram, DemandAnalyseTable },
+  data() {
+    return {
+      curComponent: 'DemandModelDiagram',
+      listData: [
+        {
+          id: 'DemandModelDiagram',
+          name: '需求交互建模',
+        },
+        {
+          id: 'DemandAnalyseTable',
+          name: '交互需求分析表',
+        },
+      ],
+      isRight: true,
+    }
+  },
+  watch: {
+    curComponent(newVal) {
+      this.isRight = newVal === 'DemandAnalyseTable' ? false : true
+      console.log(this.isRight, 'isRight=----------------')
+    },
+  },
+}
+</script>

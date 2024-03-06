@@ -1,8 +1,68 @@
 <template>
-    <div><%=name%>-leftTreeRightTable</div>
+  <div class="common-page">
+    <PanelLayout ref="panelLayoutRef">
+      <template v-slot:left>
+        <LeftTree @selectChange="onSelectChange" @refreshFunctionalData="refreshFunctionalData" />
+      </template>
+      <RightTable :tableData="currentTableData" />
+    </PanelLayout>
+  </div>
 </template>
+
 <script>
+import PanelLayout from '@/components/panelLayout/PanelLayout.vue'
+import LeftTree from './leftTree/LeftTree.vue'
+import RightTable from './rightTable/RightTable.vue'
 export default {
-    name:'<%= pageName%>'
+  name:'<%= pageName%>',
+  data() {
+    return {
+      functionalData: [],
+      currentNode: null,
+      currentTableData: [],
+      tableData: [
+        {
+          lid: '1',
+          id: '1',
+          name: '1',
+        },
+        {
+          lid: '1',
+          id: '1-1',
+          name: '1-1',
+        },
+        {
+          lid: '2',
+          id: '2',
+          name: '2-1',
+        },
+        {
+          lid: '2',
+          id: '2-1',
+          name: '2-1',
+        },
+      ],
+    }
+  },
+  watch: {
+    currentNode(newValue, oldValue) {
+      this.currentTableData = this.tableData.filter((item) => item.lid == newValue.id)
+    },
+  },
+  methods: {
+    refreshFunctionalData(data) {
+      this.functionalData = data || []
+    },
+    onSelectChange(nodeData) {
+      this.currentNode = nodeData
+    },
+  },
+  components: {
+    PanelLayout,
+    LeftTree,
+    RightTable,
+  },
 }
 </script>
+
+<style lang="less" scoped></style>

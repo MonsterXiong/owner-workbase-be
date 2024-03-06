@@ -1,8 +1,198 @@
 <template>
-    <div><%=name%>-operationalConceptGraph</div>
+  <OperationalConceptGraph
+    :countryTypeList="countryTypeList"
+    :nodeTypeList="nodeTypeList"
+    :resourceDataList="resourceDataList"
+    :deployDataList="deployDataList"
+    :lineTypeList="lineTypeList"
+    :lineList="lineList"
+    @saveData="onSaveData"
+    @refresh="onRefresh"
+  >
+    <template slot="left-title">
+      <el-dropdown trigger="click" style="font-size: 16px; font-weight: bold; cursor: pointer">
+        <span class="el-dropdown-link"> 下拉菜单<i class="el-icon-arrow-down el-icon--right"></i> </span>
+        <el-dropdown-menu slot="dropdown">
+          <el-dropdown-item icon="el-icon-plus">黄金糕</el-dropdown-item>
+          <el-dropdown-item icon="el-icon-circle-plus">狮子头</el-dropdown-item>
+          <el-dropdown-item icon="el-icon-circle-plus-outline">螺蛳粉</el-dropdown-item>
+          <el-dropdown-item icon="el-icon-check">双皮奶</el-dropdown-item>
+          <el-dropdown-item icon="el-icon-circle-check">蚵仔煎</el-dropdown-item>
+        </el-dropdown-menu>
+      </el-dropdown>
+    </template>
+    <template slot="edit-ext" slot-scope="{ formData }">
+      <el-form-item label="测试" prop="extStr">
+        <el-input v-model="formData.extStr"></el-input>
+      </el-form-item>
+    </template>
+  </OperationalConceptGraph>
 </template>
+
 <script>
+import OperationalConceptGraph from '@/components/operationalConceptGraph/OperationalConceptGraph.vue'
+import { uuid } from '@/utils/commonUtil'
+
+/**
+ * 装备部署地图组件 演示文件
+ * 1. 字段允许配置 类似于el-tree的props属性 更详细的入参详情可以见dataManage.js文件
+ * 2. 事件监听目前有两个
+ *    * @saveData 全量保存 返回 { nodes, lines }
+ *    * @refresh 刷新回调
+ */
+
 export default {
-    name:'<%= pageName%>'
+  name: '<%= pageName%>',
+  components: {
+    OperationalConceptGraph,
+  },
+  data() {
+    return {
+      countryTypeList: [], // 国家类型列表
+      nodeTypeList: [], // 节点类型列表
+      resourceDataList: [], // 资源树 平铺数据(组件会自己拼装树)
+      deployDataList: [], // 已部署的装备节点
+      lineTypeList: [], // 连线类型
+      lineList: [], // 连线数据
+    }
+  },
+  mounted() {
+    this.initData()
+  },
+  methods: {
+    async initData() {
+      // 国家类别类型 用作tab页切换,可以传空数组
+      this.countryTypeList = [
+        {
+          id: 'hongfang',
+          name: '红方',
+          color: '#e2555a',
+        },
+        {
+          id: 'lanfang',
+          name: '蓝方',
+          color: '#3e99fa',
+        },
+      ]
+      // 节点类型 用来当做父节点
+      this.nodeTypeList = [
+        {
+          id: 'qianshuiqi',
+          name: '航空器',
+          img: 'static/cesium-resources/airplane.svg',
+        },
+        {
+          id: 'chuanbo',
+          name: '船舶',
+          img: 'static/cesium-resources/boat.svg',
+        },
+        {
+          id: 'cheliang',
+          name: '车辆',
+          img: 'static/cesium-resources/car.svg',
+        },
+      ]
+      // 资源数据 用来拼右侧树
+      this.resourceDataList = [
+        {
+          id: uuid(),
+          name: 'A-飞机1-1',
+          parent: 'qianshuiqi',
+          countryType: 'hongfang',
+        },
+        {
+          id: uuid(),
+          name: 'A-飞机1-2',
+          parent: 'qianshuiqi',
+          countryType: 'hongfang',
+        },
+        {
+          id: uuid(),
+          name: 'B-飞机1-1',
+          parent: 'qianshuiqi',
+          countryType: 'lanfang',
+        },
+        {
+          id: uuid(),
+          name: 'B-飞机1-2',
+          parent: 'qianshuiqi',
+          countryType: 'lanfang',
+        },
+        {
+          id: uuid(),
+          name: 'A-船1-1',
+          parent: 'chuanbo',
+          countryType: 'hongfang',
+        },
+        {
+          id: uuid(),
+          name: 'A-船1-2',
+          parent: 'chuanbo',
+          countryType: 'hongfang',
+        },
+      ]
+      // 部署数据 用来拼左侧树
+      this.deployDataList = [
+        {
+          id: 'd900d7e0cbd64dc5a0a2921dca7c146c',
+          name: 'A-船1-1',
+          parent: 'chuanbo',
+          countryType: 'hongfang',
+          color: '#e2555a',
+          img: 'static/cesium-resources/boat.svg',
+          elIcon: '',
+          lon: 91.49131304551875,
+          lat: 19.160156249999986,
+          data: '',
+          extStr: '额外数据',
+        },
+        {
+          id: '040e3def38c0424eb447a33c043ed61a',
+          name: 'A-船1-2',
+          parent: 'chuanbo',
+          countryType: 'hongfang',
+          color: '#e2555a',
+          img: 'static/cesium-resources/boat.svg',
+          elIcon: '',
+          lon: 118.40781695176875,
+          lat: 25.026855468749986,
+          data: '',
+          extStr: '额外数据',
+        },
+      ]
+
+      // 连线类型
+      this.lineTypeList = [
+        {
+          id: 'zhihui',
+          name: '指挥关系',
+          color: '#fac858',
+        },
+        {
+          id: 'tongxin',
+          name: '通信关系',
+          color: '#ea7ccc',
+        },
+      ]
+
+      this.lineList = [
+        {
+          id: 'db5487e97b9d42029c5efc023d0fe36f',
+          name: '指挥关系',
+          type: 'zhihui',
+          from: 'd900d7e0cbd64dc5a0a2921dca7c146c',
+          to: '040e3def38c0424eb447a33c043ed61a',
+        },
+      ]
+    },
+    onSaveData({ nodes, lines }) {
+      console.log('全量保存, 发送请求保存数据')
+    },
+    onRefresh() {
+      console.log('刷新数据, 这里应该重新请求后端')
+    },
+  },
 }
 </script>
+
+<style scoped lang="less"></style>

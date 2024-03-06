@@ -1,8 +1,108 @@
 <template>
-    <div><%=name%>-orgGraphTree</div>
+  <div class="common-page" ref="OrgDiagramIndexRef">
+    <OrgDiagram
+        :defaultAngle="defaultAngle"
+        :nodeTemplate="nodeTemplate"
+        :defaultTemplate="defaultTemplate"
+        :saveMode="saveMode"
+        :addToolList="addToolList"
+        :nodeList="nodeList"
+        @addNode="addNode"
+        @deleteNode="deleteNode"
+        @updateNode="updateNode"
+        @saveDiagram="saveDiagramData"
+    ></OrgDiagram>
+  </div>
 </template>
+
 <script>
+import OrgDiagram from '@/components/orgDiagram/OrgDiagram.vue'
 export default {
-    name:'<%= pageName%>'
+    name: '<%= pageName%>',
+    data() {
+      return {
+        // id、name、parentId必传值，其余可不传
+        nodeList: [{
+           id: 'root',
+           name: '测试数据',
+           parentId: '',
+           properties: {},
+           sortValue: 0, //排序
+            // _type: 'default', //颜色
+           tag: '标签', //标签
+        },
+        {
+            id: 'child1',
+            name: '子节点1',
+            parentId: 'root',
+            properties: {},
+            sortValue: 1,
+            _type: 'red',
+        },
+        {
+            id: 'child2',
+            name: '子节点2',
+            parentId: 'root',
+            properties: {},
+            sortValue: 2,
+            _type: 'red',
+        },
+        {
+            id: 'child3',
+            name: '子节点3',
+            parentId: 'child1',
+            properties: {},
+            // sortValue: 3,
+            _type: 'hazeBlue',
+        }],
+        saveMode: 'save', //save【批量保存】 、 monitor【实时监听】 两种模式
+        nodeTemplate: null, //nodeTemplate(), 传了nodeTemplate的情况下默认渲染nodeTemplate否则根据defaultTemplate获取
+        defaultTemplate: 'vertical', //horizontal,vertical,default
+        defaultAngle: 0, //0 水平，90 垂直显示
+        // 添加按钮替换  为空数组是toolbar显示默认添加，有数据的情况替换toolbar的默认添加展示 staticParams为添加节点的默认properties
+        addToolList: [{
+            name: '添加活动',
+            code: 'add',
+            icon: 'el-icon-circle-plus-outline',
+            staticParams: {
+                equipName: '',
+                equipType: '',
+                _type: 'orange',
+            },
+        },{
+            name: '添加装备',
+            code: 'add',
+            icon: 'el-icon-circle-plus-outline',
+            staticParams: {
+                equipName: '',
+                equipType: '',
+                _type: 'green',
+            },
+        }],
+      }
+    },
+    mounted() {},
+    methods: {
+        saveDiagramData(nodeDataArray) {
+            console.log('saveDiagramData', nodeDataArray)
+        },
+        addNode(params) {
+            // 新增节点 节点数据
+            console.log('新增节点', params)
+        },
+        deleteNode(delIdList) {
+            // 删除节点 删除节点id数组
+            console.log('删除节点', delIdList)
+        },
+        updateNode(updateNodes) {
+            // 更新节点 节点数据
+            console.log('更新节点数据', updateNodes)
+        },
+    },
+    components: {
+        OrgDiagram,
+    },
 }
 </script>
+
+<style lang="less" scoped></style>

@@ -76,6 +76,7 @@ async function downloadCodeFile(dirPath, res) {
         fse.removeSync(zipFilePath, true);
         // 移除项目目录
         fse.removeSync(dirPath, true);
+        // fse.emptyDirSync(dirPath, true);
         resolve('操作成功');
       });
     } else {

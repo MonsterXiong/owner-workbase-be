@@ -60,9 +60,13 @@ export class SfProjectExtendService {
 
         // 获取数据配置信息
         let projectConfigInfo = await this.getProjectConfig(projectId)
-        const projectConfigParam = { ...JSON.parse(projectConfigInfo.configParam) }
 
-        const tableList = await this.databaseService.getTableListByConfig(projectConfigParam,projectConfigParam.database)
+        let tableList = []
+        const configParam = projectConfigInfo?.configParam
+        if (configParam) {
+            const projectConfigParam = { ...JSON.parse(configParam) }
+            tableList = await this.databaseService.getTableListByConfig(projectConfigParam,projectConfigParam.database)
+        }
 
         const serviceList = tableList?.map(item => {
             return {
@@ -75,7 +79,6 @@ export class SfProjectExtendService {
 
         // 获取页面菜单信息 以及菜单配置信息
         const queryMenuCondition = getMenuQueryCondition(projectId)
-        console.log('queryMenuCondition',queryMenuCondition);
 
         const menuInfo = await this.sfMenuService.queryList(queryMenuCondition as any)
 

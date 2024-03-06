@@ -76,9 +76,14 @@ export class GenService {
     //   name:'测试'
     // }]
     const serviceCodeList = serviceList.map(item=>{return {...item,prefix:'sfBase'}}).map(item => genServiceCode('service', item))
-    const pageCodeList = []
+    let pageCodeList = []
     for await (const page of pageList) {
-      pageCodeList.push(await genPageCode(page))
+      const pageCode = await genPageCode(page)
+      if (Array.isArray(pageCode)) {
+        pageCodeList = pageCodeList.concat(pageCode)
+      } else {
+        pageCodeList.push(pageCode)
+      }
     }
 
     return [menuCodeList, routeCodeList, routesConstantCodeList,...pageCodeList,...serviceCodeList]

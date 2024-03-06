@@ -1,8 +1,163 @@
 <template>
-    <div><%=name%>-cardTable</div>
+  <div class="demand-special">
+    <div class="tool-wrap">
+      <el-form class="form-wrap" ref="formRef" :model="formQuery" inline>
+        <el-form-item label="需求专题：">
+          <el-input v-model="formQuery.name" placeholder="请输入"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <AddComp :isBtn="true" @add="onAdd" />
+        </el-form-item>
+      </el-form>
+    </div>
+    <div class="special-main">
+      <el-row :gutter="20">
+        <!-- <el-col :span="8">
+            <AddComp @add="onAdd" @desc="onDesc" />
+          </el-col> -->
+        <el-col :span="8" v-for="card in cardList" :key="card.id">
+          <SpecialCard :cardInfo="card"> </SpecialCard>
+        </el-col>
+      </el-row>
+    </div>
+    <div class="pagination-wrap">
+      <el-pagination
+        ref="paginationRef"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="pageInfo.count"
+        :page-sizes="[5, 10, 20, 50, 100]"
+        :page-size="pageInfo.rows"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"
+      >
+      </el-pagination>
+    </div>
+    <DemandViewDialog ref="demandViewDialogRef" />
+  </div>
 </template>
+
 <script>
+import AddComp from './components/AddComp.vue'
+import SpecialCard from './components/CardItem.vue'
+import DemandViewDialog from './components/DemandViewDialog.vue'
 export default {
-    name:'<%= pageName%>'
+  name: '<%= pageName%>',
+  components: {
+    AddComp,
+    SpecialCard,
+    DemandViewDialog,
+  },
+  data() {
+    return {
+      formQuery: {
+        name: '',
+      },
+      cardList: [
+        {
+          id: '123',
+          title: '需求视图1',
+          status: '已下发',
+          content: `描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述。
+        描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述。
+        描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述。
+        描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述。`,
+          time: '2024-01-08 12:00:00',
+        },
+        {
+          id: '1234',
+          title: '需求视图1',
+          status: '已下发',
+          content: `描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述。
+        描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述。
+        描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述。
+        描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述。`,
+          time: '2024-01-08 12:00:00',
+        },
+        {
+          id: '12344',
+          title: '需求视图1',
+          status: '已下发',
+          content: `描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述。
+        描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述。
+        描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述。
+        描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述。`,
+          time: '2024-01-08 12:00:00',
+        },
+        {
+          id: '12345',
+          title: '需求视图1',
+          status: '已下发',
+          content: `描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述。
+        描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述。
+        描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述。
+        描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述。`,
+          time: '2024-01-08 12:00:00',
+        },
+      ],
+      cardHeight: '300px',
+      total: 100,
+      pageInfo: {
+        page: 1,
+        rows: 20,
+        count: 0,
+      },
+    }
+  },
+  created() {},
+  mounted() {
+    this.$nextTick(() => {
+      this.setMainHeight()
+    })
+  },
+  methods: {
+    onAdd() {
+      this.$refs.demandViewDialogRef.show()
+    },
+    onDesc() {
+      // 跳转到详情页面
+    },
+    handleSizeChange() {},
+    handleCurrentChange() {},
+    setMainHeight() {
+      let otherHeight = 0
+      if (this.$refs.formRef) otherHeight += this.$refs.formRef.$el.offsetHeight
+      if (this.$refs.paginationRef) otherHeight += this.$refs.paginationRef.$el.offsetHeight
+
+      document.getElementsByClassName('special-main')[0].style.height = `calc(100% - ${otherHeight}px - 20px - 10px)`
+    },
+  },
 }
 </script>
+
+<style lang="less" scoped>
+.demand-special {
+  height: 100%;
+  padding: 10px;
+  .tool-wrap {
+    padding: 10px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    height: 60px;
+    background-color: #9bd2f3;
+    border-radius: 5px;
+    .el-form-item {
+      margin-bottom: 0px;
+    }
+  }
+  .special-main {
+    overflow-y: auto;
+    .el-row {
+      width: 100%;
+    }
+    .el-col {
+      height: 300px;
+      margin-bottom: 10px;
+    }
+  }
+  .pagination-wrap {
+    text-align: right;
+  }
+}
+</style>

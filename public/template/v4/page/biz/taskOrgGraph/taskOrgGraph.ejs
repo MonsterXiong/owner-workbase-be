@@ -1,8 +1,195 @@
 <template>
-    <div><%=name%>-taskOrgGraph</div>
+  <div class="task-analysis" ref="XydTaskAnalysisOutputRef">
+    <splitpanes class="default-theme" @resize="onResize">
+      <pane class="main" :size="mainWidth">
+        <TaskOrgDiagram
+          :cw="cw"
+          :ch="ch"
+          :defaultAngle="defaultAngle"
+          :nodeTemplate="nodeTemplate"
+          :saveMode="saveMode"
+          :addToolList="addToolList"
+          :nodeList="nodeList"
+          @addNode="addNode"
+          @deleteNode="deleteNode"
+          @updateNode="updateNode"
+          @saveDiagram="saveDiagramData"
+          @setCurrentNodeData="setCurrentNodeData"
+        />
+      </pane>
+      <pane class="right-side" :size="rightWidth" :maxSize="35" :min-size="20" v-if="currentNodeData">
+        <EditPanel :currentNodeData="currentNodeData || {}" />
+      </pane>
+    </splitpanes>
+  </div>
 </template>
+
 <script>
+import { Splitpanes, Pane } from 'splitpanes'
+import 'splitpanes/dist/splitpanes.css'
+import EditPanel from './components/EditPanel.vue'
+import TaskOrgDiagram from './components/TaskOrgDiagram.vue'
+import { mapState } from 'vuex'
 export default {
-    name:'<%= pageName%>'
+  name: '<%= pageName%>',
+  data() {
+    return {
+      isShowRightSide: true,
+      mainWidth: 80,
+      rightWidth: 20,
+      nodeList: [
+        {
+          id: 'root',
+          name: '打台攻台使命任务',
+          parentId: '',
+          properties: {
+            mission: '打台攻台使命任务',
+            code: '001',
+            scene: '101',
+            target: '击毁敌军雷达，控制城市',
+            remark: '...',
+          },
+          sortValue: 0, //排序
+          _type: 'default', //颜色
+          tag: '使命', //标签
+        },
+        {
+          id: 'child1',
+          name: '渡海登岛任务',
+          parentId: 'root',
+          properties: {
+            taskCode: 'task001',
+            taskName: '渡海登岛任务',
+            target: '登录xxx岛',
+            time: '2023.12.18',
+            area: 'xx岛屿',
+            remark: '1201',
+            _type: 'default',
+          },
+          sortValue: 1,
+          tag: '渡海登岛任务', //标签
+          _type: 'default',
+        },
+        {
+          id: 'child2',
+          name: '抢滩登陆任务',
+          parentId: 'root',
+          properties: {
+            taskCode: 'task002',
+            taskName: '抢滩登陆任务',
+            target: '登录xxx滩头',
+            time: '2023.12.18',
+            area: 'xx滩头',
+            remark: '1202',
+            _type: 'default',
+          },
+          sortValue: 2,
+          tag: '抢滩登陆任务', //标签
+          _type: 'default',
+        },
+      ],
+      saveMode: 'save', //save【批量保存】 、 monitor【实时监听】 两种模式
+      nodeTemplate: null, //nodeTemplate(), 传了nodeTemplate的情况下默认渲染nodeTemplate
+      defaultAngle: 90, //0 水平，90 垂直显示
+      addToolList: [
+        // 添加按钮替换  为空数组是toolbar显示默认添加，有数据的情况替换toolbar的默认添加展示 staticParams为添加节点的默认properties
+        {
+          name: '添加使命',
+          code: 'add',
+          icon: 'el-icon-circle-plus-outline',
+          staticParams: {
+            mission: '',
+            code: '',
+            scene: '',
+            target: '',
+            remark: '',
+            _type: 'default',
+          },
+        },
+        {
+          name: '添加任务',
+          code: 'add',
+          icon: 'el-icon-circle-plus-outline',
+          staticParams: {
+            taskCode: '',
+            taskName: '',
+            target: '',
+            time: '',
+            area: '',
+            remark: '',
+            _type: 'default',
+          },
+        },
+      ],
+      cw: 0, //当前页面的宽
+      ch: 0, //当前页面的高
+      currentNodeData: null,
+    }
+  },
+  computed: {
+    ...mapState('setting', ['isCollapseGuidance']),
+  },
+  watch: {
+    isCollapseGuidance: {
+      handler() {
+        setTimeout(() => {
+          this.getCurrentClient()
+        }, 300)
+      },
+      immediate: true,
+    },
+  },
+  mounted() {},
+  methods: {
+    init() {
+      // 页面初始化
+    },
+    // 获取当前视图的宽高
+    getCurrentClient() {
+      this.cw = this.$refs.XydTaskAnalysisOutputRef.clientWidth
+      this.ch = this.$refs.XydTaskAnalysisOutputRef.clientHeight
+      this.setPanelWidth()
+    },
+    // 获取使命数据
+    getMission() {},
+    // 获取任务数据
+    getTask() {},
+    // 页面布局变化
+    onResize() {
+      console.log('resize事件')
+    },
+    saveDiagramData(nodeDataArray) {
+      console.log('saveDiagramData', nodeDataArray)
+    },
+    addNode(params) {
+      // 新增节点 节点数据
+      console.log('新增节点', params)
+    },
+    deleteNode(delIdList) {
+      // 删除节点 删除节点id数组
+      console.log('删除节点', delIdList)
+    },
+    updateNode(updateNodes) {
+      // 更新节点 节点数据
+      console.log('更新节点数据', updateNodes)
+    },
+    setCurrentNodeData(data) {
+      this.currentNodeData = data || null
+      console.log('当前选中节点', data)
+      this.setPanelWidth()
+    },
+    setPanelWidth() {
+      if (this.currentNodeData) {
+        this.mainWidth = 80
+        this.rightWidth = 20
+      } else {
+        this.mainWidth = 100
+        this.rightWidth = 0
+      }
+    },
+  },
+  components: { Splitpanes, Pane, EditPanel, TaskOrgDiagram },
 }
 </script>
+
+<style lang="less" scoped></style>

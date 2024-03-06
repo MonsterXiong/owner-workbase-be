@@ -1,8 +1,75 @@
 <template>
-    <div><%=name%>-leftListRightTable</div>
+  <div class="common-page">
+    <PanelLayout ref="panelLayoutRef">
+      <template v-slot:left>
+        <LeftList headerTitle="测试列表" :listData="listData" @onClickNode="onChangeCurrentNode" />
+      </template>
+      <RightTable :tableData="currentTableData" />
+    </PanelLayout>
+  </div>
 </template>
+
 <script>
+import PanelLayout from '@/components/panelLayout/PanelLayout.vue'
+import LeftList from './leftList/LeftList.vue'
+import RightTable from './rightTable/RightTable.vue'
 export default {
-    name:'<%= pageName%>'
+  name: '<%= pageName%>',
+  data() {
+    return {
+      currentNode: null,
+      currentTableData: [],
+      tableData: [
+        {
+          lid: '1',
+          id: '1',
+          name: '1',
+        },
+        {
+          lid: '1',
+          id: '1-1',
+          name: '1-1',
+        },
+        {
+          lid: '2',
+          id: '2',
+          name: '2-1',
+        },
+        {
+          lid: '2',
+          id: '2-1',
+          name: '2-1',
+        },
+      ],
+      listData: [
+        {
+          id: '1',
+          name: '测试1',
+        },
+        {
+          id: '2',
+          name: '测试2',
+        },
+      ],
+    }
+  },
+  watch: {
+    currentNode(newValue, oldValue) {
+      this.currentTableData = this.tableData.filter((item) => item.lid == newValue.id)
+    },
+  },
+  methods: {
+    queryTableData() {},
+    onChangeCurrentNode(node) {
+      this.currentNode = node
+    },
+  },
+  components: {
+    PanelLayout,
+    LeftList,
+    RightTable,
+  },
 }
 </script>
+
+<style lang="less" scoped></style>
