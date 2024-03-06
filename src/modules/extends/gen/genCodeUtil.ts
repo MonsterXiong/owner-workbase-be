@@ -59,8 +59,6 @@ export function genServiceCode(type, param) {
 }
 
 export async function genPageCode(param) {
-    console.log('param',param);
-
     const { name, detailParam } = param
     let type = ''
     let categoryType = ''
@@ -98,8 +96,6 @@ export async function genPageCode(param) {
                 content:temp(templateParam)
             })
         });
-        console.log('pageCodeList',pageCodeList);
-
         return pageCodeList
 
     } else {
