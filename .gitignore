@@ -3,7 +3,6 @@
 /node_modules
 /temp
 package-lock.json
-/src/modules/base
 
 # Logs
 logs

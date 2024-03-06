@@ -9,8 +9,6 @@
     "quickstart": "npm-run-all --parallel install:* --sequential start:dev",
     "clean": "npm-run-all clean:*",
     "bootstrap": "npm-run-all install:genCode start:dev",
-    "install:genCode": "cd submodule/genCode-utils && npm install ",
-    "clean:genCode": "rimraf submodule/genCode-utils/node_modules",
     "start:fe": "cd submodule/owner-workbase && npm run dev",
     "clean:fe": "rimraf submodule/owner-workbase/node_modules",
     "install:fe": "cd submodule/owner-workbase && npm install ",
