@@ -15,6 +15,16 @@ export class SfProjectExtendController {
   async getProjectDetail(@Query('projectId') projectId: string) {
     return this.sfProjectExtendService.getProjectConfig(projectId)
   }
+  @Post('getTableByProjectId')
+  @ApiOperation({ summary: '根据项目id获取表结构' })
+  async getTableByProjectId(@Query('projectId') projectId: string) {
+    return this.sfProjectExtendService.getTableByProjectId(projectId)
+  }
+  @Post('getFieldByProjectId')
+  @ApiOperation({ summary: '根据项目id和表名获取字段' })
+  async getFieldByProjectId(@Query('projectId') projectId: string,@Query('tableName') tableName: string) {
+    return this.sfProjectExtendService.getFieldByProjectId(projectId,tableName)
+  }
 
   @Post('getProjectGenCodeJson')
   @ApiOperation({ summary: '根据项目id获取项目生成JSON' })

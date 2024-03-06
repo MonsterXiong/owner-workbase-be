@@ -34,6 +34,36 @@ export class SfProjectExtendService {
         return data
     }
 
+    async getTableByProjectId(projectId) {
+        // 获取项目信息
+        const projectConfig = await this.getProjectConfig(projectId)
+        const configParam = projectConfig?.configParam
+        if(!configParam){
+          return []
+        }
+        const defaultConfig = JSON.parse(configParam)
+
+       const tableList =  await this.databaseService.getTableListByConfig(defaultConfig,defaultConfig.database)
+       return tableList
+    }
+
+    async getFieldByProjectId(projectId,tableName) {
+        // 获取项目信息
+        const projectConfig = await this.getProjectConfig(projectId)
+        const configParam = projectConfig?.configParam
+        if(!configParam){
+          return []
+        }
+        const defaultConfig = JSON.parse(configParam)
+        try {
+            return await this.databaseService.getFieldListByConfig(defaultConfig,defaultConfig.database,tableName)
+        } catch (error) {
+            console.log('error',error);
+            return []
+        }
+
+    }
+
     // 通过项目获取数据的json
     async getProjectGenCodeJson(projectId) {
         let projectJsonData = {
