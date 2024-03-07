@@ -8,6 +8,14 @@ const nodeTemplate = function (option) {
     {
       deletable: false,
       locationSpot: go.Spot.Center,
+      cursor: 'pointer',
+      fromSpot: go.Spot.AllSides,
+      toSpot: go.Spot.AllSides,
+      fromLinkable: true,
+      toLinkable: true,
+      click: function (e, thisObj) {
+        console.log(thisObj, 'nodeClick-----------')
+      }
     },
     new go.Binding('text', 'text'),
     new go.Binding('location', 'loc', function (value) {
@@ -25,7 +33,7 @@ const nodeTemplate = function (option) {
         width: 220,
         stretch: go.GraphObject.Fill,
         alignment: go.Spot.Center,
-      },
+      }
       // new go.Binding(bindingKey.STROKE, bindingValueKey.LINECOLOR),
     ),
     $(
@@ -73,13 +81,25 @@ const linkTemplate = function () {
       }
       return go.Spot.parse(value)
     }).makeTwoWay(go.Spot.stringify),
-    $(go.Shape, {
-      strokeWidth: 1.5,
-      stroke: '#7f7f7f',
-    }),
+    $(
+      go.Shape,
+      {
+        strokeWidth: 1.5,
+        stroke: '#7f7f7f',
+      },
+      new go.Binding('strokeDashArray', 'dash', function (strokeDashArray) {
+        if (!strokeDashArray || strokeDashArray.length != 2) {
+          return [0, 0]
+        }
+        return strokeDashArray
+      })
+    ),
     $(
       go.Shape, // the arrowhead
-      { toArrow: 'OpenTriangle', fill: null }
+      {
+        toArrow: 'OpenTriangle',
+        fill: null,
+      }
     ),
     $(
       go.TextBlock,
@@ -96,4 +116,15 @@ const linkTemplate = function () {
   )
 }
 
-export { nodeTemplate, linkTemplate }
+const temporaryLinkTemplate = function () {
+  return $(
+    go.Link,
+    $(go.Shape, {
+      stroke: 'dodgerblue',
+      strokeWidth: 1,
+      strokeDashArray: [6, 2],
+    })
+  )
+}
+
+export { nodeTemplate, linkTemplate, temporaryLinkTemplate }

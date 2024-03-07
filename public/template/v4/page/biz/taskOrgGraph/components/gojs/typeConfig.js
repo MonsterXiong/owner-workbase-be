@@ -40,4 +40,25 @@ export const layouts = [
     rotate: 90,
   },
 ]
+export const DefaultAddNodeConfig = {
+  matchCode: {
+    id: 'id',
+    name: 'name',
+    tag: 'tag',
+    parentId: 'parentId',
+    sortValue: 'sortValue',
+    _type: '_type',
+  },
+  template: {
+    id: '',
+    name: '',
+    tag: '',
+    parentId: '',
+    sortValue: '',
+    _type: '',
+  },
+  nodeLabel: '节点',
+  tag: '',
+  _type: 'default',
+}
 export { typeColorConfig, typeImageConfig }

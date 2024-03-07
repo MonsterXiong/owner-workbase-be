@@ -1,0 +1,199 @@
+@mm: 1 / (1 / 72 * 25.4) * 1pt; // 1毫米代表多少pt
+@cm: @mm * 10; // 1厘米代表多少pt
+@a4Width: 21 * @cm; // A4张宽度 21厘米
+@a4Height: 29.7 * @cm; // A4纸高度 29.7厘米
+@a4TopPadding: 2.54 * @cm;
+@a4LeftPadding: 3.18 * @cm;
+@a4Padding: 2.54 * @cm 3.18 * @cm; // A4纸内边距 2.54厘米 3.18厘米
+@a4BorderWidth: calc(@a4Width * (24 / 793));
+@base-theme-color: #409eff;
+
+.cross-reference {
+  text-decoration: underline;
+}
+
+.word {
+  position: relative;
+  font-family: 宋体;
+  font-size: 12pt;
+  width: @a4Width;
+  height: @a4Height;
+  margin: 0 auto;
+  padding: @a4Padding;
+  box-sizing: border-box;
+  background-color: white;
+  // overflow: hidden;
+  box-shadow: 0 0 5pt rgba(0, 0, 0, 0.3);
+  color: #000;
+  margin-bottom: 20px;
+  &.mini {
+    padding: 0;
+    width: calc(@a4Width - 2 * 3.18 * @cm);
+    height: calc(@a4Height - 2 * 2.54 * @cm);
+    padding-bottom: 20px;
+    box-shadow: none;
+
+    .pageNum {
+      top: calc(@a4Height - 2 * @a4TopPadding - 20px + 3px);
+    }
+  }
+  &.clazzWord {
+    min-height: @a4Height;
+    height: auto;
+  }
+  &.virtual {
+    visibility: hidden;
+    position: absolute;
+  }
+  > article {
+    height: 100%;
+    width: 100%;
+  }
+  .pageNum {
+    position: absolute;
+    font-size: 10.5pt;
+    top: calc(@a4Height - @a4TopPadding + 3px);
+    z-index: 2;
+    width: 100%;
+    text-align: center;
+    left: 0;
+    color: #676767;
+  }
+  > .border {
+    height:  @a4BorderWidth;
+    width: @a4BorderWidth;
+    border: 1px solid #aaaaaa;
+    position: absolute;
+    &.top-left {
+      top: calc(@a4TopPadding -  @a4BorderWidth);
+      left:calc(@a4LeftPadding -  @a4BorderWidth - 1px);
+      border-top: none;
+      border-left: none;
+    }
+    &.top-right {
+      top: calc(@a4TopPadding -  @a4BorderWidth);
+      right:calc(@a4LeftPadding -  @a4BorderWidth - 1px);
+      border-top: none;
+      border-right: none;
+    }
+    &.bottom-left {
+      bottom: calc(@a4TopPadding -  @a4BorderWidth);
+      left:calc(@a4LeftPadding -  @a4BorderWidth - 1px);
+      border-bottom: none;
+      border-left: none;
+    }
+    &.bottom-right {
+      bottom: calc(@a4TopPadding -  @a4BorderWidth);
+      right:calc(@a4LeftPadding -  @a4BorderWidth - 1px);
+      border-bottom: none;
+      border-right: none;
+    }
+  }
+}
+// 页面横版模式
+.word.transverse {
+  width: @a4Height;
+  height: @a4Width;
+  margin: 0 auto;
+  padding: @a4LeftPadding @a4TopPadding;
+  margin-bottom: 20px;
+  .pageNum {
+    top: calc(@a4Width - @a4LeftPadding + 3px);
+  }
+  > .border {
+    &.top-left {
+      top: calc(@a4LeftPadding -  @a4BorderWidth);
+      left:calc(@a4TopPadding -  @a4BorderWidth - 1px);
+    }
+    &.top-right {
+      top: calc(@a4LeftPadding -  @a4BorderWidth);
+      right:calc(@a4TopPadding -  @a4BorderWidth - 1px);
+    }
+    &.bottom-left {
+      bottom: calc(@a4LeftPadding -  @a4BorderWidth);
+      left:calc(@a4TopPadding -  @a4BorderWidth - 1px);
+    }
+    &.bottom-right {
+      bottom: calc(@a4LeftPadding -  @a4BorderWidth);
+      right:calc(@a4TopPadding -  @a4BorderWidth - 1px);
+    }
+  }
+}
+
+p.MsoNormal, li.MsoNormal, div.MsoNormal {
+  word-break: break-all;
+  margin: 0cm;
+  margin-bottom: 0.0001pt;
+  text-align: left;
+  text-justify: inter-ideograph;
+  font-size: 10.5pt;
+  font-family: 宋体;
+  line-height: 1.5;
+  &:focus-visible {
+    outline: @base-theme-color auto 1px;
+  }
+}
+p.MsoCaption, li.MsoCaption, div.MsoCaption {
+  word-break: break-all;
+  margin: 0cm;
+  margin-bottom: 0.0001pt;
+  text-align: justify;
+  text-justify: inter-ideograph;
+  font-size: 10.0pt;
+  font-family: "Calibri Light",sans-serif;
+}
+.WordTable {
+  width: 100%;
+  border-collapse: collapse;
+  td {
+    border: none !important;
+  }
+  thead {
+    tr {
+      td {
+        border: 1px solid !important;
+        &:not(:first-child) {
+          border-left: none !important;
+        }
+      }
+    }
+  }
+  tbody {
+    tr {
+      height: 25pt;
+      td {
+        height: 25pt;
+        border: 1px solid !important;
+        border-top: none !important;
+        &:not(:first-child) {
+          border-left: none !important;
+        }
+      }
+    }
+  }
+}
+.WordNode.active,
+.WordNode:hover {
+  outline: 1px dashed @base-theme-color;
+  .active .WordText {
+    outline: 2px solid @base-theme-color;
+    border-radius: 3px;
+  }
+}
+.WordNode:hover+.WordPosti,
+.WordPosti:hover {
+  .WordPosti-box {
+    border-color: #b6072f;
+  }
+  z-index: 1;
+  .el-icon-s-custom  {
+    color: #b6072f;
+  }
+  &::before {
+    visibility: initial;
+  }
+}
+.WordNode.error {
+  background-color: #b6073031;;
+  // outline: 1px solid #b6072f;
+}

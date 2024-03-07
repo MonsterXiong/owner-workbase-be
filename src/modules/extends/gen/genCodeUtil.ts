@@ -40,6 +40,17 @@ function getEjsTemplate(templatePath) {
     return ejs.compile(templateFile);
 }
 
+function getEjsTemplateByFile(templatePath,templateParam) {
+    return new Promise((resolve, reject) => {
+        ejs.renderFile(templatePath, templateParam, {}, function(err, str){
+            if (err) {
+                reject(err)
+            }
+            resolve(str)
+        });
+    })
+}
+
 export function genContentByType(type, param) {
     const temp = getEjsTemplate(TEMPLATE_PATH[type]);
     return {
@@ -81,21 +92,23 @@ export async function genPageCode(param) {
     if (MULTI_PAGE_LIST.includes(type)) {
         const templatePathList = glob.sync(`${basePath}/**/*.{vue,ejs,less,js}`)
         const pageCodeList = []
-        templatePathList.forEach(templatePathItem => {
+        for await (const templatePathItem of templatePathList) {
             const filePath = templatePathItem.slice(basePath.length + 1)
             const ext = filePath.match(/\.\w+$/i)[0]
             const fileName = filePath.replace(ext, '')
             let outputFilePath = entryPath
             if (fileName != type) {
-                const extName = ext === '.ejs'?'vue':ext
+                const extName = ext === '.ejs'?'.vue':ext
                 outputFilePath = `${pageDirPath}/${fileName}${extName}`
             }
-            const temp = getEjsTemplate(templatePathItem);
+            // const temp = getEjsTemplate(templatePathItem);
+            const content = await getEjsTemplateByFile(templatePathItem,templateParam);
             pageCodeList.push({
                 filePath: outputFilePath,
-                content:temp(templateParam)
+                content
+                // content:temp(templateParam)
             })
-        });
+        }
         return pageCodeList
 
     } else {
@@ -104,10 +117,12 @@ export async function genPageCode(param) {
         } else {
             templatePath = getPath(`${basePath}/${type}.ejs`)
         }
-        const temp = getEjsTemplate(templatePath);
+        // const temp = getEjsTemplate(templatePath);
+        const content = await getEjsTemplateByFile(templatePath,templateParam);
         return {
             filePath: entryPath,
-            content:temp(templateParam)
+            content
+            // content:temp(templateParam)
         }
     }
 }

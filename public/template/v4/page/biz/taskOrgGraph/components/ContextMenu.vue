@@ -1,5 +1,11 @@
 <template>
-  <div class="context-menu-box" v-if="isShow" :style="{ left: position.x + 'px', top: position.y + 'px' }" v-click-outside="hide" @click.stop>
+  <div
+    class="context-menu-box"
+    v-if="isShow"
+    :style="{ left: position.x + 'px', top: position.y + 'px' }"
+    v-click-outside="hide"
+    @click.stop
+  >
     <el-menu
       :background-color="backgroundColor ? backgroundColor : ''"
       :text-color="textColor ? textColor : ''"
@@ -8,13 +14,36 @@
       class="context-menu"
     >
       <div v-for="(menu, index) in menuList" :key="menu.code + index">
-        <el-menu-item v-if="!menu.children || menu.children.length == 0" @click="handleMenuItemClick(menu)" :index="menu.code" :disabled="menu.disabled">
-          <BaseIcon v-if="menu.iconName" :iconName="menu.iconName" :fill="menu.iconfill" />
-          <BaseIcon v-if="isIconName(menuList) && (menu.iconName === '' || menu.iconName === undefined)" iconName="" />
-          <span class="context-menu-title">{{ typeof menu.title === 'function' ? menu.title(menu.params) : menu.title }}</span>
+        <el-menu-item
+          v-if="!menu.children || menu.children.length == 0"
+          @click="handleMenuItemClick(menu)"
+          :index="menu.code"
+          :disabled="menu.disabled"
+        >
+          <BaseIcon
+            v-if="menu.iconName"
+            :iconName="menu.iconName"
+            :fill="menu.iconfill"
+          />
+          <BaseIcon
+            v-if="
+              isIconName(menuList) &&
+              (menu.iconName === '' || menu.iconName === undefined)
+            "
+            iconName=""
+          />
+          <span class="context-menu-title">{{
+            typeof menu.title === "function"
+              ? menu.title(menu.params)
+              : menu.title
+          }}</span>
         </el-menu-item>
         <el-submenu v-else :index="menu.code" popper-class="context-submenu">
-          <BaseIcon v-if="menu.iconName" :iconName="menu.iconName" :fill="menu.iconfill" />
+          <BaseIcon
+            v-if="menu.iconName"
+            :iconName="menu.iconName"
+            :fill="menu.iconfill"
+          />
           <span slot="title" class="context-menu-title">{{ menu.title }}</span>
           <el-menu-item
             v-for="(subItem, index) in menu.children"
@@ -24,8 +53,18 @@
             v-show="!subItem.disabled"
             :disabled="subItem.disabled"
           >
-            <BaseIcon v-if="subItem.iconName" :iconName="subItem.iconName" :fill="subItem.iconfill" />
-            <BaseIcon v-if="isIconName(menu.children) && (subItem.iconName === '' || subItem.iconName === undefined)" iconName="" />
+            <BaseIcon
+              v-if="subItem.iconName"
+              :iconName="subItem.iconName"
+              :fill="subItem.iconfill"
+            />
+            <BaseIcon
+              v-if="
+                isIconName(menu.children) &&
+                (subItem.iconName === '' || subItem.iconName === undefined)
+              "
+              iconName=""
+            />
             <span class="context-menu-title">{{ subItem.title }}</span>
           </el-menu-item>
         </el-submenu>
@@ -45,7 +84,7 @@
 // action：点击后触发的方法[没有action就抛上去给父组件处理]
 // params：传参（给action方法的参数）}
 export default {
-  name: 'BaseContextMenu',
+  name: "BaseContextMenu",
   props: {
     menuList: {
       type: Array,
@@ -59,55 +98,63 @@ export default {
     return {
       position: { x: -1, y: -1 },
       isShow: false,
-    }
+    };
   },
   computed: {
     isIconName() {
       // 判断是否存在iconName
       return (menuList) => {
-        return menuList.filter((item) => item.iconName && item.iconName !== '').length > 0
-      }
+        return (
+          menuList.filter((item) => item.iconName && item.iconName !== "")
+            .length > 0
+        );
+      };
     },
   },
   methods: {
     show(event, options) {
-      if (!this.menuList || this.menuList.length < 1) return
-      this.position.x = event.clientX + event.w
-      this.position.y = event.clientY + event.h
-      this.isShow = true
+      if (!this.menuList || this.menuList.length < 1) return;
+      this.position.x = event.clientX + event.w;
+      this.position.y = event.clientY + event.h;
+      this.isShow = true;
       this.$nextTick(() => {
-        let menuBox = document.querySelector('.context-menu-box')
+        let menuBox = document.querySelector(".context-menu-box");
         // canvas画布容器
-        let myDiagramDiv = document.querySelector('#orgDiagram')
+        let myDiagramDiv = document.querySelector("#orgDiagram");
         if (myDiagramDiv) {
           // Y轴
-          if (myDiagramDiv.clientHeight - event.clientY < menuBox.offsetHeight) {
-            this.position.y = myDiagramDiv.clientHeight - menuBox.offsetHeight + event.h
+          if (
+            myDiagramDiv.clientHeight - event.clientY <
+            menuBox.offsetHeight
+          ) {
+            this.position.y =
+              myDiagramDiv.clientHeight - menuBox.offsetHeight + event.h;
           }
           // X轴
           if (myDiagramDiv.clientWidth - event.clientX < menuBox.offsetWidth) {
-            this.position.x = myDiagramDiv.clientWidth - menuBox.offsetWidth + event.w
+            this.position.x =
+              myDiagramDiv.clientWidth - menuBox.offsetWidth + event.w;
           }
         }
-      })
+      });
     },
     handleMenuItemClick(menuItem, subItem) {
       if (menuItem && menuItem.action) {
-        menuItem.action(menuItem.params, this.targetOptions)
+        menuItem.action(menuItem.params, this.targetOptions);
       } else {
         const data = {
           code: menuItem.code,
           params: menuItem.params,
-        }
-        this.$emit('contextMenuClick', data, subItem)
+        };
+        this.$emit("contextMenuClick", data, subItem);
       }
-      this.hide()
+      this.hide();
     },
     hide() {
-      this.isShow = false
+      this.isShow = false;
     },
   },
-}
+};
 </script>
 
 <style lang="less" scoped>

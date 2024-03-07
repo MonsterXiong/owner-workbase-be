@@ -1,13 +1,18 @@
 export const MULTI_PAGE_LIST = [
-    'taskOrgGraph',
-    'leftListCenterGeneralGraphRightFormXyd',
+  'leftListCenterGeneralGraphRightFormXyd',
+  'leftListCenterOrgGraphRightFormXyd',
+  'taskOrgGraph',
 
-    'cardTable',
-    'generalTable',
+  'cardTable',
+  'editTable',
+  'generalTable',
 
-    'leftListRighOrgGraph',
-    'leftListRightTable',
-    'leftTreeRightOrgGraph',
-    'leftTreeRightTable',
+  'leftListRighOrgGraph',
+  'leftListRightRelationMatrix',
+  'leftListRightTable',
+  'leftTreeRightOrgGraph',
+  'leftTreeRightTable',
+
+  'readOnlyWord',
   /* Software Gen Code Placeholder */
 ]

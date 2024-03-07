@@ -2,7 +2,7 @@
   <div class="common-page">
     <PanelLayout ref="panelLayoutRef">
       <template v-slot:left>
-        <LeftTree @selectChange="onSelectChange" @refreshFunctionalData="refreshFunctionalData" />
+        <LeftTreeList @selectChange="onSelectChange" @refreshFunctionalData="refreshFunctionalData" />
       </template>
       <RightTable :tableData="currentTableData" />
     </PanelLayout>
@@ -11,7 +11,7 @@
 
 <script>
 import PanelLayout from '@/components/panelLayout/PanelLayout.vue'
-import LeftTree from './leftTree/LeftTree.vue'
+import LeftTreeList from './leftTreeList/LeftTreeList.vue'
 import RightTable from './rightTable/RightTable.vue'
 export default {
   name:'<%= pageName%>',
@@ -59,7 +59,7 @@ export default {
   },
   components: {
     PanelLayout,
-    LeftTree,
+    LeftTreeList,
     RightTable,
   },
 }

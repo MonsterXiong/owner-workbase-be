@@ -44,7 +44,7 @@ export class SfProjectExtendService {
         const defaultConfig = JSON.parse(configParam)
 
        const tableList =  await this.databaseService.getTableListByConfig(defaultConfig,defaultConfig.database)
-       return tableList
+       return tableList.filter(item=>!item.name.startsWith('s_'))
     }
 
     async getFieldByProjectId(projectId,tableName) {
@@ -68,6 +68,7 @@ export class SfProjectExtendService {
     async getProjectGenCodeJson(projectId) {
         let projectJsonData = {
             projectInfo: {},
+            projectConfig: {},
             menuList: [],
             routesConstantList:[],
             routeList:[],
@@ -92,19 +93,36 @@ export class SfProjectExtendService {
         let projectConfigInfo = await this.getProjectConfig(projectId)
 
         let tableList = []
+        let fieldMap = {}
+        let projectConfig = {
+            prefix:''
+        }
         const configParam = projectConfigInfo?.configParam
+        const projectParam = projectConfigInfo?.projectParam
         if (configParam) {
             const projectConfigParam = { ...JSON.parse(configParam) }
-            tableList = await this.databaseService.getTableListByConfig(projectConfigParam,projectConfigParam.database)
+            tableList = await this.getTableByProjectId(projectInfo.projectId)
+            for await (const tableItem of tableList) {
+                fieldMap[tableItem.name] = await this.databaseService.getFieldListByConfig(projectConfigParam,projectConfigParam.database,tableItem.name)
+            }
+        }
+
+        if (projectParam) {
+            projectConfig = { ...JSON.parse(projectParam) }
         }
 
         const serviceList = tableList?.map(item => {
+            const primaryKey = fieldMap[item.name]?.find(fieldItem=>fieldItem.Key == 'PRI')?.Field || 'id'
             return {
                 camelCaseName:camelCase(item.name),
                 pascalCaseName:pascalCase(item.name),
-                name:item.comment,
+                name: item.comment,
+                primaryKey: camelCase(primaryKey),
+                prefix:projectConfig?.prefix || 'sfBase'
             }
         })
+
+        projectJsonData.projectConfig = projectConfig
         projectJsonData.projectInfo = projectInfo
 
         // 获取页面菜单信息 以及菜单配置信息

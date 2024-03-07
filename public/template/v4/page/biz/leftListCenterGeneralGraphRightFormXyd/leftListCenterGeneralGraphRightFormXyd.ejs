@@ -1,32 +1,32 @@
 <template>
-  <div>
-    <FloatPanelLayout ref="panelLayoutRef" :defaultLeftWidth="14" :isRight="isRight">
+  <div class="system-analysis">
+    <PanelLayout :defaultCollapseLeft="false" :defaultLeftWidth="14" :defaultRightWidth="22" :showRightPanel="showRightPanel">
       <template slot="left">
-        <ListComp isHeader headerTitle="数据链体系能力需求列表" v-model="curComponent" :listData="listData" />
+        <LeftList isHeader headerTitle="数据链体系能力需求列表" v-model="curComponent" :listData="listData" />
       </template>
-      <template slot="content">
-        <component :is="curComponent"></component>
+      <div class="main">
+        <component :is="curComponent" @selectNode="hanldeSelectNode" :graphConfig="graphConfig" :updateGraphData="updateGraphData"></component>
+      </div>
+      <template slot="right">
+        <Right :nodeData="nodeData || {}" @updateNodeData="handleUpdateNodeData" />
       </template>
-      <template v-if="curComponent === 'DemandModelDiagram'">
-        <template slot="right">
-          <OperationPanel />
-        </template>
-      </template>
-    </FloatPanelLayout>
+    </PanelLayout>
   </div>
 </template>
 <script>
-import FloatPanelLayout from './components/FloatPanelLayout.vue'
-import ListComp from './components/ListComp.vue'
-import OperationPanel from './components/demandDiagram/OperationPanel.vue'
-import DemandModelDiagram from './components/demandDiagram/DemandModelDiagram.vue'
-import DemandAnalyseTable from './components/demandAnalyseTable/DemandAnalyseTable.vue'
+import PanelLayout from '@/components/panelLayout/PanelLayout.vue'
+import LeftList from './leftList/LeftList.vue'
+import Right from './right/Right.vue'
+import DemandModelDiagram from './main/demandDiagram/DemandModelDiagram.vue'
+import DemandAnalyseTable from './main/demandAnalyseTable/DemandAnalyseTable.vue'
+
 export default {
   name: '<%= pageName%>',
-  components: { FloatPanelLayout, ListComp, OperationPanel, DemandModelDiagram, DemandAnalyseTable },
+  components: { PanelLayout, LeftList, Right, DemandModelDiagram, DemandAnalyseTable },
   data() {
     return {
       curComponent: 'DemandModelDiagram',
+      nodeData: null,
       listData: [
         {
           id: 'DemandModelDiagram',
@@ -37,14 +37,80 @@ export default {
           name: '交互需求分析表',
         },
       ],
-      isRight: true,
+      graphConfig: {
+        editorData: [
+          {
+            title: '系统元素',
+            category: [
+              {
+                icon: 'icon-circle',
+                edefineName: '数据链系统',
+                fill: '#999',
+                eobjectShape: 'graph_circle',
+              },
+              {
+                icon: 'icon-line1',
+                edefineName: '交互关系',
+                fill: '#999',
+                eobjectShape: 'graph_line',
+              },
+              {
+                icon: 'icon-line6',
+                edefineName: '配合协同关系',
+                fill: '#999',
+                eobjectShape: 'graph_line_dotted',
+              },
+            ],
+          },
+          {
+            title: '绘图元素',
+            isDraw: true,
+            category: [
+              {
+                icon: 'icon-text',
+                edefineName: '文本',
+              },
+              {
+                icon: 'icon-copy',
+                edefineName: '批注',
+              },
+              {
+                icon: 'icon-line3',
+                edefineName: '箭头',
+              },
+            ],
+          },
+        ],
+        nodeCategory: ['graph_circle'],
+        linkCategory: ['graph_line'],
+      },
+      updateGraphData: {},
     }
   },
-  watch: {
-    curComponent(newVal) {
-      this.isRight = newVal === 'DemandAnalyseTable' ? false : true
-      console.log(this.isRight, 'isRight=----------------')
+  computed: {
+    showRightPanel() {
+      return this.curComponent === 'DemandModelDiagram' && this.nodeData !== null
+    },
+  },
+  methods: {
+    handleUpdateNodeData(data) {
+      this.updateGraphData = data
+    },
+    hanldeSelectNode(data) {
+      this.nodeData = data
     },
   },
 }
 </script>
+
+<style lang="less" scoped>
+.system-analysis {
+  width: 100%;
+  height: 100%;
+  background: #fff;
+  .main {
+    width: 100%;
+    height: 100%;
+  }
+}
+</style>

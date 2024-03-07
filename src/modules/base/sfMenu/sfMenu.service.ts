@@ -17,6 +17,10 @@ export class SfMenuService {
     return await this.repository.findOne({where: { isdel:'0',menuId } });
   }
 
+  async findOneByParam(param) {
+    return await this.repository.findOne({where: { isdel:'0',...param } });
+  }
+
   async findAll(){
     return (await this.repository.find()).filter(item=>item.isdel=='0')
   }

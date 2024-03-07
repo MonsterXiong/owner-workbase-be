@@ -206,6 +206,21 @@ export function taskNodeTemplate(options) {
             new go.Binding('strokeDashArray', '', function (nodeData, targetObj) {
               const parentId = nodeData.data.parentId
               return parentId == '' ? [0, 0] : [8, 8]
+            }).ofObject(),
+            new go.Binding('visible', '', function (nodeData, targetObj) {
+              const parentId = nodeData.data.parentId
+              if (parentId) {
+                let arr = options?.textList || []
+                let flag = false
+                // 当properties 都没有赋值数据时不显示
+                arr.map((ele) => {
+                  const properties = nodeData.data.properties
+                  if (properties[ele.code]) {
+                    flag = true
+                  }
+                })
+                return flag
+              } else return true
             }).ofObject()
           ),
           $(
@@ -214,12 +229,10 @@ export function taskNodeTemplate(options) {
             {
               name: 'INFO', // identify to the PanelExpanderButton
               stretch: go.GraphObject.Horizontal,
-              // margin: 8,
-              margin: new go.Margin(14, 10),
+              // margin: new go.Margin(12, 10),
               defaultAlignment: go.Spot.Left,
             },
             ...getTextBlock(options?.textList || []),
-
             new go.Binding('visible', '', function (nodeData, targetObj) {
               const parentId = nodeData.data.parentId
               return parentId == '' ? false : true
@@ -272,7 +285,7 @@ function getTextBlock(array) {
     return $(
       go.TextBlock,
       textStyle(ele.code),
-      // new go.Binding('margin', '', () => new go.Margin(8, 0, 0, 0)),
+      new go.Binding('margin', '', () => new go.Margin(3, 5)),
       new go.Binding('text', '', (code, targetObj) => {
         const properties = targetObj.part.data.properties
         return ele.title + ': ' + (properties[ele.code] || '')

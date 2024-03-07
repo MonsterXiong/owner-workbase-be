@@ -1,8 +1,193 @@
 <template>
-  <div><%=name%>-leftListCenterOrgGraphRightFormXyd</div>
+  <div class="common-page" ref="OrgDiagramIndexRef">
+    <PanelLayout ref="panelLayoutRef" :showRightPanel="currentNodeData != null" :defaultRightWidth="28">
+      <template v-slot:left>
+        <LeftList headerTitle="测试列表" :listData="listData" @onClickNode="onChangeCurrentNode" />
+      </template>
+      <OrgDiagram
+        :cw="cw"
+        :ch="ch"
+        :defaultAngle="defaultAngle"
+        :nodeTemplate="nodeTemplate"
+        :defaultTemplate="defaultTemplate"
+        :saveMode="saveMode"
+        :addToolList="addToolList"
+        :addNodeConfig="addNodeConfig"
+        :nodeList="currentNodeList"
+        @addNode="addNode"
+        @deleteNode="deleteNode"
+        @updateNode="updateNode"
+        @saveDiagram="saveDiagramData"
+        @setCurrentNodeData="setCurrentNodeData"
+        ref="orgGraphRef"
+      ></OrgDiagram>
+      <template v-slot:right>
+        <EditPanel :currentNodeData="currentNodeData || {}" @submitForm="submitFormData"></EditPanel>
+      </template>
+    </PanelLayout>
+  </div>
 </template>
+
 <script>
+import PanelLayout from '@/components/panelLayout/PanelLayout.vue'
+import LeftList from './leftList/LeftList.vue'
+import OrgDiagram from '@/components/orgDiagram/OrgDiagram.vue'
+import EditPanel from './rightForm/EditPanel.vue'
+import { AddNodeConfigCode, AddNodeConfig } from './index'
 export default {
   name: '<%= pageName%>',
+  data() {
+    return {
+      currentNode: null,
+      currentNodeList: [],
+      // id、name、parentId必传值，其余可不传
+      nodeList: [
+        {
+          lid: '1',
+          id: '1',
+          name: '测试数据',
+          parentId: '',
+          properties: {
+            lid: '1',
+            id: '1',
+            name: '测试数据',
+            parentId: '',
+            sortValue: 0, //排序
+          },
+          sortValue: 0, //排序
+          // _type: 'default', //颜色
+          tag: '标签', //标签
+        },
+        {
+          lid: '1',
+          id: '1-1',
+          name: '子节点1',
+          parentId: '1',
+          properties: {
+            lid: '1',
+            id: '1-1',
+            name: '子节点1',
+            parentId: '1',
+            sortValue: 1,
+          },
+          sortValue: 1,
+          _type: 'red',
+        },
+        {
+          lid: '1',
+          id: '1-2',
+          name: '子节点2',
+          parentId: '1',
+          properties: {
+            lid: '1',
+            id: '1-2',
+            name: '子节点2',
+            parentId: '1',
+            sortValue: 2,
+          },
+          sortValue: 2,
+          _type: 'red',
+        },
+        {
+          lid: '2',
+          id: '2',
+          name: '子节点3',
+          parentId: '',
+          properties: {
+            lid: '2',
+            id: '2',
+            name: '子节点3',
+            parentId: '',
+            sortValue: 0,
+          },
+          // sortValue: 3,
+          _type: 'hazeBlue',
+        },
+      ],
+      saveMode: 'save', //save【批量保存】 、 monitor【实时监听】 两种模式
+      nodeTemplate: null, //nodeTemplate(), 传了nodeTemplate的情况下默认渲染nodeTemplate否则根据defaultTemplate获取
+      defaultTemplate: 'vertical', //horizontal,vertical,default
+      defaultAngle: 0, //0 水平，90 垂直显示
+      // 添加按钮替换  为空数组是toolbar显示默认添加，有数据的情况替换toolbar的默认添加展示 staticParams为添加节点的默认properties
+      addToolList: [
+        {
+          name: '添加活动',
+          code: 'add',
+          icon: 'el-icon-circle-plus-outline',
+          addTemplateCode: AddNodeConfigCode.ABILITY,
+        },
+        {
+          name: '添加装备',
+          code: 'add',
+          icon: 'el-icon-circle-plus-outline',
+          addTemplateCode: AddNodeConfigCode.EQUIP,
+        },
+      ],
+      addNodeConfig: AddNodeConfig,
+      listData: [
+        {
+          id: '1',
+          name: '测试1',
+        },
+        {
+          id: '2',
+          name: '测试2',
+        },
+      ],
+      cw: 0, //当前页面的宽
+      ch: 0, //当前页面的高
+      currentNodeData: null,
+    }
+  },
+  watch: {
+    currentNode(newValue, oldValue) {
+      this.currentNodeList = this.nodeList.filter((item) => item.lid == newValue.id)
+    },
+  },
+  mounted() {},
+  methods: {
+    init() {},
+    queryTableData() {},
+    // 获取当前视图的宽高
+    getCurrentClient() {
+      this.cw = this.$refs.OrgDiagramIndexRef.clientWidth
+      this.ch = this.$refs.OrgDiagramIndexRef.clientHeight
+      // this.setPanelWidth()
+    },
+    onChangeCurrentNode(node) {
+      this.currentNode = node
+    },
+    saveDiagramData(nodeDataArray) {
+      console.log('saveDiagramData', nodeDataArray)
+    },
+    addNode(params) {
+      // 新增节点 节点数据
+      console.log('新增节点', params)
+    },
+    deleteNode(delIdList) {
+      // 删除节点 删除节点id数组
+      console.log('删除节点', delIdList)
+    },
+    updateNode(updateNodes) {
+      // 更新节点 节点数据
+      console.log('更新节点数据', updateNodes)
+    },
+    setCurrentNodeData(nodeData) {
+      this.currentNodeData = nodeData ? { ...nodeData } : null
+    },
+    submitFormData(formData) {
+      console.log('更新数据', formData)
+      this.$refs.orgGraphRef.updateActiveNodeData({ properties: formData, name: formData.name })
+      // this.$emitter.emit('updateActiveNodeData', { properties: formData, name: formData.name })
+    },
+  },
+  components: {
+    PanelLayout,
+    LeftList,
+    OrgDiagram,
+    EditPanel,
+  },
 }
 </script>
+
+<style lang="less" scoped></style>

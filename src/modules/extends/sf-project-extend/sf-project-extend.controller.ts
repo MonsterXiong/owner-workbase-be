@@ -7,8 +7,7 @@ import { ApiOperation, ApiTags } from '@nestjs/swagger';
 @ApiTags('扩展项目')
 @Controller('sfProjectExtend')
 export class SfProjectExtendController {
-  constructor(private readonly sfProjectExtendService: SfProjectExtendService,
-  ) { }
+  constructor(private readonly sfProjectExtendService: SfProjectExtendService) { }
 
   @Post('getProjectDetail')
   @ApiOperation({ summary: '根据项目id获取项目配置' })

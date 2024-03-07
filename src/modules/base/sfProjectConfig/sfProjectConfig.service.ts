@@ -16,6 +16,7 @@ export class SfProjectConfigService {
   async findOne(projectConfigId) {
     return await this.repository.findOne({where: { isdel:'0',projectConfigId } });
   }
+
   async findOneByParam(param) {
     return await this.repository.findOne({where: { isdel:'0',...param } });
   }

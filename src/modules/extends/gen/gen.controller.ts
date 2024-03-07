@@ -8,6 +8,7 @@ import { downloadCodeFile, uncompress } from '../generate/fe/utils';
 import { Response } from 'express';
 import { genContentByType, genPageCode, genServiceCode } from './genCodeUtil';
 import * as path from 'path';
+import { SfMenuExtendService } from '../sf-menu-extend/sf-menu-extend.service';
 const fse = require('fs-extra');
 
 class JsonData{
@@ -65,18 +66,30 @@ class SfJsonData{
   serviceList:any
 }
 
-
-async function writeCode(projectPath,codeData) {
-  // 确保项目路径存在
-  fse.ensureDirSync(projectPath);
-  // 解压项目框架模板
-  await uncompress('public/txsj-fe-template-master.zip', projectPath)
-  const codeList = codeData.map(item => {
+function formatPageCode(codeData,projectPath='./',isProject=true) {
+  return codeData.map(item => {
+    let filePath = item.filePath
+    if (isProject) {
+      filePath = path.join(projectPath,'src',item.filePath)
+    } else {
+      filePath = path.join(projectPath,item.filePath?.replace('pages/',''))
+    }
     return {
       ...item,
-      filePath :path.join(projectPath,'src',item.filePath)
+      filePath
     }
   })
+}
+
+async function writeCode(projectPath,codeData,isProject = true) {
+  // 确保项目路径存在
+  fse.ensureDirSync(projectPath);
+  let codeList = []
+  // 解压项目框架模板
+  if (isProject) {
+    await uncompress('public/txsj-fe-template-master.zip', projectPath)
+  }
+  codeList = formatPageCode(codeData,projectPath,isProject)
   // 生成代码
   await genCode(codeList);
 }
@@ -84,7 +97,9 @@ async function writeCode(projectPath,codeData) {
 @ApiTags('代码生成 api')
 @Controller('gen')
 export class GenController {
-  constructor(private readonly genService: GenService,private readonly sfProjectExtendService: SfProjectExtendService) {}
+  constructor(private readonly genService: GenService,
+    private readonly sfProjectExtendService: SfProjectExtendService,
+  ) { }
 
   @Post('getCodeByJson')
   @ApiOperation({ summary: '通过json获取代码生成内容' })
@@ -148,18 +163,28 @@ export class GenController {
     }
   }
 
-  @Post('genSfProject')
-  @ApiOperation({ summary: '通过json直接生成代码--勿用' })
-  async genSoftware(@Body() jsonData:SfJsonData,@Res() res:Response){
+  @Post('downloadSfPageCodeByMenuId')
+  @ApiOperation({ summary: '通过菜单id直接下载代码--勿用' })
+  async downloadSfPageCodeByMenuId(@Query('menuId') menuId: string,@Res() res:Response){
     try {
-
-      const { projectOutputDir } = jsonData.projectInfo
+      const projectOutputDir = ''
       const projectPath = projectOutputDir || FRAMEWORK_CONFIG.CODE_OUTPUT_ROOT_PATH
 
-      const codeData = await this.genService.getSfGenCode(jsonData)
+      const codeData = await this.genService.getSfPageCode(menuId)
 
-      await writeCode(projectPath,codeData)
+      await writeCode(projectPath,codeData,false)
       return await downloadCodeFile(projectPath,res)
+    } catch (error) {
+      console.log(error, 'error');
+    }
+  }
+
+  @Post('genSfPageCodeByMenuId')
+  @ApiOperation({ summary: '通过菜单id查看生成代码内容' })
+  async genSfPageCodeByMenuId(@Query('menuId') menuId: string){
+    try {
+      const codeData = await this.genService.getSfPageCode(menuId)
+      return formatPageCode(codeData, '', false)
     } catch (error) {
       console.log(error, 'error');
     }

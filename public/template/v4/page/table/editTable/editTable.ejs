@@ -1,8 +1,36 @@
 <template>
-  <div><%=name%>-editTable</div>
+  <div class="common-page">
+    <EditTable :defaultTableData="indexTableData" :columnList="columnList" ref="indexTableRef"></EditTable>
+  </div>
 </template>
 <script>
+import EditTable from './components/EditTable.vue'
 export default {
   name: '<%= pageName%>',
+  components: {
+    EditTable,
+  },
+  data() {
+    return {
+      columnList: [
+        {
+          code: 'indexName',
+          type: 'input',
+          label: '名称',
+        },
+        {
+          code: 'indexValue',
+          type: 'input',
+          label: '指标值',
+        },
+        {
+          code: 'indetUnit',
+          type: 'input',
+          label: '指标单位',
+        },
+      ],
+      indexTableData: [],
+    }
+  },
 }
 </script>

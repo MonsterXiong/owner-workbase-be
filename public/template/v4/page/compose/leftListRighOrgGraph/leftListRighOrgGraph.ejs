@@ -5,11 +5,14 @@
         <LeftList headerTitle="测试列表" :listData="listData" @onClickNode="onChangeCurrentNode" />
       </template>
       <OrgDiagram
+        :cw="cw"
+        :ch="ch"
         :defaultAngle="defaultAngle"
         :nodeTemplate="nodeTemplate"
         :defaultTemplate="defaultTemplate"
         :saveMode="saveMode"
         :addToolList="addToolList"
+        :addNodeConfig="addNodeConfig"
         :nodeList="currentNodeList"
         @addNode="addNode"
         @deleteNode="deleteNode"
@@ -72,7 +75,7 @@ export default {
       ],
       saveMode: 'save', //save【批量保存】 、 monitor【实时监听】 两种模式
       nodeTemplate: null, //nodeTemplate(), 传了nodeTemplate的情况下默认渲染nodeTemplate否则根据defaultTemplate获取
-      defaultTemplate: 'vertical', //horizontal,vertical,default
+      defaultTemplate: 'default', //horizontal,vertical,default
       defaultAngle: 0, //0 水平，90 垂直显示
       // 添加按钮替换  为空数组是toolbar显示默认添加，有数据的情况替换toolbar的默认添加展示 staticParams为添加节点的默认properties
       addToolList: [
@@ -97,6 +100,74 @@ export default {
           },
         },
       ],
+      AddNodeConfig:{
+        'ability': {
+          matchCode: {
+            id: 'abilityId',
+            name: 'abilityName',
+            parentId: 'parentId',
+            sortValue: 'sortValue',
+            _type: '_type',
+          },
+          template: {
+            abilityId: '',
+            abilityName: '活动',
+            abilityCode: '',
+            remark: '',
+            parentId: '',
+            _type: '',
+            sortValue: '',
+          },
+          nodeLabel: '活动',
+          tag: '活动tag',
+          _type: 'orange',
+        },
+        'equip': {
+          matchCode: {
+            id: 'equipId',
+            name: 'equipName',
+            parentId: 'parentId',
+            sortValue: 'sortValue',
+            _type: '_type',
+          },
+          template: {
+            equipId: '',
+            equipCode: '',
+            equipName: '装备',
+            equipType: '',
+            remark: '',
+            parentId: '',
+            _type: '',
+            sortValue: '',
+          },
+          nodeLabel: '装备',
+          // tag: '任务',
+          _type: 'green',
+        },
+        'default': {
+          matchCode: {
+            id: 'id',
+            name: 'name',
+            tag: 'tag',
+            parentId: 'parentId',
+            sortValue: 'sortValue',
+            _type: '_type',
+          },
+          template: {
+            id: '',
+            name: '',
+            tag: '',
+            parentId: '',
+            sortValue: '',
+            _type: '',
+          },
+          nodeLabel: '节点',
+          tag: '',
+          _type: 'default',
+        },
+      },
+      cw: 0, //当前页面的宽
+      ch: 0, //当前页面的高
       listData: [
         {
           id: '1',

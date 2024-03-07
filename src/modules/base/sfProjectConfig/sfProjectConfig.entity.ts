@@ -24,14 +24,24 @@ export class SfProjectConfig{
   bindProject: string
 
   @ApiProperty({
-    description: '参数配置'
+    description: '数据库配置'
   })
   @Column({
     name:'config_param',
     nullable: true,
-    comment: '参数配置'
+    comment: '数据库配置'
   })
   configParam: string
+
+  @ApiProperty({
+    description: '项目配置'
+  })
+  @Column({
+    name:'project_param',
+    nullable: true,
+    comment: '项目配置'
+  })
+  projectParam: string
 
   @ApiProperty({
     description: '描述'

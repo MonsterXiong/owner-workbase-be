@@ -1,6 +1,6 @@
 import { Column, Entity, PrimaryColumn, UpdateDateColumn, CreateDateColumn, DeleteDateColumn } from 'typeorm' ;
 import { ApiProperty } from '@nestjs/swagger';
-import { nanoid } from 'nanoid'
+
 @Entity()
 export class SfProject{
 
@@ -9,7 +9,7 @@ export class SfProject{
   })
   @PrimaryColumn({
     name:'project_id',
-    comment: '主键',
+    comment: '主键'
   })
   projectId: string
 

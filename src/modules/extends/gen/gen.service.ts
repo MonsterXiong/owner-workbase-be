@@ -1,3 +1,4 @@
+import { SfMenuExtendService } from './../sf-menu-extend/sf-menu-extend.service';
 import { Injectable } from '@nestjs/common';
 import { FRAMEWORK_CONFIG } from '../../../../submodule/genCode-utils/src/config/frameworkConfig';
 import { getGenCode } from '../../../../submodule/genCode-utils/src/genCode';
@@ -38,6 +39,7 @@ function transformResult(baseDir,codeList){
 
 @Injectable()
 export class GenService {
+  constructor( private readonly sfMenuExtendService: SfMenuExtendService ){}
     /**
      * @description 通过json获取到生成的代码
      * @param {object} param json数据
@@ -60,22 +62,26 @@ export class GenService {
   }
 
 
-
+  async getSfPageCode(menuId) {
+    const menuInfo = await this.sfMenuExtendService.getMenuInfoById(menuId)
+      if (!menuInfo) return []
+      const {menuCode,menuParam} = menuInfo
+      const pageInfo = {
+          name:menuCode,
+          detailParam:menuParam
+      }
+    return await genPageCode(pageInfo)
+  }
 
   async getSfGenCode(jsonData) {
 
-    const {projectInfo,menuList,routesConstantList,routeList,pageList,serviceList} = jsonData
+    const { projectInfo,projectConfig,menuList,routesConstantList,routeList,pageList,serviceList} = jsonData
 
     const menuCodeList = genContentByType('menu',{ list:menuList })
     const routeCodeList = genContentByType('route',{list:routeList})
     const routesConstantCodeList = genContentByType('routesConstant', { list: routesConstantList })
-    // const serviceList = [{
-    //   prefix: 'sfBase',
-    //   camelCaseName: 'test',
-    //   pascalCaseName: 'Test',
-    //   name:'测试'
-    // }]
-    const serviceCodeList = serviceList.map(item=>{return {...item,prefix:'sfBase'}}).map(item => genServiceCode('service', item))
+
+    const serviceCodeList = serviceList.map(item => genServiceCode('service', item))
     let pageCodeList = []
     for await (const page of pageList) {
       const pageCode = await genPageCode(page)

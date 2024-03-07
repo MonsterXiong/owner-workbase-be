@@ -2,9 +2,54 @@ import { service } from '@/services/http'
 /**
  * 关于<%= name%>的基础服务
  */
-export default class <%= pascalCaseName%>BaseService {
+export default class <%= pascalCaseName%>Service {
   /**
-   * @description 新增<%= name%>
+  * @description 删除<%= name%>
+  * @param {String} key <%= name%>Id
+  * @returns
+  */
+  static async delete<%= pascalCaseName%>(<%= primaryKey%>) {
+    return service.postQuery('/<%= prefix%>/<%= camelCaseName%>/delete<%= pascalCaseName%>', { key :<%= primaryKey%> })
+  }
+  /**
+  * @description 删除<%= name%>(批量、递归)
+  * @param {Array} <%= primaryKey%>List <%= name%>Id数组
+  * @returns
+  */
+  static async delete<%= pascalCaseName%>Batch(<%= primaryKey%>List) {
+    if (!Array.isArray(<%= primaryKey%>List)) {
+      <%= primaryKey%>List = [<%= primaryKey%>List]
+    }
+    return service.post('/<%= prefix%>/<%= camelCaseName%>/delete<%= pascalCaseName%>Batch', <%= primaryKey%>List)
+  }
+  /**
+  * @description <%= name%>导入模板下载
+  * @returns
+  */
+  static async download<%= pascalCaseName%>Template() {
+    return service.postFormData('/<%= prefix%>/<%= camelCaseName%>/download<%= pascalCaseName%>Template', {})
+  }
+
+  /**
+    * @description 导出<%= name%>
+    * @param {Object} queryCondition 查询条件
+    * @returns
+    */
+  static async export<%= pascalCaseName%>(queryCondition) {
+    return service.post('/<%= prefix%>/<%= camelCaseName%>/export<%= pascalCaseName%>', queryCondition, {
+      responseType: 'blob',
+    })
+  }
+  /**
+   * @description 导入<%= name%>
+   * @param {File} 文件对象
+   * @returns
+   */
+  static async import<%= pascalCaseName%>(file) {
+    return service.postForm('/<%= prefix%>/<%= camelCaseName%>/import<%= pascalCaseName%>', { file })
+  }
+  /**
+   * @description 增加<%= name%>
    * @param {Object} <%= camelCaseName%>  <%= name%>对象
    * @returns
    */
@@ -13,7 +58,7 @@ export default class <%= pascalCaseName%>BaseService {
   }
 
   /**
-   * @description 批量新增<%= name%>
+   * @description 增加<%= name%>(批量)
    * @param {Array} <%= camelCaseName%>List  <%= name%>对象数组
    * @returns
    */
@@ -22,28 +67,32 @@ export default class <%= pascalCaseName%>BaseService {
   }
 
   /**
-   * @description 批量删除<%= name%>
-   * @param {Array} <%= camelCaseName%>IdList <%= name%>ID数组
-   * @returns
-   */
-  static async delete<%= pascalCaseName%>Batch(<%= camelCaseName%>IdList) {
-    if (!Array.isArray(<%= camelCaseName%>IdList)) {
-      <%= camelCaseName%>IdList = [<%= camelCaseName%>IdList]
-    }
-    return service.post('/<%= prefix%>/<%= camelCaseName%>/delete<%= pascalCaseName%>Batch', <%= camelCaseName%>IdList)
+    * @description 查询<%= name%>列表结果
+    * @param {Object} queryCondition 查询对象
+    * @returns
+    */
+  static async query<%= pascalCaseName%>ByCondition(queryCondition) {
+    return service.post('/<%= prefix%>/<%= camelCaseName%>/query<%= pascalCaseName%>ByCondition', queryCondition || {})
   }
-
   /**
-   * @description 保存<%= name%>
-   * @param {Object} <%= camelCaseName%>  <%= name%>对象
-   * @returns
-   */
+    * @description 获取<%= name%>
+    * @param {String} <%= primaryKey%>  <%= name%>ID
+    * @returns
+    */
+  static async query<%= pascalCaseName%>(<%= primaryKey%>) {
+    return service.postQuery('/<%= prefix%>/<%= camelCaseName%>/query<%= pascalCaseName%>ByKey', { <%= primaryKey%> })
+  }
+  /**
+    * @description 保存<%= name%>
+    * @param {Object} <%= camelCaseName%>  <%= name%>对象
+    * @returns
+    */
   static async save<%= pascalCaseName%>(<%= camelCaseName%>) {
     return service.post('/<%= prefix%>/<%= camelCaseName%>/save<%= pascalCaseName%>', <%= camelCaseName%>)
   }
 
   /**
-   * @description 批量保存<%= name%>
+   * @description 保存<%= name%>(批量)
    * @param {Array} <%= camelCaseName%>List  <%= name%>对象数组
    * @returns
    */
@@ -52,66 +101,20 @@ export default class <%= pascalCaseName%>BaseService {
   }
 
   /**
-   * @description 修改<%= name%>
-   * @param {Object} <%= camelCaseName%>  <%= name%>对象
-   * @returns
-   */
+    * @description 修改<%= name%>
+    * @param {Object} <%= camelCaseName%>  <%= name%>对象
+    * @returns
+    */
   static async update<%= pascalCaseName%>(<%= camelCaseName%>) {
     return service.post('/<%= prefix%>/<%= camelCaseName%>/update<%= pascalCaseName%>', <%= camelCaseName%>)
   }
 
   /**
-   * @description 批量修改<%= name%>
-   * @param {Array} <%= camelCaseName%>List  <%= name%>对象数组
-   * @returns
-   */
+    * @description 批量修改<%= name%>
+    * @param {Array} <%= camelCaseName%>List  <%= name%>对象数组
+    * @returns
+    */
   static async update<%= pascalCaseName%>Batch(<%= camelCaseName%>List) {
     return service.post('/<%= prefix%>/<%= camelCaseName%>/update<%= pascalCaseName%>Batch', <%= camelCaseName%>List)
-  }
-
-  /**
-   * @description 根据ID查询<%= name%>详情
-   * @param {String} elementConfigId  <%= name%>ID
-   * @returns
-   */
-  static async get<%= pascalCaseName%>(elementConfigId) {
-    return service.postQuery('/<%= prefix%>/<%= camelCaseName%>/get<%= pascalCaseName%>', { elementConfigId })
-  }
-
-  /**
-   * @description 查询<%= name%>列表
-   * @param {Object} queryCondition 查询对象
-   * @returns
-   */
-  static async query<%= pascalCaseName%>(queryCondition) {
-    return service.post('/<%= prefix%>/<%= camelCaseName%>/query<%= pascalCaseName%>', queryCondition || {})
-  }
-
-  /**
-   * @description 导入 <%= name%>
-   * @param {File} 文件对象
-   * @returns
-   */
-  static async import<%= pascalCaseName%>(file) {
-    return service.postForm('/<%= prefix%>/<%= camelCaseName%>/import<%= pascalCaseName%>', { file })
-  }
-
-  /**
-   * @description <%= name%>导入模板下载
-   * @returns
-   */
-  static async download<%= pascalCaseName%>Template() {
-    return service.postFormData('/<%= prefix%>/<%= camelCaseName%>/download<%= pascalCaseName%>Template', {})
-  }
-
-  /**
-   * @description 导出<%= name%>
-   * @param {Object} queryCondition 查询条件
-   * @returns
-   */
-  static async export<%= pascalCaseName%>(queryCondition) {
-    return service.post('/<%= prefix%>/<%= camelCaseName%>/export<%= pascalCaseName%>', queryCondition, {
-      responseType: 'blob',
-    })
   }
 }
