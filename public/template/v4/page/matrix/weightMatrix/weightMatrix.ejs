@@ -1,8 +1,78 @@
 <template>
-  <div><%=name%>-weightMatrix</div>
+  <div style="padding: 30px">
+    <WeightMatrixTable :treeData="treeData" :headerData="headerData" :data="data"></WeightMatrixTable>
+  </div>
 </template>
 <script>
+import WeightMatrixTable from '@/components/matrixTable/WeightMatrixTable.vue'
+
 export default {
-  name: '<%= pageName%>'
+  name: '<%= pageName%>',
+  components: {
+    WeightMatrixTable,
+  },
+  data() {
+    return {
+      treeData: [],
+      headerData: [],
+      data: [],
+    }
+  },
+  mounted() {
+    this.initData()
+  },
+  methods: {
+    initData() {
+      this.treeData = [
+        {
+          name: '侦查能力',
+          id: 'a1',
+          children: [
+            {
+              name: '对海侦查',
+              id: 'a1-1',
+              children: [
+                {
+                  name: '定位精度',
+                  id: 'a1-1-1',
+                },
+                {
+                  name: '侦查范围',
+                  id: 'a1-1-2',
+                },
+              ],
+            },
+          ],
+        },
+      ]
+      this.headerData = [
+        {
+          name: '侦查任务',
+          id: 'a11',
+          children: [
+            {
+              name: '检测',
+              id: 'a11-1-1',
+            },
+            {
+              name: '定位',
+              id: 'a11-1-2',
+            },
+          ],
+        },
+        {
+          name: '打击任务',
+          id: 'a21',
+        },
+      ]
+      this.data = [
+        {
+          from: 'a1-1-1',
+          to: 'a11-1-2',
+          value: 1111,
+        },
+      ]
+    },
+  },
 }
 </script>
