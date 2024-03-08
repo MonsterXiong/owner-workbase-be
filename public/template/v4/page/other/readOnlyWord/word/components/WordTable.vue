@@ -1,10 +1,19 @@
 <template>
   <div class="word-table-box" @focus="onFocus">
-    <WordTitle
+    <!-- <WordTitle
       v-show="data?.isShowTitle"
       @click.stop="setCurrerntNode"
       class="MsoCaption"
       :titleText="`表 ${data?.sort} `"
+      :nodeStyle="DefaultTitleStyle"
+      @input="onInput"
+      :readOnly="readOnly"
+      :value="data?.title || ''"
+    /> -->
+    <WordTitle
+      v-show="data?.isShowTitle"
+      @click.stop="setCurrerntNode"
+      class="MsoCaption"
       :nodeStyle="DefaultTitleStyle"
       @input="onInput"
       :readOnly="readOnly"

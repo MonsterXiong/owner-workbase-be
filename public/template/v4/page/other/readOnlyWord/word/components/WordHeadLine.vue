@@ -1,9 +1,7 @@
 <template>
-  <p
+  <h3
     ref="editorRef"
-    class="WordText MsoNormal"
     :contenteditable="readOnly ? 'false' : 'plaintext-only'"
-    :class="{ none: !value }"
     :style="{
       fontSize: nodeStyle?.fontSize + 'pt',
       fontFamily: nodeStyle?.fontFamily,
@@ -17,7 +15,7 @@
     @blur="inputBlur"
     @focus="inputFocus"
     @click="onClick"
-  ></p>
+  ></h3>
 </template>
 
 <script>
@@ -59,13 +57,3 @@ export default {
   },
 }
 </script>
-
-<style scoped lang="less">
-.none {
-  &::before {
-    content: '◀';
-    color: rgba(0, 0, 0, 0.1);
-    font-size: 12px;
-  }
-}
-</style>

@@ -8,23 +8,27 @@
         </div>
       </div>
     </template>
-    <div class="preview-word">
-      <Word :data="wordData" />
+    <div class="preview-word" @drop="onModalDrop" @dragover.prevent>
+      <WordModal :data="modalData" />
     </div>
     <template slot="right-title"> 模型列表 </template>
-    <template slot="right"> bbbb </template>
+    <template slot="right">
+      <RightPanel />
+    </template>
   </PanelLayout>
 </template>
 <script>
 import PanelLayout from '@/components/panelLayout/PanelLayout.vue'
-import Word from './word/Word.vue'
+import WordModal from './word/WordModal.vue'
+import RightPanel from './components/RightPanel.vue'
 import { uuid } from '@/utils/commonUtil'
 
 export default {
   name: '<%= pageName%>',
   components: {
     PanelLayout,
-    Word,
+    RightPanel,
+    WordModal,
   },
   data() {
     return {
@@ -39,71 +43,34 @@ export default {
         },
       ],
       activeTemplate: 'jsxq1',
-      wordData: [
-        {
-          type: 'text',
-          id: 'test',
-          sort: 1,
-          isTransverse: false,
-          content: '本文档的主要对该系统或软件的详细设计说明进行描述，包括内容有数据库级设计决策、数据库逻辑关系、数据表详细组成结构和需求可追踪性。',
-        },
-        {
-          type: 'img',
-          id: 'imgid',
-          sort: 2,
-          isTransverse: false,
-          content: 'http://192.168.2.204:8037/picture/2024-01/60c8a47e45d54d8f8125f88c93fdfd5a.png',
-          title: '图片标题',
-          isShowTitle: true,
-        },
-        {
-          type: 'table',
-          id: 'tableid',
-          sort: 3,
-          isTransverse: false,
-          headerData: [
-            {
-              id: 'sortHeader',
-              content: '序号',
-              width: 30,
-            },
-            {
-              id: 'name',
-              content: '名称',
-              width: 100,
-            },
-          ],
-          content: [
-            [
-              {
-                id: uuid(),
-                content: '1',
-              },
-              {
-                id: uuid(),
-                content: '名字1',
-              },
-            ],
-            [
-              {
-                id: uuid(),
-                content: '2',
-              },
-              {
-                id: uuid(),
-                content: '名字2',
-              },
-            ],
-          ],
-          title: '表格标题',
-          isShowTitle: true,
-        },
-      ],
+      modalData: [],
+      wordData: [],
     }
   },
   methods: {
     onChangeActiveTemplate(item) {
       this.activeTemplate = item.id
+    },
+    // 监听拖拽新增节点事件
+    onModalDrop(event) {
+      const screenY = event.screenY
+      const data = JSON.parse(event.dataTransfer.getData('data'))
+      const newModal = {
+        ...data,
+        modalId: data.id,
+        id: uuid(),
+      }
+      const domList = [...document.querySelectorAll('.word-modal')]
+      let addIndex = domList.length
+      domList.findIndex((dom, index) => {
+        const { top, height } = dom.getBoundingClientRect()
+        if (top + height > screenY) {
+          if (top + height / 2 < screenY) addIndex = index + 1
+          else addIndex = index
+        }
+        return top + height > screenY
+      })
+      this.modalData.splice(addIndex, 0, newModal)
     },
   },
 }

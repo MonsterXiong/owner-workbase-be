@@ -1,6 +1,10 @@
 // 单位都是pt!
 export const DefaultfontSizeList = Object.freeze([
   {
+    label: '小五',
+    value: 9.0,
+  },
+  {
     label: '五号',
     value: 10.5,
   },
@@ -91,12 +95,21 @@ export const getStyleByLabel = (label) => {
   return list.find((item) => item.label === label)?.value
 }
 
+// 标题的初始样式
+export const DefaultWordHeadlineStyle = Object.freeze({
+  fontSize: getStyleByLabel('四号'),
+  fontFamily: getStyleByLabel('黑体'),
+  textAlign: getStyleByLabel('左对齐'),
+  fontWeight: getStyleByLabel('加粗'),
+  textIndent: 0,
+})
+
 // 段落的初始样式
 export const DefaultWordTextStyle = Object.freeze({
   fontSize: getStyleByLabel('五号'),
   fontFamily: getStyleByLabel('宋体'),
   textAlign: getStyleByLabel('左对齐'),
-  textIndent: getStyleByLabel('五号') * 2, // 默认首行缩进两个字符
+  textIndent: 2, // 默认首行缩进两个字符
 })
 
 // 图片的初始样式
@@ -136,11 +149,13 @@ export const ContentType = Object.freeze({
   text: 'text',
   img: 'img',
   table: 'table',
+  head: 'head',
   equation: 'equation',
   postil: 'postil',
 })
 
 export const ContentTypeText = Object.freeze({
+  [ContentType.head]: '标题',
   [ContentType.text]: '文字',
   [ContentType.img]: '图片',
   [ContentType.table]: '表格',
@@ -153,6 +168,7 @@ export const WordContentType = Object.freeze({
   text: 'WordText',
   img: 'WordImg',
   table: 'WordTable',
+  head: 'WordHeadLine', // 标题
   clazzTable: 'WordClazzTable',
   equation: 'WordEquation',
 })
@@ -160,7 +176,8 @@ export const WordContentType = Object.freeze({
 export const WordDefaultType = Object.freeze({
   text: DefaultWordTextStyle,
   img: DefaultWordImgStyle,
-  table: 'WordTable',
+  table: {},
+  head: DefaultWordHeadlineStyle,
   equation: {},
 })
 

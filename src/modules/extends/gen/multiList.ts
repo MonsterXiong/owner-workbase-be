@@ -10,6 +10,7 @@ export const MULTI_PAGE_LIST = [
   'leftListRighOrgGraph',
   'leftListRightRelationMatrix',
   'leftListRightTable',
+  'leftOrgGraphRightForm',
   'leftTreeRightOrgGraph',
   'leftTreeRightTable',
 

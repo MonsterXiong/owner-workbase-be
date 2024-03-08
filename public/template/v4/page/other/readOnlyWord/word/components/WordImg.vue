@@ -1,39 +1,18 @@
 <template>
   <p class="WordImg MsoNormal" @focus="onFocus" @click.stop="onClick">
-    <!-- <el-form size="mini" class="editSize" label-width="27px">
-      <el-form-item label="宽：">
-        <el-input-number
-          @click.native.stop
-          :min="0"
-          :step="0.1"
-          :max="a4InnerWidth / cm"
-          :precision="2"
-          size="mini"
-          controls-position="right"
-          @change="onChangeWidth"
-          v-model="data.width"
-        ></el-input-number>
-      </el-form-item>
-      <el-form-item label="高：">
-        <el-input-number
-          style="margin-left: 5px"
-          @click.native.stop
-          :min="0"
-          :step="0.1"
-          :max="a4InnerHeight / cm"
-          :precision="2"
-          size="mini"
-          controls-position="right"
-          @change="onChangeHeight"
-          v-model="data.height"
-        ></el-input-number>
-      </el-form-item>
-      <el-checkbox style="margin-left: 5px" size="mini" v-model="lock">锁定宽高比</el-checkbox>
-    </el-form> -->
     <img :style="imgStyle" ref="imgRef" @load="loadImg" :src="value.includes('http') ? value : configData.baseUrl + value" />
-    <WordTitle
+    <!-- <WordTitle
       v-show="data?.isShowTitle"
       :titleText="`图 ${data?.sort} `"
+      @click.stop="setCurrerntNode"
+      class="MsoCaption"
+      :nodeStyle="DefaultTitleStyle"
+      @input="onInput"
+      :value="data?.title || ''"
+      :readOnly="readOnly"
+    /> -->
+    <WordTitle
+      v-show="data?.isShowTitle"
       @click.stop="setCurrerntNode"
       class="MsoCaption"
       :nodeStyle="DefaultTitleStyle"

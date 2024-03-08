@@ -50,6 +50,8 @@ export default {
       children.forEach((dom, index) => {
         const { height: domHeight } = dom.getBoundingClientRect()
         const data = this.data[index]
+        console.log('dom', dom)
+        console.log('domHeight', domHeight, total, height)
         if (data?.isTransverse) {
           if (treeData[treeDataIndex].children.length === 0) {
             treeData[treeDataIndex].children.push(data)
