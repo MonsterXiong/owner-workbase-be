@@ -147,7 +147,7 @@ CREATE TABLE IF NOT EXISTS `sf_menu_detail` (
   PRIMARY KEY (`menu_detail_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='菜单详情';
 
--- 正在导出表  software_factory_db.sf_menu_detail 的数据：~64 rows (大约)
+-- 正在导出表  software_factory_db.sf_menu_detail 的数据：~62 rows (大约)
 INSERT INTO `sf_menu_detail` (`menu_detail_id`, `menu_param`, `bind_menu`, `description`, `order_num`, `isdel`, `creator`, `create_time`, `create_ip`, `updater`, `update_time`, `update_ip`) VALUES
 	('-l25fjgRH9tM0sEyItg0V', '{"categoryType":"matrix","type":"relationMatrix"}', '1cd5a63929f44d31a57564e78d643d54', NULL, NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL),
 	('-vTEAsgJFnHdvF42xfrXO', '{"categoryType":"biz","type":"taskOrgGraph"}', 'YKiJclZL9qLwHEMF6ilfm', NULL, NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL),
@@ -194,13 +194,14 @@ INSERT INTO `sf_menu_detail` (`menu_detail_id`, `menu_param`, `bind_menu`, `desc
 	('QnHneJdWm-WS1t7DyAi1o', '{"categoryType":"table","type":"mergeTable"}', 'r9XCdYcNiIEv6CqOsZ0CM', NULL, NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL),
 	('R6JadctOH6lQXULm01J3t', '{"categoryType":"table","type":"generalTable"}', '3d76f9dea528412ea90ee783ffed2cb8', NULL, NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL),
 	('rJHSpajV-DhBXKPrKvJh5', '{"categoryType":"matrix","type":"relationMatrix"}', 'jnze75B95d7MV53Fxp0xZ', NULL, NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL),
-	('RPXNnWozTYjPxVnsmAJ1z', '{"categoryType":"table","type":"mergeTable"}', 'c39056453a244647a60e262756556dca', NULL, NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL),
+	('RPXNnWozTYjPxVnsmAJ1z', '{"categoryType":"table","type":"mergeTable"}', 'c39056453a244647a60e262756556dca', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
 	('sAKy5mkV0Cf-LnlVWoAYl', '{"categoryType":"table","type":"generalTable"}', 'fff9321e5d8e45469faebdf0b8fbc792', NULL, NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL),
 	('sPdIa6FRLYJLlHJFACi9r', '{"categoryType":"globalGlobal","type":"empty"}', 'Vhng0tAeTVXK8XvDIxJ6-', NULL, NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL),
 	('t7PNTzaBAgubdxsD0RsuO', '{"categoryType":"tree","type":"orgGraphTree"}', 'VXVBz2Tinf8gMbvkY7fWL', NULL, NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL),
 	('VES43hp5ycxR4nJnTE9B_', '{"categoryType":"matrix","type":"relationMatrix"}', 'af632b04f63748a595fdac2201f7ab4c', NULL, NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL),
 	('vx5ETkIKbY5brzmG41BEY', '{"categoryType":"biz","type":"leftListCenterOrgGraphRightFormXyd"}', 'OrVS6BATSEFbRTo-UjTt_', NULL, NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL),
 	('W9JVyMATrwnMk_kiwWfLj', '{"categoryType":"form","type":"generalForm"}', 'clu9XCQmsh_-kzLkNbga9', NULL, NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL),
+	('wOf_CE1l1ceX6i2pUbyyC', '{"categoryType":"compose","type":"leftListRightTable"}', 'c39056453a244647a60e262756556dca', NULL, NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL),
 	('wTB-wJVo2pCpNP1yaQONT', '{"categoryType":"table","type":"generalTable"}', 'xV4ksGmysoksYll9JTrKk', NULL, NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL),
 	('xEAw_3dZLcbnxyU100WRt', '{"categoryType":"biz","type":"taskOrgGraph"}', 'c46e6798ac714024bb6399749695022a', NULL, NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL),
 	('Xx_qqO3rzxFPFb9TXwnCb', '{"categoryType":"biz","type":"leftListCenterOrgGraphRightFormXyd"}', 'f9dfc4e12f044e43b88adc25b2de5d73', NULL, NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL),
