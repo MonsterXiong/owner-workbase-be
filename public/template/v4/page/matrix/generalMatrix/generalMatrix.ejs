@@ -4,8 +4,10 @@
   </div>
 </template>
 <script>
+import { <%= horizontal.tableCode%>Service, <%= vertical.tableCode%>Service, <%= rel.tableCode%>Service } from '@/services'
+import { QueryConditionBuilder } from '@/utils/queryConditionBuilder'
+import { listToTree } from '@/utils/treeTool'
 import GeneralMatrixTable from '@/components/matrixTable/GeneralMatrixTable.vue'
-
 export default {
   name: '<%= pageName%>',
   components: {
@@ -22,50 +24,46 @@ export default {
     this.initData()
   },
   methods: {
+    getQueryCondition(){
+      const queryCondition = QueryConditionBuilder.getInstanceNoPage()
+      queryCondition.buildEqualQuery('bindProject','')
+      return queryCondition
+    },
+    async getHeaderData(){
+      const { data } = await <%= horizontal.tableCode%>Service.query<%= horizontal.tableCode%>ByCondition(this.getQueryCondition())
+      const list = data.map(item=>{
+        return {
+          ...item,
+          id:item.<%= horizontal.uniqueCode%>,
+          name:item.<%= horizontal.displayName%>
+        }
+      })
+      this.headerData = listToTree(list, { pidKey: <%= horizontal.parentCode%> })
+    },
+    getTreeData(){
+      const { data } = await <%= vertical.tableCode%>Service.query<%= vertical.tableCode%>ByCondition(this.getQueryCondition())
+      const list = data.map(item=>{
+        return {
+          ...item,
+          id:item.<%= vertical.uniqueCode%>,
+          name:item.<%= vertical.displayName%>
+        }
+      })
+      this.treeData = listToTree(list, { pidKey: <%= vertical.parentCode%> })
+    },
+    getData(){
+      const { data } = await <%= rel.tableCode%>Service.query<%= rel.tableCode%>ByCondition(this.getQueryCondition())
+      this.data = data.map(item=>{
+        return {
+          ...item,
+          from:item.<%= horizontal.uniqueCode%>,
+          to:item.<%= vertical.uniqueCode%>,
+          value:item.<%= rel.relCode%>
+        }
+      })
+    },
     initData() {
-      this.treeData = [
-        {
-          name: '侦查能力',
-          id: 'a1',
-          children: [
-            {
-              name: '对海侦查',
-              id: 'a1-1',
-              children: [
-                {
-                  name: '定位精度',
-                  id: 'a1-1-1',
-                },
-                {
-                  name: '侦查范围',
-                  id: 'a1-1-2',
-                },
-              ],
-            },
-          ],
-        },
-      ]
-      this.headerData = [
-        {
-          name: '侦查任务',
-          id: 'a11',
-          children: [
-            {
-              name: '检测',
-              id: 'a11-1-1',
-            },
-            {
-              name: '定位',
-              id: 'a11-1-2',
-            },
-          ],
-        },
-        {
-          name: '打击任务',
-          id: 'a21',
-        },
-      ]
-      this.data = [
+      Promise.all([this.getHeaderData,this.getTreeData,this.getData])
         {
           from: 'a1-1-1',
           to: 'a11-1-2',
