@@ -1,0 +1,64 @@
+<template>
+  <base-dialog :title="title" :visible.sync="dialogVisible" :before-close="onDialogClose" :width="dialogWidth">
+    <el-form ref="formRef" :model="formData" :rules="formDataRules" label-width="auto" size="small">
+      <%_ if (list.length > 0) { -%><%- include("../../../../base/form-item.ejs",{ list }) -%><%_ } -%>
+    </el-form>
+    <template slot="footer">
+      <el-button size="mini" @click="onDialogClose">取 消</el-button>
+      <el-button size="mini" type="primary" @click="onSubmit">确 定</el-button>
+    </template>
+  </base-dialog>
+</template>
+
+<script>
+export default {
+  name: '<%= pageName%>Dialog',
+  data() {
+    return {
+      dialogWidth: '740px',
+      dialogVisible: false,
+      title: '新增',
+      formData: {
+        <%_ if (list.length > 0) { -%>
+        <% list.forEach(function(field){ -%>
+          <%= field.prop%> : '',
+        <%_ }); -%>
+        <%_ } -%>
+      },
+      formDataRules: {
+        projectName: [{ required: true, message: '请输入项目名称', trigger: 'blur' }],
+      },
+    }
+  },
+  methods: {
+    async show(row) {
+      this.title = row?.projectId ? '编辑<%= tableName%>' : '新增<%= tableName%>'
+      if (row) {
+        this.formData = { ...row }
+      }
+      this.dialogVisible = true
+    },
+    onDialogClose() {
+      this.resetFormData()
+      this.dialogVisible = false
+    },
+    resetFormData() {
+      this.formData = {
+        projectName: '',
+      }
+    },
+    async onSubmit() {
+      this.$refs.formRef.validate(async (valid) => {
+        if (valid) {
+          this.$emit('submit', { ...this.formData })
+          this.onDialogClose()
+        } else {
+          return false
+        }
+      })
+    },
+  },
+}
+</script>
+
+<style scoped lang="less"></style>

@@ -3,7 +3,8 @@ import * as path from 'path'
 import * as fs from 'fs'
 import * as ejs from 'ejs'
 import * as glob from 'glob'
-import { MULTI_PAGE_LIST } from './multiList';
+import { MULTI_PAGE_LIST } from './common/multiList';
+import { adapter } from './adapter';
 const GEN_TYPE = {
     MENU: 'menu',
     ROUTE: 'route',
@@ -85,28 +86,42 @@ export async function genPageCode(param) {
     const pageDirPath = `pages/${name}`
     const entryPath = `${pageDirPath}/${pascalCaseName}.vue`
 
-    const templateParam = {
+    let commonTemplateParam = {
         name,
         pageName:pascalCaseName
     }
+    let templateParam = {...commonTemplateParam}
     if (MULTI_PAGE_LIST.includes(type)) {
         const templatePathList = glob.sync(`${basePath}/**/*.{vue,ejs,less,js}`)
         const pageCodeList = []
+        templateParam = adapter(categoryType,type,{...templateParam,...param})
         for await (const templatePathItem of templatePathList) {
             const filePath = templatePathItem.slice(basePath.length + 1)
             const ext = filePath.match(/\.\w+$/i)[0]
             const fileName = filePath.replace(ext, '')
+
             let outputFilePath = entryPath
+            let subTemplateParam = templateParam['entry']
             if (fileName != type) {
-                const extName = ext === '.ejs'?'.vue':ext
-                outputFilePath = `${pageDirPath}/${fileName}${extName}`
+                const templateNameLength = fileName.lastIndexOf('\\')+1
+                const dirName = fileName.slice(0,templateNameLength)
+                const templateName = fileName.slice(templateNameLength)
+                let extName = ext
+
+                subTemplateParam = templateParam[templateName]
+                if(ext == '.ejs'){
+                    extName = '.vue'
+                    const genFileName = pascalCase(`${pascalCaseName}_${templateName}`)
+                    outputFilePath = `${pageDirPath}/${dirName}${genFileName}${extName}`
+                }else{
+                    outputFilePath = `${pageDirPath}/${fileName}${extName}`
+                }
             }
-            // const temp = getEjsTemplate(templatePathItem);
-            const content = await getEjsTemplateByFile(templatePathItem,templateParam);
+            const content = await getEjsTemplateByFile(templatePathItem,{...commonTemplateParam,...subTemplateParam});
+            // 可以控制多模板的时候不显示哪些数据
             pageCodeList.push({
                 filePath: outputFilePath,
                 content
-                // content:temp(templateParam)
             })
         }
         return pageCodeList
@@ -115,14 +130,13 @@ export async function genPageCode(param) {
         if (type == 'empty') {
             templatePath = getPath(`public/template/v4/page/${type}/${type}.ejs`)
         } else {
+            templateParam = adapter(type,type,param)
             templatePath = getPath(`${basePath}/${type}.ejs`)
         }
-        // const temp = getEjsTemplate(templatePath);
         const content = await getEjsTemplateByFile(templatePath,templateParam);
         return {
             filePath: entryPath,
             content
-            // content:temp(templateParam)
         }
     }
 }

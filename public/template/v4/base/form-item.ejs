@@ -1,0 +1,45 @@
+<%# 表单项 -%>
+<% list.forEach(function(formItem){ -%>
+    <el-form-item label="<%=formItem.label%>" prop="<%=formItem.prop%>">
+      <%_ if (formItem.displayType == 'text') { -%>
+      <el-input v-model.trim="<%=formItem.formDataCode%>.<%=formItem.prop%>" placeholder="请输入<%=formItem.label%>"></el-input>
+      <%_ } else if (formItem.displayType=='inputNumber' ){ -%>
+      <el-input-number v-model="<%=formItem.formDataCode%>.<%=formItem.prop%>"></el-input-number>
+      <%_ } else if (['select','enum'].includes(formItem.displayType)) { -%>
+      <el-select v-model="<%=formItem.formDataCode%>.<%=formItem.prop%>" <%if(formItem.displayType =='multipleSelect'){-%>multiple<%_}-%> clearable placeholder="请选择<%=formItem.label%>">
+        <el-option v-for="item in <%=formItem.prop%>Option" :key="item.id" :label="item.name" :value="item.id"></el-option>
+      </el-select>
+      <%_ } else if (formItem.displayType=='textarea' ){ -%>
+      <el-input v-model.trim="<%=formItem.formDataCode%>.<%=formItem.prop%>" type="textarea"></el-input>
+      <%_ } else if (formItem.displayType == 'radio') { -%>
+      <el-radio-group v-model="<%=formItem.formDataCode%>.<%=formItem.prop%>">
+        <el-radio v-for="item in <%=formItem.prop%>Option" :key="item.id" :label="item.id">{{item.name}}</el-radio>
+      </el-radio-group>
+      <%_ } else if (formItem.displayType == 'datetime') { -%>
+      <el-date-picker v-model="<%=formItem.formDataCode%>.<%=formItem.prop%>" type="datetime" placeholder="请选择<%=formItem.label%>"></el-date-picker>
+      <%_ } else if (formItem.displayType == 'date') { -%>
+      <el-date-picker v-model="<%=formItem.formDataCode%>.<%=formItem.prop%>" type="date" placeholder="请选择<%=formItem.label%>"></el-date-picker>
+      <%_ } else if (formItem.displayType == 'time') { -%>
+      <el-time-picker v-model="<%=formItem.formDataCode%>.<%=formItem.prop%>""></el-time-picker>
+      <%_ } else if (formItem.displayType == 'checkbox') { -%>
+      <el-checkbox-group v-model="<%=formItem.formDataCode%>.<%=formItem.prop%>">
+        <el-checkbox v-for="item in <%=formItem.prop%>Option" :key="item.id" :label="item.id">{{item.name}}</el-checkbox>
+      </el-checkbox-group>
+      <%_ } else if (formItem.displayType == 'switch') { -%>
+      <el-switch v-model="<%=formItem.formDataCode%>.<%=formItem.prop%>" :active-value="1" :inactive-value="0"></el-switch>
+      <%_ } else if (formItem.displayType == 'colorPicker') { -%>
+      <el-color-picker v-model="<%=formItem.formDataCode%>.<%=formItem.prop%>"></el-color-picker>
+      <%_ } else if (formItem.displayType == 'rate') { -%>
+      <el-rate v-model="<%=formItem.formDataCode%>.<%=formItem.prop%>"></el-rate>
+      <%_ } else if (formItem.displayType == 'slider') { -%>
+      <el-slider v-model="<%=formItem.formDataCode%>.<%=formItem.prop%>"></el-slider>
+      <%_ } else if (formItem.displayType == 'image') { -%>
+      <el-upload with-credentials class="image-uploader" action="#" :http-request="handleUploadFile" accept='.jpg,.png,jpeg,.bmp' :show-file-list="false">
+        <img v-if="<%=formItem.formDataCode%>.<%=formItem.prop%>" :src="<%=formItem.formDataCode%>.<%=formItem.prop%>" class="image" />
+        <i v-else class="el-icon-plus image-uploader-icon"></i>
+      </el-upload>
+      <%_ } else {  -%>
+      <el-input v-model.trim="<%=formItem.formDataCode%>.<%=formItem.prop%>" placeholder="请输入<%=formItem.label%>"></el-input>
+      <%_ } -%>
+    </el-form-item>
+<%_ }); -%>

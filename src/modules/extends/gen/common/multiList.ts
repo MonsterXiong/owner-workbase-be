@@ -4,6 +4,7 @@ export const MULTI_PAGE_LIST = [
   'taskOrgGraph',
 
   'cardTable',
+  'crudTable',
   'editTable',
   'generalTable',
 

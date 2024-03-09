@@ -8,8 +8,8 @@
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-button :loading="queryLoading" type="primary" icon="el-icon-search" size="small" @click="handleSearch" v-show="searchFlag">查询</el-button>
-        <el-button icon="el-icon-refresh-right" size="small" @click="handleReset" v-show="searchFlag">重置</el-button>
+        <el-button :loading="queryLoading" type="primary" icon="el-icon-search" size="small" @click="handleSearch">查询</el-button>
+        <el-button icon="el-icon-refresh-right" size="small" @click="handleReset">重置</el-button>
         <slot></slot>
       </el-form-item>
     </el-form>
