@@ -20,13 +20,18 @@ export default {
       title: '新增',
       formData: {
         <%_ if (list.length > 0) { -%>
+        <%# 循环prop %>
         <% list.forEach(function(field){ -%>
           <%= field.prop%> : '',
         <%_ }); -%>
         <%_ } -%>
       },
       formDataRules: {
-        projectName: [{ required: true, message: '请输入项目名称', trigger: 'blur' }],
+        <%_ if (list.length > 0) { -%>
+        <% list.forEach(function(field){ -%>
+          <%_ if (field.isRequired) { -%><%= field.prop%>: [{ required: true, message: '请输入<%= field.label%>', trigger: 'blur' }],<%_ } -%>
+        <%_ }); -%>
+        <%_ } -%>
       },
     }
   },

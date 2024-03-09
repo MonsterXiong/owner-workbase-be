@@ -5,7 +5,7 @@
       <el-input v-model.trim="<%=formItem.formDataCode%>.<%=formItem.prop%>" placeholder="请输入<%=formItem.label%>"></el-input>
       <%_ } else if (formItem.displayType=='inputNumber' ){ -%>
       <el-input-number v-model="<%=formItem.formDataCode%>.<%=formItem.prop%>"></el-input-number>
-      <%_ } else if (['select','enum'].includes(formItem.displayType)) { -%>
+      <%_ } else if (['multipleSelect','select','enum'].includes(formItem.displayType)) { -%>
       <el-select v-model="<%=formItem.formDataCode%>.<%=formItem.prop%>" <%if(formItem.displayType =='multipleSelect'){-%>multiple<%_}-%> clearable placeholder="请选择<%=formItem.label%>">
         <el-option v-for="item in <%=formItem.prop%>Option" :key="item.id" :label="item.name" :value="item.id"></el-option>
       </el-select>

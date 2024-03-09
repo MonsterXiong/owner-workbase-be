@@ -1,15 +1,16 @@
-import { camelCase } from "change-case"
+import { camelCase, pascalCase } from "change-case"
 
 export function crudTableAdapter(param){
   const { name,pageName, detailParam } = param
   const  { templateParam } = detailParam
 
-  const { tableCode,attrs,tableName } = templateParam
+  const { tableCode:tableKey,attrs,tableName } = templateParam
   const primaryKey = attrs.find(item=>!!item.isPrimaryKey)?.prop || 'id'
 
-
+  const tableCode = pascalCase(tableKey)
   const {queryList,tableList,formList} = attrs.reduce((pre,cur)=>{
-    if(cur.isHidden){
+    cur.prop = camelCase(cur.prop)
+    if(!cur.isHidden){
       pre['tableList'].push(cur)
     }
     if(cur.isQuery){
@@ -19,17 +20,9 @@ export function crudTableAdapter(param){
       pre['formList'].push(cur)
     }
     return pre
-  },{
-    queryList:[],
-    tableList:[],
-    formList:[]})
-  // const queryList = attrs.filter(item=>item=>item.isQuery)
-  // const tableList = attrs.filter(item=>item=>item.isQuery)
+  },{queryList:[],tableList:[],formList:[]})
   const camelCaseName = camelCase(name)
-  console.log(attrs);
 
-  // 开始清洗数据
-  // query的数据有哪些
   const query = {
     tableCode,
     list:queryList.map(item=>{

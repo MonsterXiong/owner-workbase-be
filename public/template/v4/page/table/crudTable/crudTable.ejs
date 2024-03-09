@@ -16,6 +16,7 @@
 </template>
 
 <script>
+import { <%= tableCode%>Service } from '@/services'
 import { QueryConditionBuilder } from '@/utils/queryConditionBuilder'
 import <%= pageName%>Dialog from './components/<%= pageName%>Dialog.vue'
 import <%= pageName%>Table from './components/<%= pageName%>Table.vue'
@@ -148,27 +149,27 @@ export default {
     },
     // 查询列表API
     async onQueryListAPI(queryCondition) {
-      return await this.$api.<%= tableCode%>Service.query<%= tableCode%>ByCondition(queryCondition)
+      return await <%= tableCode%>Service.query<%= tableCode%>ByCondition(queryCondition)
     },
     // 删除API
     async onDeleteAPI(id) {
-      return await this.$api.<%= tableCode%>Service.delete<%= tableCode%>(id)
+      return await <%= tableCode%>Service.delete<%= tableCode%>(id)
     },
     // 批量删除API
     async onBatchDeleteAPI(ids) {
-      return await this.$api.<%= tableCode%>Service.delete<%= tableCode%>Batch(ids)
+      return await <%= tableCode%>Service.delete<%= tableCode%>Batch(ids)
     },
     // 保存API
     async onSaveAPI(param) {
-      return await this.$api.<%= tableCode%>Service.save<%= tableCode%>(param)
+      return await <%= tableCode%>Service.save<%= tableCode%>(param)
     },
     // 新增API
     async onInsertAPI(param) {
-      return await this.$api.<%= tableCode%>Service.insert<%= tableCode%>(param)
+      return await <%= tableCode%>Service.insert<%= tableCode%>(param)
     },
     // 更新API
     async onUpdateAPI(param) {
-      return await this.$api.<%= tableCode%>Service.update<%= tableCode%>(param)
+      return await <%= tableCode%>Service.update<%= tableCode%>(param)
     },
   },
 }
