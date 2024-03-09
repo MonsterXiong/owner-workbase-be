@@ -4,7 +4,7 @@ import * as fs from 'fs'
 import * as ejs from 'ejs'
 import * as glob from 'glob'
 import { MULTI_PAGE_LIST } from './common/multiList';
-import { adapter } from './adapter';
+import { ADAPTER_MAP, adapter } from './adapter';
 const GEN_TYPE = {
     MENU: 'menu',
     ROUTE: 'route',
@@ -86,7 +86,7 @@ export async function genPageCode(param) {
     const pageDirPath = `pages/${name}`
     const entryPath = `${pageDirPath}/${pascalCaseName}.vue`
 
-    let commonTemplateParam = {
+    const commonTemplateParam = {
         name,
         pageName:pascalCaseName
     }
@@ -95,6 +95,7 @@ export async function genPageCode(param) {
         const templatePathList = glob.sync(`${basePath}/**/*.{vue,ejs,less,js}`)
         const pageCodeList = []
         templateParam = adapter(categoryType,type,{...templateParam,...param})
+
         for await (const templatePathItem of templatePathList) {
             const filePath = templatePathItem.slice(basePath.length + 1)
             const ext = filePath.match(/\.\w+$/i)[0]
@@ -128,9 +129,9 @@ export async function genPageCode(param) {
 
     } else {
         if (type == 'empty') {
-            templatePath = getPath(`public/template/v4/page/${type}/${type}.ejs`)
+            templatePath = getPath(`${basePath}/${type}.ejs`)
         } else {
-            templateParam = adapter(type,type,param)
+            templateParam = adapter(categoryType,type,{...templateParam,...param})
             templatePath = getPath(`${basePath}/${type}.ejs`)
         }
         const content = await getEjsTemplateByFile(templatePath,templateParam);

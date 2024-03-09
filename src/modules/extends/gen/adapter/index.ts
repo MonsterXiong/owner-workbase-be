@@ -11,7 +11,7 @@ import { OTHER_ADAPTER_MAP } from './other/index'
 import { LIST_ADAPTER_MAP } from './list/index'
 /* Software Gen Code Require Placeholder */
 
-const ADAPTER_MAP = {
+export const ADAPTER_MAP = {
   [CATEGORY_TYPE.TABLE]: TABLE_ADAPTER_MAP,
   [CATEGORY_TYPE.FORM]: FORM_ADAPTER_MAP,
 	[CATEGORY_TYPE.MATRIX]: MATRIX_ADAPTER_MAP,
@@ -25,6 +25,8 @@ const ADAPTER_MAP = {
 	/* Software Gen Code Placeholder */
 }
 
-export function adapter(categoryType,type,param) {
+export const adapter = (categoryType,type,param)=> {
+  console.log('categoryType',categoryType,type,param);
+
   return ADAPTER_MAP[categoryType][type](param)
 }
