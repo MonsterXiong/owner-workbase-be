@@ -28,7 +28,7 @@ export default {
       },
       formDataRules: {
         <%_ if (list.length > 0) { -%>
-        <% list.forEach(function(field){ -%>
+        <%_ list.forEach(function(field){ -%>
           <%_ if (field.isRequired) { -%><%= field.prop%>: [{ required: true, message: '请输入<%= field.label%>', trigger: 'blur' }],<%_ } -%>
         <%_ }); -%>
         <%_ } -%>
