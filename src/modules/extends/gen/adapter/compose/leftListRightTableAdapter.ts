@@ -1,3 +1,8 @@
-export function leftListRightTableAdapter(param){ 
-  return param 
+export function leftListRightTableAdapter(param){
+  const { name,pageName, detailParam } = param
+  const  { templateParam } = detailParam
+  // if(!templateParam || !Object.keys(templateParam)?.length){
+  //   return null
+  // }
+  return param
 }

@@ -1,3 +1,8 @@
-export function leftListCenterGeneralGraphRightFormXydAdapter(param){ 
-  return param 
+export function leftListCenterGeneralGraphRightFormXydAdapter(param){
+  const { name,pageName, detailParam } = param
+  const  { templateParam } = detailParam
+  // if(!templateParam || !Object.keys(templateParam)?.length){
+  //   return null
+  // }
+  return param
 }

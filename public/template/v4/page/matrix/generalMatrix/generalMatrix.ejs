@@ -34,41 +34,46 @@ export default {
       const list = data.map(item=>{
         return {
           ...item,
-          id:item.<%= horizontal.uniqueCode%>,
-          name:item.<%= horizontal.displayName%>
+          id:item.<%= horizontal.fieldList.uniqueCode%>,
+          name:item.<%= horizontal.fieldList.displayName%>
         }
       })
-      this.headerData = listToTree(list, { pidKey: <%= horizontal.parentCode%> })
+      <%_ if(horizontal.fieldList.parentCode){ -%>
+      this.headerData = listToTree(list, { pidKey: '<%= horizontal.fieldList.parentCode%>' })
+      <%_} else {-%>
+      this.headerData = list
+      <%_ } -%>
     },
-    getTreeData(){
+    async getTreeData(){
       const { data } = await <%= vertical.tableCode%>Service.query<%= vertical.tableCode%>ByCondition(this.getQueryCondition())
       const list = data.map(item=>{
         return {
           ...item,
-          id:item.<%= vertical.uniqueCode%>,
-          name:item.<%= vertical.displayName%>
+          id:item.<%= vertical.fieldList.uniqueCode%>,
+          name:item.<%= vertical.fieldList.displayName%>
         }
       })
-      this.treeData = listToTree(list, { pidKey: <%= vertical.parentCode%> })
+      <%_ if(vertical.fieldList.parentCode){ -%>
+      this.treeData = listToTree(list, { pidKey: '<%= vertical.fieldList.parentCode%>' })
+      <%_} else {-%>
+      this.treeData = list
+      <%_ } -%>
     },
-    getData(){
+    async getData(){
       const { data } = await <%= rel.tableCode%>Service.query<%= rel.tableCode%>ByCondition(this.getQueryCondition())
       this.data = data.map(item=>{
         return {
           ...item,
-          from:item.<%= horizontal.uniqueCode%>,
-          to:item.<%= vertical.uniqueCode%>,
-          value:item.<%= rel.relCode%>
+          from:item.<%= horizontal.fieldList.uniqueCode%>,
+          to:item.<%= vertical.fieldList.uniqueCode%>,
+          <%_ if(rel.fieldList.relCode){ -%>
+          value:item.<%= rel.fieldList.relCode%>
+          <%_ } -%>
         }
       })
     },
     initData() {
-      Promise.all([this.getHeaderData,this.getTreeData,this.getData])
-        {
-          from: 'a1-1-1',
-          to: 'a11-1-2',
-        },
-      ]
+      Promise.all([this.getHeaderData(),this.getTreeData(),this.getData()])
     },
   },
 }

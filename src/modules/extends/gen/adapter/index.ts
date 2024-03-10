@@ -26,7 +26,8 @@ export const ADAPTER_MAP = {
 }
 
 export const adapter = (categoryType,type,param)=> {
-  console.log('categoryType',categoryType,type,param);
-
+	if(!ADAPTER_MAP[categoryType]){
+		return null
+	}
   return ADAPTER_MAP[categoryType][type](param)
 }

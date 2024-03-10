@@ -1,3 +1,8 @@
-export function generalFormAdapter(param){ 
-  return param 
+export function generalFormAdapter(param){
+  const { name,pageName, detailParam } = param
+  const  { templateParam } = detailParam
+  // if(!templateParam || !Object.keys(templateParam)?.length){
+  //   return null
+  // }
+  return param
 }

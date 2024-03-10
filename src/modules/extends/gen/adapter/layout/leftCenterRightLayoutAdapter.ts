@@ -1,3 +1,8 @@
-export function leftCenterRightLayoutAdapter(param){ 
-  return param 
+export function leftCenterRightLayoutAdapter(param){
+  const { name,pageName, detailParam } = param
+  const  { templateParam } = detailParam
+  // if(!templateParam || !Object.keys(templateParam)?.length){
+  //   return null
+  // }
+  return param
 }

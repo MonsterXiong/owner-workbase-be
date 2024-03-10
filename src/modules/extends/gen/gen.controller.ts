@@ -67,7 +67,11 @@ class SfJsonData{
 }
 
 function formatPageCode(codeData,projectPath='./',isProject=true) {
-  return codeData.map(item => {
+  let codeList = codeData
+  if(!Array.isArray(codeData)){
+    codeList = [codeData]
+  }
+  return codeList.map(item => {
     let filePath = item.filePath
     if (isProject) {
       filePath = path.join(projectPath,'src',item.filePath)
@@ -184,6 +188,8 @@ export class GenController {
   async genSfPageCodeByMenuId(@Query('menuId') menuId: string){
     try {
       const codeData = await this.genService.getSfPageCode(menuId)
+      console.log('codeData',codeData);
+
       return formatPageCode(codeData, '', false)
     } catch (error) {
       console.log(error, 'error');

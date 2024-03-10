@@ -5,8 +5,8 @@ import { weightMatrixAdapter } from './weightMatrixAdapter'
 /* Software Gen Code Require Placeholder */
 
 export const MATRIX_ADAPTER_MAP = {
-  [PAGE_TYPE.GENERAL_MATRIX]:generalMatrixAdapter,
+  [PAGE_TYPE.GENERAL_MATRIX]:relationMatrixAdapter,
 	[PAGE_TYPE.RELATION_MATRIX]:relationMatrixAdapter,
-	[PAGE_TYPE.WEIGHT_MATRIX]:weightMatrixAdapter,
+	[PAGE_TYPE.WEIGHT_MATRIX]:relationMatrixAdapter,
 	/* Software Gen Code Placeholder */
 }
