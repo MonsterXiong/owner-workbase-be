@@ -1,92 +1,178 @@
 <template>
   <TableLayout>
     <template #query>
-      <QuerySearch :searchList="searchList" @handleSearch="onSearch">
-        <el-button type="danger" icon="el-icon-delete" size="small">批量刪除</el-button>
-        <el-button id="createProjectButton" type="success" icon="el-icon-plus" size="small">新增</el-button>
-      </QuerySearch>
+      <<%= pageName%>Query @onEvent="onEvent" :queryForm.sync="queryForm"></<%= pageName%>Query>
     </template>
-    <div class="main-container">
-      <el-table size="small" border height="100%" :data="tableData" row-key="nodeId" @selection-change="onSelectionChange" tooltip-effect="light">
-        <el-table-column type="selection" width="40px" align="center"> </el-table-column>
-        <el-table-column type="index" label="序号" width="60px" align="center"> </el-table-column>
-        <el-table-column prop="name" label="名称" min-width="120px" align="center"> </el-table-column>
-        <el-table-column prop="code" label="标识" min-width="120px" align="center"> </el-table-column>
-        <el-table-column label="操作" width="200px" align="center">
-          <template slot-scope="{ row }">
-            <el-button plain type="primary" icon="el-icon-edit" size="mini" @click="onEdit(row)">编辑</el-button>
-            <el-button plain type="danger" icon="el-icon-delete" size="mini" @click="onBatchDelete([row])">刪除</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-    </div>
-    <div ref="paginationRef" class="pagination-wrapper">
-      <el-pagination
-        @size-change="onSizeChange"
-        @current-change="onCurrentChange"
-        :current-page="pageInfo.pageNum"
-        :page-sizes="[10, 20, 50, 100]"
-        :page-size="pageInfo.pageSize"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="pageInfo.total"
-      ></el-pagination>
-    </div>
+    <<%= pageName%>Table
+      :pageInfo.sync="pageInfo"
+      :tableData="tableData"
+      :total="total"
+      @onEdit="onEdit"
+      @onDelete="onDelete"
+      @selection-change="onSelectionChange"
+    ></<%= pageName%>Table>
+    <<%= pageName%>Dialog ref="<%= camelCaseName%>DialogRef" @submit="onSubmit"></<%= pageName%>Dialog>
   </TableLayout>
 </template>
 
 <script>
-import QuerySearch from './components/QuerySearch.vue'
+import { <%= tableCode%>Service } from '@/services'
+import { QueryConditionBuilder } from '@/utils/queryConditionBuilder'
+import <%= pageName%>Dialog from './components/<%= pageName%>Dialog.vue'
+import <%= pageName%>Table from './components/<%= pageName%>Table.vue'
+import <%= pageName%>Query from './components/<%= pageName%>Query.vue'
 export default {
   name: '<%= pageName%>',
+  components: {
+    <%= pageName%>Table,
+    <%= pageName%>Query,
+    <%= pageName%>Dialog,
+  },
   data() {
     return {
-      searchList: [
-        { label: '名称', code: 'name', type: 'input' },
-        { label: '标识', code: 'code', type: 'input', options: [] },
-      ],
+      tableData: [],
       queryForm: {},
-      multipleSelection: [],
-      tableData: [
-        {
-          name: '1',
-        },
-        {
-          name: '2',
-        },
-      ],
+      total: 0,
       pageInfo: {
-        pageNum: 1,
-        pageSize: 20,
-        total: 0,
+        page: 1,
+        rows: 20,
       },
+      multipleSelection: [],
     }
   },
-  components: {
-    QuerySearch,
+  mounted() {
+    this.init()
+  },
+  watch: {
+    pageInfo: {
+      handler() {
+        this.getTableData()
+      },
+      deep: true,
+    },
   },
   methods: {
-    queryTableData() {},
-    onSearch(data) {
-      this.queryForm = data ? { ...data } : {}
-      this.queryTableData()
+    init() {
+      this.getTableData()
     },
-    onSizeChange(val) {
-      this.pageInfo.pageSize = val
-      this.queryTableData()
-    },
-    onCurrentChange(val) {
-      this.pageInfo.pageNum = val
-      this.queryTableData()
-    },
+    // 多选
     onSelectionChange(val) {
       this.multipleSelection = val
+    },
+    // 查询
+    onQuery() {
+      this.getTableData()
+    },
+    // 重置
+    onReset() {
+      Object.keys(this.queryForm).forEach((key) => {
+        this.queryForm[key] = ''
+      })
+      // pageInfo修改会触发查询功能
+      this.pageInfo = { page: 1, rows: 20 }
+    },
+    // 新增
+    onAdd() {
+      this.$refs.<%= camelCaseName%>DialogRef.show()
+    },
+    // 编辑
+    onEdit(row) {
+      this.$refs.<%= camelCaseName%>DialogRef.show(row)
+    },
+    // 删除
+    async onDelete(row) {
+      try {
+        await this.$tools.confirm('请确认是否删除？')
+        const { code } = await this.onDeleteAPI(row.<%= primaryKey%>)
+        if (code === 200) this.$tools.message('删除成功')
+        this.getTableData()
+      } catch (e) {
+        if (e == 'cancel') return this.$tools.message('已取消删除', { type: 'info' })
+        console.error('删除失败', e)
+      }
+    },
+    // 批量删除
+    async onBatchDelete() {
+      const ids = this.multipleSelection.map((item) => item.<%= primaryKey%>)
+      if (!ids.length) {
+        return this.$message.warning('请先选择需要删除的内容')
+      }
+      try {
+        await this.$tools.confirm('请确认是否删除？')
+        const { code } = await this.onBatchDeleteAPI(ids)
+        if (code === 200) this.$tools.message('删除成功')
+        this.getTableData()
+      } catch (e) {
+        if (e == 'cancel') return this.$tools.message('已取消删除', { type: 'info' })
+        console.error('删除失败', e)
+      }
+    },
+    // 处理query组件触发的方法
+    onEvent(type) {
+      switch (type) {
+        case 'query':
+          this.onQuery()
+          break
+        case 'reset':
+          this.onReset()
+          break
+        case 'add':
+          this.onAdd()
+          break
+        case 'batchDelete':
+          this.onBatchDelete()
+          break
+        default:
+          console.log('不支持的方法类型')
+          break
+      }
+    },
+    async getTableData() {
+      const queryCondition = QueryConditionBuilder.getInstance(this.pageInfo.page, this.pageInfo.rows)
+      Object.keys(this.queryForm).forEach((key) => {
+        if (this.queryForm[key] || this.queryForm[key] == 0) {
+          queryCondition.buildLikeQuery(key, this.queryForm[key])
+        }
+      })
+      const { data, count } = await this.onQueryListAPI(queryCondition)
+      this.tableData = data
+      this.total = count
+    },
+    async onSubmit(formData) {
+      try {
+        await this.onSaveAPI(formData)
+        this.getTableData()
+        this.$message.success('操作成功')
+      } catch (error) {
+        this.$message.error('操作失败，请联系管理员或者重试')
+      }
+    },
+    // 查询列表API
+    async onQueryListAPI(queryCondition) {
+      return await <%= tableCode%>Service.query<%= tableCode%>ByCondition(queryCondition)
+    },
+    // 删除API
+    async onDeleteAPI(id) {
+      return await <%= tableCode%>Service.delete<%= tableCode%>(id)
+    },
+    // 批量删除API
+    async onBatchDeleteAPI(ids) {
+      return await <%= tableCode%>Service.delete<%= tableCode%>Batch(ids)
+    },
+    // 保存API
+    async onSaveAPI(param) {
+      return await <%= tableCode%>Service.save<%= tableCode%>(param)
+    },
+    // 新增API
+    async onInsertAPI(param) {
+      return await <%= tableCode%>Service.insert<%= tableCode%>(param)
+    },
+    // 更新API
+    async onUpdateAPI(param) {
+      return await <%= tableCode%>Service.update<%= tableCode%>(param)
     },
   },
 }
 </script>
 
-<style lang="less" scoped>
-.main-container {
-  height: calc(100% - 40px);
-}
-</style>
+<style lang="less" scoped></style>
