@@ -68,5 +68,30 @@ export default {
       this.$emit('updateNodeData', data)
     },
   },
+  watch: {
+    nodeData() {
+      if (this.nodeData._nodeType === 'node') {
+        // 节点
+        this.formConfig = [
+          {
+            key: 'text',
+            label: '节点名称',
+            type: 'input',
+            required: true,
+          },
+        ]
+      } else {
+        // 线
+        this.formConfig = [
+          {
+            key: 'text',
+            label: '关系名称',
+            type: 'input',
+            required: true,
+          },
+        ]
+      }
+    },
+  },
 }
 </script>

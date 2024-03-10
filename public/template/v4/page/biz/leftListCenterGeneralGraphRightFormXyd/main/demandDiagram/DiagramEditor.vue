@@ -1,7 +1,7 @@
 <template>
   <div class="editor-wrap">
     <div v-if="isShow" class="content">
-      <div class="editor-head" draggable @mousedown="onMousedown" @mousemove="onMousemove">
+      <div class="editor-head" @mousedown="onMousedown" @mousemove="onMousemove">
         <div class="title">工具栏</div>
         <div class="icon" @click="onHidePanel">
           <i class="el-icon-minus"></i>
@@ -13,19 +13,16 @@
             <i class="el-icon-arrow-down"></i>
             {{ item.title }}
           </div>
-          <div class="item-category">
-            <div
-              :class="classObj(category, item.isDraw)"
-              v-for="category in item.category"
-              :key="category.name"
-              @click="handleToolClick(category)"
-              draggable
-              @dragstart="drag($event, category)"
-            >
-              <BaseIcon :iconName="category.icon" :fill="category.fill" class="meta-tool"></BaseIcon>
-              <div class="text">{{ category.edefineName }}</div>
-            </div>
-          </div>
+          <el-row>
+            <el-col v-for="category in item.category" :key="category.name" :span="item.colSpan || 24">
+              <div class="item-category">
+                <div :class="classObj(category, item.isDraw)" @click="handleToolClick(category)" draggable @dragstart="drag($event, category)">
+                  <BaseIcon :iconName="category.icon" :fill="category.fill" class="meta-tool"></BaseIcon>
+                  <div class="text">{{ category.edefineName }}</div>
+                </div>
+              </div>
+            </el-col>
+          </el-row>
         </div>
       </div>
     </div>
@@ -36,7 +33,6 @@
 </template>
 
 <script>
-import { Draggable } from './draggable'
 export default {
   name: 'Editor',
   props: {
@@ -49,7 +45,6 @@ export default {
     return {
       currentMetaTool: null,
       isShow: true,
-      Draggable: new Draggable(),
     }
   },
   methods: {
@@ -76,12 +71,8 @@ export default {
     },
     async onMousedown(e) {
       // 鼠标按下，计算当前元素距离可视区的距离
-      await this.Draggable.handleDom('editor-head', 'editor-wrap')
-      await this.Draggable.handlemousedown(e)
     },
-    onMousemove(e) {
-      this.Draggable.handleMousemove(e)
-    },
+    onMousemove(e) {},
   },
 }
 </script>
@@ -91,7 +82,7 @@ export default {
   // height: 400px;
   position: absolute;
   top: 20px;
-  left: calc(100% - 170px);
+  right: 20px;
   // right: 10px;
   z-index: 99;
   .content {

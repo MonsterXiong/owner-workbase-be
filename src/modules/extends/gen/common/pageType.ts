@@ -23,5 +23,7 @@ export const PAGE_TYPE = {
 	LEFT_LIST_CENTER_ORG_GRAPH_RIGHT_FORM_XYD: 'leftListCenterOrgGraphRightFormXyd',
 	LEFT_LIST_CENTER_GENERAL_GRAPH_RIGHT_FORM_XYD: 'leftListCenterGeneralGraphRightFormXyd',
 	READ_ONLY_WORD: 'readOnlyWord',
+	BATTLE_ACTIVITY_DESIGN: 'battleActivityDesign',
+	LEFT_LIST_CENTER_GENERAL_GRAPH_RIGHT_FORM: 'leftListCenterGeneralGraphRightForm',
 	/* Software Gen Code Placeholder */
 }

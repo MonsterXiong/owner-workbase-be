@@ -56,16 +56,13 @@ export default {
       const requiredList = this.formConfig.filter((item) => item.required)
       requiredList.map((item) => {
         let itemValidator = []
-        this.$set(this.rules, item.key, [
-          {
-            required: true,
-            message: `请${this.rulesType.includes(item.type) ? '选择' : '输入'}${item.label}`,
-            trigger: `${this.rulesType.includes(item.type) ? 'change' : 'blur'}`,
-          },
-        ])
-        if (item.validatorFn) {
-          this.$set(this.rules, item.key)
-        }
+        if (item.validatorFn) itemValidator.push({ validator: item.validatorFn, trigger: `${this.rulesType.includes(item.type) ? 'change' : 'blur'}` })
+        itemValidator.push({
+          required: true,
+          message: `请${this.rulesType.includes(item.type) ? '选择' : '输入'}${item.label}`,
+          trigger: `${this.rulesType.includes(item.type) ? 'change' : 'blur'}`,
+        })
+        this.$set(this.rules, item.key, itemValidator)
       })
     },
     saveForm() {

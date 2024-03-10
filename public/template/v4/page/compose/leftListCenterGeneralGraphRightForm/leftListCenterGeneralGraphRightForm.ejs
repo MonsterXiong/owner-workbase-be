@@ -2,16 +2,10 @@
   <div class="system-analysis">
     <PanelLayout :defaultCollapseLeft="false" :defaultLeftWidth="14" :defaultRightWidth="22" :showRightPanel="showRightPanel">
       <template slot="left">
-        <LeftList isHeader headerTitle="数据链体系能力需求列表" v-model="curComponent" :listData="listData" />
+        <LeftList isHeader headerTitle="左列表" v-model="curComponent" :listData="listData" />
       </template>
       <div class="main">
-        <component
-          :is="curComponent"
-          @selectNode="hanldeSelectNode"
-          :graphConfig="graphConfig"
-          :updateGraphData="updateGraphData"
-          @saveDiagram="saveDiagramData"
-        ></component>
+        <component :is="curComponent" @selectNode="hanldeSelectNode" :graphConfig="graphConfig" :updateGraphData="updateGraphData"></component>
       </div>
       <template slot="right">
         <Right :nodeData="nodeData || {}" @updateNodeData="handleUpdateNodeData" />
@@ -47,64 +41,25 @@ export default {
         editorData: [
           {
             title: '系统元素',
-            colSpan: 12,
             category: [
               {
-                icon: 'icon-start',
-                edefineName: '开始',
+                icon: 'icon-circle',
+                edefineName: '数据链系统',
                 fill: '#999',
                 eobjectShape: 'graph_circle',
               },
               {
-                icon: 'icon-end',
-                edefineName: '结束',
+                icon: 'icon-line1',
+                edefineName: '交互关系',
                 fill: '#999',
-                eobjectShape: 'graph_ring',
-              },
-              {
-                icon: 'icon-roundedrectangle',
-                edefineName: '系统功能',
-                fill: '#999',
-                eobjectShape: 'graph_roundedrectangle',
-              },
-              {
-                icon: 'icon-ellipse',
-                edefineName: '功能执行组件',
-                fill: '#999',
-                eobjectShape: 'graph_ellipse',
+                eobjectShape: 'graph_line',
               },
               {
                 icon: 'icon-line6',
-                edefineName: '逻辑关系',
+                edefineName: '配合协同关系',
                 fill: '#999',
-                eobjectShape: 'graph_line',
-                dash: [6, 3],
+                eobjectShape: 'graph_line_dotted',
               },
-              {
-                icon: 'icon-decision',
-                edefineName: '逻辑判断',
-                fill: '#999',
-                eobjectShape: 'graph_diamond',
-              },
-              // {
-              //   icon: 'icon-ellipse',
-              //   edefineName: '数据链系统',
-              //   fill: '#999',
-              //   eobjectShape: 'graph_roundedrectangle',
-              // },
-              // {
-              //   icon: 'icon-line1',
-              //   edefineName: '交互关系',
-              //   fill: '#999',
-              //   eobjectShape: 'graph_line',
-              // },
-              // {
-              //   icon: 'icon-line6',
-              //   edefineName: '配合协同关系',
-              //   fill: '#999',
-              //   eobjectShape: 'graph_line',
-              //   dash: [6, 3],
-              // },
             ],
           },
           {
@@ -138,9 +93,6 @@ export default {
     },
   },
   methods: {
-    saveDiagramData(nodeDataArray) {
-      console.log('saveDiagramData', nodeDataArray)
-    },
     handleUpdateNodeData(data) {
       this.updateGraphData = data
     },
