@@ -129,11 +129,11 @@ export async function genPageCode(param) {
         let subTemplateParam = templateParam['entry'] || {}
         // 不是入口文件
         if (fileName != type) {
-            const templateNameLength = fileName.lastIndexOf('/') + 1
+            const index =fileName.lastIndexOf('/')>=0?fileName.lastIndexOf('/'):fileName.lastIndexOf('\\')
+            const templateNameLength = index + 1
             const dirName = fileName.slice(0, templateNameLength)
             const templateName = fileName.slice(templateNameLength)
             let extName = ext
-
             subTemplateParam = templateParam[templateName]
             if (ext == '.ejs') {
                 extName = '.vue'

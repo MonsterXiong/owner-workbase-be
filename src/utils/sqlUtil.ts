@@ -1,4 +1,4 @@
-import { camelCase, snakeCase } from "change-case"
+import { snakeCase } from "change-case"
 
 const WHERE_TYPE = {
   IN: 'in',
@@ -47,8 +47,6 @@ function genWhere(condition) {
 function getWhereCode(condition, index) {
   let result = ''
   const code = genWhere(condition)
-  console.log('genWhere',code);
-
   if (code) {
     // if (index == 0) {
     if (index == -1) {

@@ -3,6 +3,7 @@ import { SfProject } from './../../base/sfProject/sfProject.entity';
 import { Body, Controller, Post, Query } from '@nestjs/common';
 import { SfProjectExtendService } from './sf-project-extend.service';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { JsonData } from '../gen/gen.controller';
 
 @ApiTags('扩展项目')
 @Controller('sfProjectExtend')
@@ -38,5 +39,11 @@ export class SfProjectExtendController {
         entity.projectId = nanoid()
     }
     return this.sfProjectExtendService.saveProject(entity)
+  }
+
+  @Post('syncProjectToSf')
+  @ApiOperation({ summary: '导入并同步项目' })
+  async syncProjectToSf(@Query('projectId') projectId: string,@Body() jsonData: JsonData) {
+    return this.sfProjectExtendService.syncProjectToSf(projectId,jsonData)
   }
 }

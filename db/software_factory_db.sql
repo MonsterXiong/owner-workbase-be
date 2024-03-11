@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS `sf_enum` (
   PRIMARY KEY (`enum_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='枚举';
 
--- 正在导出表  software_factory_db.sf_enum 的数据：~0 rows (大约)
+-- 正在导出表  software_factory_db.sf_enum 的数据：~2 rows (大约)
 INSERT INTO `sf_enum` (`enum_id`, `enum_code`, `enum_name`, `bind_enum_category`, `bind_project`, `is_sync`, `short_name`, `status`, `remark`, `description`, `sort`, `isdel`, `creator`, `create_time`, `updater`, `update_time`) VALUES
 	('1', 'red_camp', '红方', '1', 'vGKO7EMwa8cX_0jEMG-OR', 1, NULL, '1', NULL, NULL, 0, '0', NULL, NULL, NULL, NULL),
 	('2', 'blue_camp', '蓝方', '1', 'vGKO7EMwa8cX_0jEMG-OR', 1, NULL, '1', NULL, NULL, 0, '0', NULL, NULL, NULL, NULL);
@@ -65,7 +65,7 @@ CREATE TABLE IF NOT EXISTS `sf_enum_category` (
   PRIMARY KEY (`enum_category_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='枚举类别';
 
--- 正在导出表  software_factory_db.sf_enum_category 的数据：~0 rows (大约)
+-- 正在导出表  software_factory_db.sf_enum_category 的数据：~1 rows (大约)
 INSERT INTO `sf_enum_category` (`enum_category_id`, `enum_category_code`, `enum_category_name`, `bind_project`, `is_sync`, `short_name`, `status`, `remark`, `description`, `sort`, `isdel`, `creator`, `create_time`, `updater`, `update_time`) VALUES
 	('1', 'camp_type', '阵营数据', 'vGKO7EMwa8cX_0jEMG-OR', 1, NULL, '1', NULL, NULL, 0, '0', NULL, NULL, NULL, NULL);
 
@@ -91,7 +91,7 @@ CREATE TABLE IF NOT EXISTS `sf_menu` (
   PRIMARY KEY (`menu_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='菜单';
 
--- 正在导出表  software_factory_db.sf_menu 的数据：~102 rows (大约)
+-- 正在导出表  software_factory_db.sf_menu 的数据：~104 rows (大约)
 INSERT INTO `sf_menu` (`menu_id`, `menu_name`, `menu_code`, `english_name`, `parent_id`, `level_code`, `tag`, `menu_type`, `bind_project`, `status`, `sort`, `remark`, `isdel`, `creator`, `create_time`, `updater`, `update_time`) VALUES
 	('01862066c4374f48a32cd0805d7a5d28', '模板资源版本管理', 'templateVersionManage', NULL, 'f04b46be0acd415598e86b449a813501', '067004', NULL, 'page', 'DuKc8Et3ogtTxHPnhjVeO', '1', 3, NULL, '0', 'admin', '2024-03-04 15:26:17', 'admin', '2024-03-04 15:26:17'),
 	('04da21a592bb4017bd71acd38ad54608', '态势展示及分析', 'TaiShiZhanShiJIFenXi', NULL, '', NULL, NULL, 'module', '516fda70f2b140ddbbdc1a5e1fbec60f', NULL, 2, NULL, '0', NULL, NULL, NULL, NULL),
@@ -215,7 +215,7 @@ CREATE TABLE IF NOT EXISTS `sf_menu_detail` (
   PRIMARY KEY (`menu_detail_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='菜单详情';
 
--- 正在导出表  software_factory_db.sf_menu_detail 的数据：~66 rows (大约)
+-- 正在导出表  software_factory_db.sf_menu_detail 的数据：~67 rows (大约)
 INSERT INTO `sf_menu_detail` (`menu_detail_id`, `menu_param`, `bind_menu`, `description`, `order_num`, `isdel`, `creator`, `create_time`, `create_ip`, `updater`, `update_time`, `update_ip`) VALUES
 	('-pUWXaTrToGroVJR_Lem2', '{"categoryType":"table","type":"crudTable","templateParam":{}}', 'XEdatjqADEUrKKsGnRSU-', NULL, NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL),
 	('-vTEAsgJFnHdvF42xfrXO', '{"categoryType":"biz","type":"taskOrgGraph"}', 'YKiJclZL9qLwHEMF6ilfm', NULL, NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL),
@@ -305,7 +305,7 @@ CREATE TABLE IF NOT EXISTS `sf_project` (
   PRIMARY KEY (`project_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='项目';
 
--- 正在导出表  software_factory_db.sf_project 的数据：~5 rows (大约)
+-- 正在导出表  software_factory_db.sf_project 的数据：~6 rows (大约)
 INSERT INTO `sf_project` (`project_id`, `project_code`, `project_name`, `short_name`, `status`, `remark`, `project_description`, `system_name`, `system_code`, `sort`, `isdel`, `creator`, `create_time`, `updater`, `update_time`) VALUES
 	('516fda70f2b140ddbbdc1a5e1fbec60f', NULL, '打击筹划分析系统', NULL, '1', NULL, NULL, NULL, NULL, 0, '0', NULL, NULL, NULL, NULL),
 	('DuKc8Et3ogtTxHPnhjVeO', NULL, '数据链军事需求开发软件', NULL, '1', NULL, NULL, NULL, NULL, 1, '0', NULL, NULL, NULL, NULL),
@@ -332,7 +332,7 @@ CREATE TABLE IF NOT EXISTS `sf_project_config` (
   PRIMARY KEY (`project_config_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='项目配置';
 
--- 正在导出表  software_factory_db.sf_project_config 的数据：~5 rows (大约)
+-- 正在导出表  software_factory_db.sf_project_config 的数据：~6 rows (大约)
 INSERT INTO `sf_project_config` (`project_config_id`, `bind_project`, `config_param`, `project_param`, `description`, `order_num`, `isdel`, `creator`, `create_time`, `create_ip`, `updater`, `update_time`, `update_ip`) VALUES
 	('8dO1H3zjtZlGmODLmoHup', 'tLmDeY0B0Jlodb0Q9Ueam', '{"host":"localhost","port":3306,"type":"mysql","username":"root","password":"123456","database":"software_factory_db"}', NULL, NULL, NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL),
 	('LVTiG1_hP2hsxrrlsmnRK', 'GmoA4xl7mETp-xPbQBejf', '{"host":"192.168.2.204","port":3306,"type":"mysql","username":"root","password":"123456","database":"xyd_db"}', '{"prefix":"base/api"}', NULL, NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL),

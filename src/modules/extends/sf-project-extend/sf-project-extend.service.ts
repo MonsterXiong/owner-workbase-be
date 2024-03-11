@@ -13,9 +13,100 @@ import { DatabaseService } from '../database/database.service';
 import { SfEnumService } from '../../base/sfEnum/sfEnum.service';
 import { SfEnumCategoryService } from '../../base/sfEnumCategory/sfEnumCategory.service';
 
+function parseProjectInfo(projectId, projectInfo) {
+    if (!projectInfo) {
+        return null
+    }
+    return {
+        projectId: projectId ? projectId : nanoid(),
+        projectCode: projectInfo.projectCode,
+        projectName: projectInfo.projectName,
+        projectDescription: projectInfo.projectDescription,
+
+        dbConfig: {
+            host: projectInfo?.dbIp || 'localhost',
+            port: projectInfo?.dbPort || '3306',
+            type: projectInfo?.dbType || 'mysql',
+            username: projectInfo?.dbUsername || 'root',
+            password: projectInfo?.dbPassword || '123456',
+            database: projectInfo?.dbName || 'software_factory_db',
+        },
+
+        projectConfig: {
+            projectPort: projectInfo.projectPort,
+            projectOutputDir: projectInfo.projectOutputDir,
+            projectVersion: projectInfo.projectVersion,
+            projectFrameworkType: projectInfo.projectFrameworkType,
+            prefix: projectInfo?.prefix || 'base/api'
+        }
+    }
+    // 最后拿到的是数据库中的格式
+}
+function parseMenuInfo(menuInfo, bindProject) {
+    if (!menuInfo?.length) {
+        return null
+    }
+    const menuList = menuInfo.map(item => {
+        return {
+            menuId: item.id,
+            // 转换为小驼峰
+            menuCode: item.code,
+            menuName: item.name,
+            parentId: item.parentId,
+            menuType: item.menuType,
+            menuIcon: item.icon,
+            sort: item.order_num,
+            bindProject,
+        }
+    })
+    return menuList
+}
+function parseDataInfo(dataInfo, bindProject) {
+    if (!(Array.isArray(dataInfo) && dataInfo.length)) {
+        return null
+    }
+    // 首先过滤掉枚举
+    const enumTableList = dataInfo.filter(item => item.modelType == 'enum')
+    // 其次收集数据库表和枚举表，方便后续使用
+    const enumCategoryList = []
+    const enumList = []
+
+    enumTableList.forEach(item => {
+        const isSync = 1
+        const enumCategoryId = nanoid()
+        const enumCategoryItem = {
+            enumCategoryId,
+            enumCategoryCode: item.code,
+            enumCategoryName: item.remark,
+            isSync,
+            bindProject,
+        }
+        if (item?.columns?.length) {
+            item.columns.forEach(column => {
+                const enumItem = {
+                    enumId: nanoid(),
+                    enumCode: column.code,
+                    enumName: column.remark,
+                    sort: column.sort,
+                    isSync,
+                    bindEnumCategory: enumCategoryId,
+                    bindProject,
+                }
+                enumList.push(enumItem)
+            })
+        }
+        enumCategoryList.push(enumCategoryItem)
+    })
+
+    return {
+        enumCategoryList,
+        enumList
+    }
+}
+
 function getQueryConditionByProject(projectId) {
     const queryConDition = QueryConditionBuilder.getInstanceNoPage()
-    queryConDition.buildEqualQuery('bind_project',projectId)
+    queryConDition.buildEqualQuery('bind_project', projectId)
     queryConDition.buildAscSort('sort')
     return queryConDition
 }
@@ -23,9 +114,9 @@ function getQueryConditionByProject(projectId) {
 @Injectable()
 export class SfProjectExtendService {
     constructor(private readonly sfProjectService: SfProjectService,
-        private readonly sfMenuService:SfMenuService,
+        private readonly sfMenuService: SfMenuService,
         private readonly sfMenuDetailService: SfMenuDetailService,
-        private readonly sfEnumService:SfEnumService,
+        private readonly sfEnumService: SfEnumService,
         private readonly sfEnumCategoryService: SfEnumCategoryService,
         private readonly databaseService: DatabaseService,
         private readonly sfProjectConfigService: SfProjectConfigService) { }
@@ -34,7 +125,7 @@ export class SfProjectExtendService {
 
     async getProjectConfig(projectId) {
         // 获取项目信息
-        const data = await this.sfProjectConfigService.findOneByParam({bindProject:projectId})
+        const data = await this.sfProjectConfigService.findOneByParam({ bindProject: projectId })
         return data
     }
 
@@ -42,27 +133,27 @@ export class SfProjectExtendService {
         // 获取项目信息
         const projectConfig = await this.getProjectConfig(projectId)
         const configParam = projectConfig?.configParam
-        if(!configParam){
-          return []
+        if (!configParam) {
+            return []
         }
         const defaultConfig = JSON.parse(configParam)
 
-       const tableList =  await this.databaseService.getTableListByConfig(defaultConfig,defaultConfig.database)
-       return tableList.filter(item=>!item.name.startsWith('s_'))
+        const tableList = await this.databaseService.getTableListByConfig(defaultConfig, defaultConfig.database)
+        return tableList.filter(item => !item.name.startsWith('s_'))
     }
 
-    async getFieldByProjectId(projectId,tableName) {
+    async getFieldByProjectId(projectId, tableName) {
         // 获取项目信息
         const projectConfig = await this.getProjectConfig(projectId)
         const configParam = projectConfig?.configParam
-        if(!configParam){
-          return []
+        if (!configParam) {
+            return []
         }
         const defaultConfig = JSON.parse(configParam)
         try {
-            return await this.databaseService.getFieldListByConfig(defaultConfig,defaultConfig.database,tableName)
+            return await this.databaseService.getFieldListByConfig(defaultConfig, defaultConfig.database, tableName)
         } catch (error) {
-            console.log('error',error);
+            console.log('error-获取数据库字段错误', error);
             return []
         }
 
@@ -74,11 +165,11 @@ export class SfProjectExtendService {
             projectInfo: {},
             projectConfig: {},
             menuList: [],
-            routesConstantList:[],
-            routeList:[],
-            pageList:[],
-            serviceList:[],
-            enumList:[],
+            routesConstantList: [],
+            routeList: [],
+            pageList: [],
+            serviceList: [],
+            enumList: [],
         }
         // 通过项目id获取项目信息
         let projectInfo = await this.sfProjectService.findOne(projectId)
@@ -110,10 +201,10 @@ export class SfProjectExtendService {
             try {
                 tableList = await this.getTableByProjectId(projectInfo.projectId)
             } catch (error) {
-                console.log('error');
+                console.log('error-获取数据库表错误');
             }
             for await (const tableItem of tableList) {
-                fieldMap[tableItem.name] = await this.databaseService.getFieldListByConfig(projectConfigParam,projectConfigParam.database,tableItem.name)
+                fieldMap[tableItem.name] = await this.databaseService.getFieldListByConfig(projectConfigParam, projectConfigParam.database, tableItem.name)
             }
         }
 
@@ -122,34 +213,34 @@ export class SfProjectExtendService {
         }
 
         const serviceList = tableList?.map(item => {
-            const primaryKey = fieldMap[item.name]?.find(fieldItem=>fieldItem.Key == 'PRI')?.Field || 'id'
+            const primaryKey = fieldMap[item.name]?.find(fieldItem => fieldItem.Key == 'PRI')?.Field || 'id'
             return {
-                camelCaseName:camelCase(item.name),
-                pascalCaseName:pascalCase(item.name),
+                camelCaseName: camelCase(item.name),
+                pascalCaseName: pascalCase(item.name),
                 name: item.comment,
                 primaryKey: camelCase(primaryKey),
-                prefix:projectConfig?.prefix || 'sfBase'
+                prefix: projectConfig?.prefix || 'sfBase'
             }
         })
         const queryCondition = getQueryConditionByProject(projectId)
 
 
-      // 获取页面菜单信息 以及菜单配置信息
+        // 获取页面菜单信息 以及菜单配置信息
 
         const enumCategoryInfo = await this.sfEnumCategoryService.queryList(queryCondition as any)
         const enumInfo = await this.sfEnumService.queryList(queryCondition as any)
 
         const enumList = enumCategoryInfo.map(enumCategoryItem => {
-            const enumDataList = enumInfo?.filter(enumItem=>enumCategoryItem.enumCategoryId == enumItem.bindEnumCategory) || []
+            const enumDataList = enumInfo?.filter(enumItem => enumCategoryItem.enumCategoryId == enumItem.bindEnumCategory) || []
             return {
                 name: enumCategoryItem.enumCategoryName,
-                camelCode:camelCase(enumCategoryItem.enumCategoryCode),
+                camelCode: camelCase(enumCategoryItem.enumCategoryCode),
                 constantCode: constantCase(enumCategoryItem.enumCategoryCode),
                 list: enumDataList.map(item => {
                     return {
                         name: item.enumName,
                         code: item.enumCode,
-                        constantCode:constantCase(item.enumCode),
+                        constantCode: constantCase(item.enumCode),
                     }
                 })
             }
@@ -163,11 +254,11 @@ export class SfProjectExtendService {
 
         const menuIds = menuInfo.map(item => item.menuId)
 
-        let  menuDetailInfo = await this.sfMenuDetailService.queryList(QueryConditionBuilder.getInstanceNoPage() as any)
-        menuDetailInfo = menuDetailInfo.filter(item=>menuIds.includes(item.bindMenu))
+        let menuDetailInfo = await this.sfMenuDetailService.queryList(QueryConditionBuilder.getInstanceNoPage() as any)
+        menuDetailInfo = menuDetailInfo.filter(item => menuIds.includes(item.bindMenu))
 
         const menuData = menuInfo.map(item => {
-            let menuDetail = menuDetailInfo.find(menuDetail=>menuDetail.bindMenu ==item.menuId)?.menuParam
+            let menuDetail = menuDetailInfo.find(menuDetail => menuDetail.bindMenu == item.menuId)?.menuParam
             if (menuDetail) {
                 menuDetail = JSON.parse(menuDetail)
             }
@@ -183,14 +274,14 @@ export class SfProjectExtendService {
         const routeList = []
         const pageList = []
         pageInfo.forEach(pageItem => {
-            const { menuId, menuName, menuCode, parentId, menuType,menuDetail } = pageItem
+            const { menuId, menuName, menuCode, parentId, menuType, menuDetail } = pageItem
             const constantCaseCode = constantCase(menuCode)
             const camelCaseCode = camelCase(menuCode)
             const pascalCaseCode = pascalCase(menuCode)
             const isPage = menuType == 'page'
             menuList.push({
-                id:menuId,
-                name:menuName,
+                id: menuId,
+                name: menuName,
                 code: constantCaseCode,
                 parentId: parentId,
                 menuType: menuType,
@@ -200,28 +291,28 @@ export class SfProjectExtendService {
                 routesConstantList.push({
                     code: constantCaseCode,
                     path: `/${camelCaseCode}`,
-                    name:pascalCaseCode
+                    name: pascalCaseCode
                 })
                 routeList.push({
                     routesConstant: `...baseRoutesConstant.${constantCaseCode}`,
-                    filePath:`pages/${camelCaseCode}/${pascalCaseCode}.vue`,
-                    name:menuName
+                    filePath: `pages/${camelCaseCode}/${pascalCaseCode}.vue`,
+                    name: menuName
                 })
 
                 // servicesList 和pageList=>以及创建文件另外进行计算
                 pageList.push({
-                    name:camelCaseCode,
+                    name: camelCaseCode,
                     detailParam: menuDetail
                 })
             }
         })
 
-        projectJsonData.menuList= menuList
-        projectJsonData.routesConstantList= routesConstantList
-        projectJsonData.routeList= routeList
-        projectJsonData.pageList= pageList
-        projectJsonData.serviceList= serviceList
-        projectJsonData.enumList= enumList
+        projectJsonData.menuList = menuList
+        projectJsonData.routesConstantList = routesConstantList
+        projectJsonData.routeList = routeList
+        projectJsonData.pageList = pageList
+        projectJsonData.serviceList = serviceList
+        projectJsonData.enumList = enumList
 
         return projectJsonData
     }
@@ -252,7 +343,29 @@ export class SfProjectExtendService {
         const data = await this.sfProjectConfigService.save(projectConfigInfo as SfProjectConfig)
         return {
             ...projectInfo,
-            projectConfigInfo:data
+            projectConfigInfo: data
         }
+    }
+
+    async syncProjectToSf(projectId, jsonData) {
+        // 判断数据库中是否已经有该项目
+        // 使用事务
+        const { projectInfo, menuInfo, dataInfo, componentInfo } = jsonData
+        const projectBo = parseProjectInfo(projectId, projectInfo)
+        if (projectBo) {
+            await this.sfProjectService.save(projectBo as any)
+        }
+        const bindProjectId = projectBo.projectId
+        const menuBo = parseMenuInfo(menuInfo, bindProjectId)
+        if (menuBo) {
+            await this.sfMenuService.saveBatch(menuBo as any)
+        }
+        const dataModelBo = parseDataInfo(dataInfo, bindProjectId)
+        if (dataModelBo) {
+            const { enumCategoryList, enumList } = dataModelBo
+            await this.sfEnumCategoryService.saveBatch(enumCategoryList as any)
+            await this.sfEnumService.saveBatch(enumList as any)
+        }
+        return this.getProjectGenCodeJson(projectId)
     }
 }

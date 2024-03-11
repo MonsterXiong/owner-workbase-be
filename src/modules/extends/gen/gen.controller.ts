@@ -11,7 +11,7 @@ import * as path from 'path';
 import { SfMenuExtendService } from '../sf-menu-extend/sf-menu-extend.service';
 const fse = require('fs-extra');
 
-class JsonData{
+export class JsonData{
 
   @ApiProperty({
     description: 'json',
@@ -156,10 +156,10 @@ export class GenController {
         await genCode(codeList);
         return '操作成功'
       } catch (error) {
-        console.log(error, '代码输出错误');
+        console.log('代码输出错误');
       }
     } catch (error) {
-      console.log(error, 'error');
+      console.log(error, '生成代码错误');
     }
   }
 
@@ -253,7 +253,7 @@ export class GenController {
       await writeCode(projectPath,codeData,false)
       return await downloadCodeFile(projectPath,res)
     } catch (error) {
-      console.log(error, 'error');
+      console.log(error, 'errorxxx');
     }
   }
 
