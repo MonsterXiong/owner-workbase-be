@@ -2,7 +2,7 @@ import { SfMenuExtendService } from './../sf-menu-extend/sf-menu-extend.service'
 import { Injectable } from '@nestjs/common';
 import { FRAMEWORK_CONFIG } from '../../../../submodule/genCode-utils/src/config/frameworkConfig';
 import { getGenCode } from '../../../../submodule/genCode-utils/src/genCode';
-import { genContentByType, genPageCode, genServiceCode } from './genCodeUtil';
+import { genContentByType, genPageCode, genServiceCode,genEnumCode } from './genCodeUtil';
 
 const path = require('path');
 
@@ -73,15 +73,25 @@ export class GenService {
     return await genPageCode(pageInfo)
   }
 
+  getSfServiceCode(serviceList) {
+    return serviceList.map(item => genServiceCode('service', item))
+  }
+  getSfEnumCode(enumList) {
+    return enumList.map(item => genEnumCode('enum', item))
+  }
+
   async getSfGenCode(jsonData) {
 
-    const { projectInfo,projectConfig,menuList,routesConstantList,routeList,pageList,serviceList} = jsonData
+    const { projectInfo,projectConfig,menuList,routesConstantList,routeList,pageList,serviceList,enumList} = jsonData
 
     const menuCodeList = genContentByType('menu',{ list:menuList })
     const routeCodeList = genContentByType('route',{list:routeList})
     const routesConstantCodeList = genContentByType('routesConstant', { list: routesConstantList })
 
-    const serviceCodeList = serviceList.map(item => genServiceCode('service', item))
+
+    const enumCodeList = this.getSfEnumCode(enumList)
+
+    const serviceCodeList = this.getSfServiceCode(serviceList)
     let pageCodeList = []
     for await (const page of pageList) {
       const pageCode = await genPageCode(page)
@@ -92,7 +102,7 @@ export class GenService {
       }
     }
 
-    return [menuCodeList, routeCodeList, routesConstantCodeList,...pageCodeList,...serviceCodeList]
+    return [menuCodeList, routeCodeList, routesConstantCodeList,...enumCodeList,...pageCodeList,...serviceCodeList]
 
   }
 }

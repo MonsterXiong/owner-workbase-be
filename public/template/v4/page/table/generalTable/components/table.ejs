@@ -6,7 +6,6 @@
       <%_ if (list.length > 0) { -%><%- include("../../../../base/table-column.ejs",{ list }) -%><%_ } -%>
       <el-table-column label="操作" width="260">
         <template slot-scope="{ row }">
-          <el-button plain type="success" icon="el-icon-folder-opened" size="mini" @click="onOpen(row)">打开</el-button>
           <el-button plain type="primary" icon="el-icon-edit" size="mini" @click="onEdit(row)">编辑</el-button>
           <el-button plain type="danger" icon="el-icon-delete" size="mini" @click="onDelete(row)">刪除</el-button>
         </template>
@@ -48,9 +47,6 @@ export default {
   methods: {
     setHeight() {
       this.tableHeight = this.$refs.tableRef.offsetHeight - this.$refs.paginationRef.offsetHeight + 'px'
-    },
-    onOpen(row) {
-      this.$emit('onOpen', row)
     },
     onEdit(row) {
       this.$emit('onEdit', row)

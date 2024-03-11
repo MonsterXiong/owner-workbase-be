@@ -84,6 +84,42 @@ function formatPageCode(codeData,projectPath='./',isProject=true) {
     }
   })
 }
+function formatServiceCode(codeData,projectPath='./',isProject=true) {
+  let codeList = codeData
+  if(!Array.isArray(codeData)){
+    codeList = [codeData]
+  }
+  return codeList.map(item => {
+    let filePath = item.filePath
+    if (isProject) {
+      filePath = path.join(projectPath,'src',item.filePath)
+    } else {
+      filePath = path.join(projectPath,item.filePath?.replace('services/module/base',''))
+    }
+    return {
+      ...item,
+      filePath
+    }
+  })
+}
+function formatEnumCode(codeData,projectPath='./',isProject=true) {
+  let codeList = codeData
+  if(!Array.isArray(codeData)){
+    codeList = [codeData]
+  }
+  return codeList.map(item => {
+    let filePath = item.filePath
+    if (isProject) {
+      filePath = path.join(projectPath,'src',item.filePath)
+    } else {
+      filePath = path.join(projectPath,item.filePath?.replace('enum/module/base',''))
+    }
+    return {
+      ...item,
+      filePath
+    }
+  })
+}
 
 async function writeCode(projectPath,codeData,isProject = true) {
   // 确保项目路径存在
@@ -167,6 +203,44 @@ export class GenController {
     }
   }
 
+  @Post('genSfServiceByProjectId')
+  @ApiOperation({ summary: '通过项目id直接生成Service代码--勿用' })
+  async genSfServiceByProjectId(@Query('projectId') projectId: string,@Res() res:Response){
+    try {
+      const projectOutputDir = ''
+      const projectPath = projectOutputDir || FRAMEWORK_CONFIG.CODE_OUTPUT_ROOT_PATH
+
+      const jsonData = await this.sfProjectExtendService.getProjectGenCodeJson(projectId)
+
+      const codeData = await this.genService.getSfServiceCode(jsonData?.serviceList || [])
+      const result = formatServiceCode(codeData, '', false)
+
+      await writeCode(projectPath,result,false)
+      return await downloadCodeFile(projectPath,res)
+    } catch (error) {
+      console.log(error, 'error');
+    }
+  }
+
+  @Post('genSfEnumByProjectId')
+  @ApiOperation({ summary: '通过项目id直接生成Enum代码--勿用' })
+  async genSfEnumByProjectId(@Query('projectId') projectId: string,@Res() res:Response){
+    try {
+      const projectOutputDir = ''
+      const projectPath = projectOutputDir || FRAMEWORK_CONFIG.CODE_OUTPUT_ROOT_PATH
+
+      const jsonData = await this.sfProjectExtendService.getProjectGenCodeJson(projectId)
+
+      const codeData = await this.genService.getSfEnumCode(jsonData?.enumList || [])
+      const result = formatEnumCode(codeData, '', false)
+
+      await writeCode(projectPath,result,false)
+      return await downloadCodeFile(projectPath,res)
+    } catch (error) {
+      console.log(error, 'error');
+    }
+  }
+
   @Post('downloadSfPageCodeByMenuId')
   @ApiOperation({ summary: '通过菜单id直接下载代码--勿用' })
   async downloadSfPageCodeByMenuId(@Query('menuId') menuId: string,@Res() res:Response){
@@ -188,8 +262,6 @@ export class GenController {
   async genSfPageCodeByMenuId(@Query('menuId') menuId: string){
     try {
       const codeData = await this.genService.getSfPageCode(menuId)
-      console.log('codeData',codeData);
-
       return formatPageCode(codeData, '', false)
     } catch (error) {
       console.log(error, 'error');

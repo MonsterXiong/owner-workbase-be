@@ -7,8 +7,7 @@ export function crudTableAdapter(param){
     return null
   }
   const { tableCode:tableKey,attrs,tableName } = templateParam
-  const primaryKey = attrs?.find(item=>!!item.isPrimaryKey)?.prop || 'id'
-
+  const primaryKey = camelCase(attrs?.find(item=>!!item.isPrimaryKey)?.prop || 'id')
   const tableCode = pascalCase(tableKey)
   const {queryList,tableList,formList} = attrs.reduce((pre,cur)=>{
     cur.prop = camelCase(cur.prop)

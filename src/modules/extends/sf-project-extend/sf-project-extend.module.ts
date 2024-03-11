@@ -2,11 +2,11 @@ import { SfProjectConfigModule } from './../../base/sfProjectConfig/sfProjectCon
 import { Module } from '@nestjs/common';
 import { SfProjectExtendService } from './sf-project-extend.service';
 import { SfProjectExtendController } from './sf-project-extend.controller';
-import { SfMenuDetailModule, SfMenuModule, SfProjectModule } from '../../base';
+import { SfEnumCategoryModule,SfEnumModule, SfMenuDetailModule, SfMenuModule, SfProjectModule } from '../../base';
 import { DatabaseModule } from '../database/database.module';
 
 @Module({
-  imports:[SfProjectModule,SfProjectConfigModule,SfMenuModule,SfMenuDetailModule,DatabaseModule],
+  imports:[SfProjectModule,SfProjectConfigModule,SfMenuModule,SfMenuDetailModule,DatabaseModule,SfEnumCategoryModule,SfEnumModule],
   controllers: [SfProjectExtendController],
   providers: [SfProjectExtendService],
   exports:[SfProjectExtendService]

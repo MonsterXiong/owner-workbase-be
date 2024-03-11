@@ -1,3 +1,5 @@
+import { camelCase, snakeCase } from "change-case"
+
 const WHERE_TYPE = {
   IN: 'in',
   NOT_IN: 'not in',
@@ -22,21 +24,21 @@ function genWhere(condition) {
   const { property, symbol, value, combine } = condition
 
   if (symbol == WHERE_TYPE.EQUAL) {
-    return `'${property} = :${property}',{${property} : "${value}"}`
+    return `'${snakeCase(property)} = :${property}',{${property} : "${value}"}`
   } else if (symbol == WHERE_TYPE.IN) {
     let values = value
     if (Array.isArray(value)) {
       values = value.join(',')
     }
-    return `'${property} IN (:...${property}s)',{${property}s : [${values}]}`
+    return `'${snakeCase(property)} IN (:...${property}s)',{${property}s : [${values}]}`
   } else if (symbol == WHERE_TYPE.NOT_IN) {
     let values = value
     if (Array.isArray(value)) {
       values = value.join(',')
     }
-    return `'${property} NOT IN (:...${property}s)',{${property}s : [${values}]}`
+    return `'${snakeCase(property)} NOT IN (:...${property}s)',{${property}s : [${values}]}`
   } else if (symbol == WHERE_TYPE.LIKE) {
-    return `'${property} LIKE :${property}',{${property} : '%${value}%'}`
+    return `'${snakeCase(property)} LIKE :${property}',{${property} : '%${value}%'}`
   } else {
     return ""
   }
@@ -45,6 +47,8 @@ function genWhere(condition) {
 function getWhereCode(condition, index) {
   let result = ''
   const code = genWhere(condition)
+  console.log('genWhere',code);
+
   if (code) {
     // if (index == 0) {
     if (index == -1) {

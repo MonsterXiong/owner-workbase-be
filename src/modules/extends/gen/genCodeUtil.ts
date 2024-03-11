@@ -9,6 +9,7 @@ const GEN_TYPE = {
     ROUTE: 'route',
     ROUTES_CONSTANT: 'routesConstant',
     SERVICE: 'service',
+    ENUM:'enum'
 }
 
 function getPath(filepath) {
@@ -19,6 +20,7 @@ const TEMPLATE_PATH = {
     [GEN_TYPE.ROUTE]: getPath('public/template/v4/route/route.ejs'),
     [GEN_TYPE.ROUTES_CONSTANT]: getPath('public/template/v4/routeConstant/routeConstant.ejs'),
     [GEN_TYPE.SERVICE]: getPath('public/template/v4/service/service.ejs'),
+    [GEN_TYPE.ENUM]: getPath('public/template/v4/enum/enum.ejs'),
 }
 // ROUTE_COMPONENT_PREFIX:'@/pages',
 
@@ -33,6 +35,7 @@ const FRAMEWORK_CONFIG = {
     [GEN_TYPE.ROUTE]: 'router/base/baseRoutes.js',
     [GEN_TYPE.ROUTES_CONSTANT]: 'router/base/baseRoutesConstant.js',
     [GEN_TYPE.SERVICE]: 'services/module/base',
+    [GEN_TYPE.ENUM]: 'enum/module/base',
 }
 
 function getEjsTemplate(templatePath) {
@@ -63,6 +66,16 @@ export function genServiceCode(type, param) {
     const dirPath = FRAMEWORK_CONFIG[type]
     const { pascalCaseName } = param
     const filePath = `${dirPath}/${pascalCaseName}Service.js`
+    return {
+        filePath: filePath,
+        content: temp(param)
+    }
+}
+export function genEnumCode(type, param) {
+    const temp = getEjsTemplate(TEMPLATE_PATH[type]);
+    const dirPath = FRAMEWORK_CONFIG[type]
+    const { camelCode } = param
+    const filePath = `${dirPath}/${camelCode}.js`
     return {
         filePath: filePath,
         content: temp(param)
@@ -116,7 +129,7 @@ export async function genPageCode(param) {
         let subTemplateParam = templateParam['entry'] || {}
         // 不是入口文件
         if (fileName != type) {
-            const templateNameLength = fileName.lastIndexOf('\\') + 1
+            const templateNameLength = fileName.lastIndexOf('/') + 1
             const dirName = fileName.slice(0, templateNameLength)
             const templateName = fileName.slice(templateNameLength)
             let extName = ext

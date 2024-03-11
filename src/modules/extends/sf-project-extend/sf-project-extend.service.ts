@@ -10,8 +10,10 @@ import QueryConditionBuilder from '../../../utils/queryConditionBuilder';
 import { camelCase, constantCase, pascalCase } from 'change-case';
 import { SfMenuDetailService } from '../../base/sfMenuDetail/sfMenuDetail.service';
 import { DatabaseService } from '../database/database.service';
+import { SfEnumService } from '../../base/sfEnum/sfEnum.service';
+import { SfEnumCategoryService } from '../../base/sfEnumCategory/sfEnumCategory.service';
 
-function getMenuQueryCondition(projectId) {
+function getQueryConditionByProject(projectId) {
     const queryConDition = QueryConditionBuilder.getInstanceNoPage()
     queryConDition.buildEqualQuery('bind_project',projectId)
     queryConDition.buildAscSort('sort')
@@ -23,6 +25,8 @@ export class SfProjectExtendService {
     constructor(private readonly sfProjectService: SfProjectService,
         private readonly sfMenuService:SfMenuService,
         private readonly sfMenuDetailService: SfMenuDetailService,
+        private readonly sfEnumService:SfEnumService,
+        private readonly sfEnumCategoryService: SfEnumCategoryService,
         private readonly databaseService: DatabaseService,
         private readonly sfProjectConfigService: SfProjectConfigService) { }
 
@@ -74,6 +78,7 @@ export class SfProjectExtendService {
             routeList:[],
             pageList:[],
             serviceList:[],
+            enumList:[],
         }
         // 通过项目id获取项目信息
         let projectInfo = await this.sfProjectService.findOne(projectId)
@@ -95,13 +100,18 @@ export class SfProjectExtendService {
         let tableList = []
         let fieldMap = {}
         let projectConfig = {
-            prefix:''
+            prefix: ''
+            // TODO: 一些项目的名称code,系统名字,端口等
         }
         const configParam = projectConfigInfo?.configParam
         const projectParam = projectConfigInfo?.projectParam
         if (configParam) {
             const projectConfigParam = { ...JSON.parse(configParam) }
-            tableList = await this.getTableByProjectId(projectInfo.projectId)
+            try {
+                tableList = await this.getTableByProjectId(projectInfo.projectId)
+            } catch (error) {
+                console.log('error');
+            }
             for await (const tableItem of tableList) {
                 fieldMap[tableItem.name] = await this.databaseService.getFieldListByConfig(projectConfigParam,projectConfigParam.database,tableItem.name)
             }
@@ -121,14 +131,35 @@ export class SfProjectExtendService {
                 prefix:projectConfig?.prefix || 'sfBase'
             }
         })
+        const queryCondition = getQueryConditionByProject(projectId)
+
+
+      // 获取页面菜单信息 以及菜单配置信息
+
+        const enumCategoryInfo = await this.sfEnumCategoryService.queryList(queryCondition as any)
+        const enumInfo = await this.sfEnumService.queryList(queryCondition as any)
+
+        const enumList = enumCategoryInfo.map(enumCategoryItem => {
+            const enumDataList = enumInfo?.filter(enumItem=>enumCategoryItem.enumCategoryId == enumItem.bindEnumCategory) || []
+            return {
+                name: enumCategoryItem.enumCategoryName,
+                camelCode:camelCase(enumCategoryItem.enumCategoryCode),
+                constantCode: constantCase(enumCategoryItem.enumCategoryCode),
+                list: enumDataList.map(item => {
+                    return {
+                        name: item.enumName,
+                        code: item.enumCode,
+                        constantCode:constantCase(item.enumCode),
+                    }
+                })
+            }
+        })
 
         projectJsonData.projectConfig = projectConfig
         projectJsonData.projectInfo = projectInfo
 
         // 获取页面菜单信息 以及菜单配置信息
-        const queryMenuCondition = getMenuQueryCondition(projectId)
-
-        const menuInfo = await this.sfMenuService.queryList(queryMenuCondition as any)
+        const menuInfo = await this.sfMenuService.queryList(queryCondition as any)
 
         const menuIds = menuInfo.map(item => item.menuId)
 
@@ -190,6 +221,7 @@ export class SfProjectExtendService {
         projectJsonData.routeList= routeList
         projectJsonData.pageList= pageList
         projectJsonData.serviceList= serviceList
+        projectJsonData.enumList= enumList
 
         return projectJsonData
     }
