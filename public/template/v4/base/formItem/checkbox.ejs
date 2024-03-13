@@ -1,0 +1,14 @@
+<%#
+    formDataCode,
+    prop
+    自带->绑定字段
+
+    显示名称：label
+    占位提示：placeholder
+
+-%>
+<%_ if(displayType == 'checkbox'){ -%>
+<el-checkbox-group v-model="<%=formDataCode%>.<%=prop%>">
+      <el-checkbox v-for="item in <%=prop%>Option" :key="item.id" :label="item.id">{{item.name}}</el-checkbox>
+    </el-checkbox-group>
+<%_ } -%>

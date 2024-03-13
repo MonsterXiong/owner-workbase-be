@@ -1,7 +1,7 @@
 <template>
   <base-dialog :title="title" :visible.sync="dialogVisible" :before-close="onDialogClose" :width="dialogWidth">
-    <el-form ref="formRef" :model="formData" :rules="formDataRules" label-width="auto" size="small">
-      <%_ if (list.length > 0) { -%><%- include("../../../../base/form-item.ejs",{ list }) -%><%_ } -%>
+    <el-form ref="formRef" :model="formData" :rules="formRules" label-width="auto" size="small">
+      <%_ if (list.length > 0) { -%><%- include("../../../../base/formItem/index.ejs",{ list }) -%><%_ } -%>
     </el-form>
     <template slot="footer">
       <el-button size="mini" @click="onDialogClose">取 消</el-button>
@@ -13,31 +13,35 @@
 <script>
 export default {
   name: '<%= pageName%>Dialog',
+  <%_ if (enumList.length > 0) { -%>
+  props:{
+    <% enumList.forEach(function(field){ -%><%= field.prop%>Enum : {},<%_ });%>
+  },
+  <%_ } -%>
   data() {
     return {
       dialogWidth: '740px',
       dialogVisible: false,
       title: '新增',
       formData: {
-        <%_ if (list.length > 0) { -%>
-        <%# 循环prop %>
-        <% list.forEach(function(field){ -%>
-          <%= field.prop%> : '',
-        <%_ }); -%>
+        <%_ if (list.length > 0) { -%><% list.forEach(function(field){ -%>
+        <%= field.prop%> : '',
+        <%_ });-%>
         <%_ } -%>
       },
-      formDataRules: {
-        <%_ if (list.length > 0) { -%>
-        <%_ list.forEach(function(field){ -%>
-          <%_ if (field.isRequired) { -%><%= field.prop%>: [{ required: true, message: '请输入<%= field.label%>', trigger: 'blur' }],<%_ } -%>
-        <%_ }); -%>
+      formRules: {
+        <%_ if (list.length > 0) { -%><% list.forEach(function(field){ -%>
+        <%_ if (field.isRequired) { -%>
+        <%= field.prop%>: [{ required: true, message: '请输入<%= field.label%>', trigger: 'blur' }],
+        <%_ } -%>
+        <%_ });-%>
         <%_ } -%>
       },
     }
   },
   methods: {
     async show(row) {
-      this.title = row?.projectId ? '编辑<%= tableName%>' : '新增<%= tableName%>'
+      this.title = row?.<%= primaryKey%> ? '编辑<%= tableName%>' : '新增<%= tableName%>'
       if (row) {
         this.formData = { ...row }
       }
@@ -49,7 +53,10 @@ export default {
     },
     resetFormData() {
       this.formData = {
-        projectName: '',
+        <%_ if (list.length > 0) { -%><% list.forEach(function(field){ -%>
+        <%= field.prop%> : '',
+        <%_ });-%>
+        <%_ } -%>
       }
     },
     async onSubmit() {

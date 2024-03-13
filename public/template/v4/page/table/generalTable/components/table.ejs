@@ -3,7 +3,7 @@
     <el-table :data="tableData" :height="tableHeight" size="mini" border style="width: 100%" v-bind="$attrs" v-on="$listeners">
       <el-table-column type="selection" align="center" label="序号" width="80"> </el-table-column>
       <el-table-column type="index" label="序号" width="60px" align="center"> </el-table-column>
-      <%_ if (list.length > 0) { -%><%- include("../../../../base/table-column.ejs",{ list }) -%><%_ } -%>
+      <%_ if (list.length > 0) { -%><%- include("../../../../base/tableColumn/index.ejs",{ list }) -%><%_ } -%>
       <el-table-column label="操作" width="260">
         <template slot-scope="{ row }">
           <el-button plain type="primary" icon="el-icon-edit" size="mini" @click="onEdit(row)">编辑</el-button>

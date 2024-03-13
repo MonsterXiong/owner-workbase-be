@@ -1,6 +1,6 @@
 <template>
   <el-form :model="queryForm" size="small" :inline="true" class="query-form-container">
-    <%_ if (list.length > 0) { -%><%- include("../../../../base/form-item.ejs",{ list }) -%><%_ } -%>
+    <%_ if (list.length > 0) { -%><%- include("../../../../base/formItem/index.ejs",{ list }) -%><%_ } -%>
     <el-form-item>
       <div class="btn-container">
         <el-button type="primary" icon="el-icon-search" @click="onEvent('query')">查询</el-button>

@@ -1,0 +1,10 @@
+<%# 表单项 -%>
+<% list.forEach(function(formItem){ -%>
+      <el-form-item label="<%=formItem.label%>" prop="<%=formItem.prop%>">
+      <%_  if (['checkbox','colorPicker','date','datetime','image','input','inputNumber','radio','rate','select','slider','switch','textarea','time'].includes(formItem.displayType) ) { -%>
+        <%- include(`./${formItem.displayType}.ejs`, formItem) -%>
+      <%_ } else{ -%>
+        <el-input v-model.trim="<%=formItem.formDataCode%>.<%=formItem.prop%>" placeholder="请输入<%=formItem.label%>"></el-input>
+      <%_ } -%>
+      </el-form-item>
+<%_ }); -%>
