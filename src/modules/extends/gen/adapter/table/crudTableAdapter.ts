@@ -32,9 +32,6 @@ export function crudTableAdapter(param){
       param: item.configParam.param,
       data: item.configParam.data,
       configParam:item.configParam
-      // tableCode: pascalCase(item.configParam.param.tableName),
-      // valueKey: camelCase(item.configParam.param.valueKey),
-      // labelKey:camelCase(item.configParam.param.labelKey)
     }
   })
 
@@ -68,7 +65,6 @@ export function crudTableAdapter(param){
       }
     }
   });
-  console.log('entryEnumList',entryEnumList);
 
   const camelCaseName = camelCase(name)
 
