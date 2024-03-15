@@ -26,17 +26,28 @@ function genWhere(condition) {
   if (symbol == WHERE_TYPE.EQUAL) {
     return `'${snakeCase(property)} = :${property}',{${property} : "${value}"}`
   } else if (symbol == WHERE_TYPE.IN) {
-    let values = value
-    if (Array.isArray(value)) {
-      values = value.join(',')
+    let valueArr = value
+    let values = '['
+    if (!Array.isArray(valueArr)) {
+      valueArr = value.split(',')
     }
-    return `'${snakeCase(property)} IN (:...${property}s)',{${property}s : [${values}]}`
+    valueArr.forEach(item => {
+      values+=`"${item}",`
+    })
+    values += ']'
+
+    return `'${snakeCase(property)} IN (:...${property})',{${property} : `+values+`}`
   } else if (symbol == WHERE_TYPE.NOT_IN) {
-    let values = value
-    if (Array.isArray(value)) {
-      values = value.join(',')
+    let valueArr = value
+    let values = '['
+    if (!Array.isArray(valueArr)) {
+      valueArr = value.split(',')
     }
-    return `'${snakeCase(property)} NOT IN (:...${property}s)',{${property}s : [${values}]}`
+    valueArr.forEach(item => {
+      values+=`"${item}",`
+    })
+    values += ']'
+    return `'${snakeCase(property)} NOT IN (:...${property})',{${property} : `+values+`}`
   } else if (symbol == WHERE_TYPE.LIKE) {
     return `'${snakeCase(property)} LIKE :${property}',{${property} : '%${value}%'}`
   } else {

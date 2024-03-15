@@ -11,4 +11,9 @@ export class SfMenuExtendController {
   async getMenuInfoById(@Query('menuId') menuId: string) {
     return this.sfMenuExtendService.getMenuInfoById(menuId)
   }
+  @Post('getMenuInfoByIds')
+  @ApiOperation({ summary: '根据菜单ids批量获取菜单信息和菜单详情' })
+  async getMenuInfoByIds(@Query('menuId') menuIds: string) {
+    return this.sfMenuExtendService.getMenuInfoByIds(menuIds)
+  }
 }

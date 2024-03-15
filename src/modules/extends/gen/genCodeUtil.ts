@@ -9,7 +9,8 @@ const GEN_TYPE = {
     ROUTE: 'route',
     ROUTES_CONSTANT: 'routesConstant',
     SERVICE: 'service',
-    ENUM:'enum'
+    ENUM: 'enum',
+    PROJECT: 'project',
 }
 
 function getPath(filepath) {
@@ -21,14 +22,10 @@ const TEMPLATE_PATH = {
     [GEN_TYPE.ROUTES_CONSTANT]: getPath('public/template/v4/routeConstant/routeConstant.ejs'),
     [GEN_TYPE.SERVICE]: getPath('public/template/v4/service/service.ejs'),
     [GEN_TYPE.ENUM]: getPath('public/template/v4/enum/enum.ejs'),
+
+    // 目录
+    [GEN_TYPE.PROJECT]: 'public/template/v4/project',
 }
-// ROUTE_COMPONENT_PREFIX:'@/pages',
-
-// PAGE_DIR_PATH:'src/pages',
-
-// ROUTE_CONSTANT_OUTPUT_PATH:'src/router/base/baseRoutesConstant.js',
-
-// CODE_OUTPUT_ROOT_PATH:isDev?'./submodule/txsj-fe-template':'./temp'
 
 const FRAMEWORK_CONFIG = {
     [GEN_TYPE.MENU]: 'layout/sideBar/menuData.js',
@@ -87,6 +84,25 @@ async function genEmptyCode(filePath, templateParam) {
         filePath,
         content: await getEjsTemplateByFile(getPath('public/template/v4/page/empty/empty.ejs'), templateParam)
     }
+}
+
+export function genProjectCode(param) {
+    const dirPath = TEMPLATE_PATH[GEN_TYPE.PROJECT]
+    const templatePathList = glob.sync(`${dirPath}/**/*.{vue,ejs,less,js}`)
+    let projectCodeList = []
+    templatePathList.forEach(templatePath => {
+        const template = getEjsTemplate(templatePath)
+        const filePath = templatePath.slice(dirPath.length + 1)
+        const ext = filePath.match(/\.\w+$/i)[0]
+        const fileName = filePath.replace(ext, '')
+        const outputFilePath = `../.${fileName}`
+        const content = template(param)
+        projectCodeList.push({
+            filePath: outputFilePath,
+            content
+        })
+    })
+    return projectCodeList
 }
 
 export async function genPageCode(param) {

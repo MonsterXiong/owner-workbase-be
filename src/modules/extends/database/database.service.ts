@@ -49,16 +49,24 @@ export class DatabaseService {
         connection.close();
         return databaseList;
     }
-    async getTableListByConfig(databaseConfig, database) {
-        const sql = generatorQueryTableSql(database)
-        const connection = await getConnection(databaseConfig);
-        const tableList = await querySql(connection,sql);
-        return tableList.map(item => {
-            return {
-                name:item.TABLE_NAME,
-                comment:item.TABLE_COMMENT
-            }
-        });
+    async getTableListByConfig(databaseConfig, database,hasSystem=true) {
+      const sql = generatorQueryTableSql(database)
+      const connection = await getConnection(databaseConfig);
+      const tableList = await querySql(connection, sql);
+      if (!tableList?.length) {
+        return []
+      }
+      const result = tableList.map(item => {
+        return {
+            name:item.TABLE_NAME,
+            comment:item.TABLE_COMMENT
+        }
+      });
+      if (hasSystem) {
+        return result
+      } else {
+        return result.filter(item => !item.name.startsWith('s_'))
+      }
     }
     async getFieldListByConfig(databaseConfig, database, tableName) {
         const sql = generatorQueryColumnsSql(database, tableName)
@@ -71,6 +79,19 @@ export class DatabaseService {
                 _type:type,
                 _length:length
             }
+        }).filter(item=>!(item.Field.startsWith('sys_') && item.Field!='sys_create_time'))
+  }
+
+  async getTableAndFieldByConfig(databaseConfig) {
+    const tableList = await this.getTableListByConfig(databaseConfig,databaseConfig.database,false)
+    const result = []
+    for await (const tableItem of tableList) {
+        const fieldList = await this.getFieldListByConfig(databaseConfig,databaseConfig.database, tableItem.name)
+        result.push({
+            ...tableItem,
+            fieldList
         })
     }
+    return result
+  }
 }

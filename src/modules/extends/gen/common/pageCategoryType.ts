@@ -1,13 +1,13 @@
 export const CATEGORY_TYPE = {
-	FORM: 'form',
+  FORM: 'form',
   TABLE: 'table',
-	MATRIX: 'matrix',
-	TREE: 'tree',
-	LIST: 'list',
-	COMPOSE: 'compose',
-	GLOBAL_GLOBAL: 'globalGlobal',
-	BIZ: 'biz',
-	LAYOUT: 'layout',
-	OTHER: 'other',
-	/* Software Gen Code Placeholder */
+  MATRIX: 'matrix',
+  TREE: 'tree',
+  LIST: 'list',
+  COMPOSE: 'compose',
+  GLOBAL_GLOBAL: 'globalGlobal',
+  BIZ: 'biz',
+  LAYOUT: 'layout',
+  OTHER: 'other',
+  /* Software Gen Code Placeholder */
 }

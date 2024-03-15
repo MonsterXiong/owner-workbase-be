@@ -134,49 +134,70 @@ async function writeCode(projectPath,codeData,isProject = true) {
   await genCode(codeList);
 }
 
+
+function getProjectPath(outputDir="") {
+  return outputDir || FRAMEWORK_CONFIG.CODE_OUTPUT_ROOT_PATH
+}
+
 @ApiTags('代码生成 api')
 @Controller('gen')
 export class GenController {
-  constructor(private readonly genService: GenService,
+  constructor(
+    private readonly genService: GenService,
     private readonly sfProjectExtendService: SfProjectExtendService,
-  ) { }
+  ) {}
 
-  @Post('getCodeByJson')
-  @ApiOperation({ summary: '通过json获取代码生成内容' })
-  async getCodeByJson(@Body() jsonData:JsonData){
-    return await this.genService.getGenCode(jsonData)
-  }
+  // @Post('getCodeByJson')
+  // @ApiOperation({ summary: '通过json获取代码生成内容' })
+  // async getCodeByJson(@Body() jsonData:JsonData){
+  //   return await this.genService.getGenCode(jsonData)
+  // }
 
-  @Post('genCode')
-  @ApiOperation({ summary: '通过json直接生成代码' })
-  async genCode(@Body() jsonData:JsonData){
-    try {
-      const codeList = await this.genService.getGenCode(jsonData)
-      try {
-        await genCode(codeList);
-        return '操作成功'
-      } catch (error) {
-        console.log('代码输出错误');
-      }
-    } catch (error) {
-      console.log(error, '生成代码错误');
-    }
-  }
+  // @Post('genCode')
+  // @ApiOperation({ summary: '通过json直接生成代码' })
+  // async genCode(@Body() jsonData:JsonData){
+  //   try {
+  //     const codeList = await this.genService.getGenCode(jsonData)
+  //     try {
+  //       await genCode(codeList);
+  //       return '操作成功'
+  //     } catch (error) {
+  //       console.log('代码输出错误');
+  //     }
+  //   } catch (error) {
+  //     console.log(error, '生成代码错误');
+  //   }
+  // }
+
+  // @Post('genProject')
+  // @ApiOperation({ summary: '通过json直接生成代码-----软件工厂需要调用(旧)' })
+  // async genProject(@Body() jsonData:JsonData,@Res() res:Response){
+  //   try {
+  //     const { projectInfo } = jsonData;
+  //     const { projectOutputDir } = projectInfo
+  //     const projectPath = getProjectPath(projectOutputDir)
+  //     const codeList = await this.genService.getGenCode(jsonData)
+  //     // 确保项目路径存在
+  //     fse.ensureDirSync(projectPath);
+  //     // 解压项目框架模板
+  //     await uncompress('public/txsj-fe-template-master.zip',projectPath)
+  //     // 生成代码
+  //     await genCode(codeList);
+  //     return await downloadCodeFile(projectPath,res)
+  //   } catch (error) {
+  //     console.log(error, 'error');
+  //   }
+  // }
 
   @Post('genProject')
-  @ApiOperation({ summary: '通过json直接生成代码' })
+  @ApiOperation({ summary: '通过json直接生成代码-----软件工厂需要调用xxx' })
   async genProject(@Body() jsonData:JsonData,@Res() res:Response){
     try {
-      const { projectInfo } = jsonData;
-      const { projectOutputDir } = projectInfo
-      const projectPath = projectOutputDir || FRAMEWORK_CONFIG.CODE_OUTPUT_ROOT_PATH
-      const codeList = await this.genService.getGenCode(jsonData)
-      // 确保项目路径存在
-      fse.ensureDirSync(projectPath);
-      // 解压项目框架模板
-      await uncompress('public/txsj-fe-template-master.zip',projectPath)
-      // 生成代码
-      await genCode(codeList);
+      const projectPath = getProjectPath()
+
+      const toolJsonData = await this.sfProjectExtendService.adapterJson(jsonData)
+      const codeData = await this.genService.getSfGenCode(toolJsonData)
+      await writeCode(projectPath,codeData)
       return await downloadCodeFile(projectPath,res)
     } catch (error) {
       console.log(error, 'error');
@@ -185,17 +206,14 @@ export class GenController {
 
 
   @Post('genSfProjectByProjectId')
-  @ApiOperation({ summary: '通过项目id直接生成代码--勿用' })
+  @ApiOperation({ summary: '通过项目id直接生成代码--工具' })
   async genSfProjectByProjectId(@Query('projectId') projectId: string,@Res() res:Response){
     try {
-
-      const projectOutputDir = ''
-      const projectPath = projectOutputDir || FRAMEWORK_CONFIG.CODE_OUTPUT_ROOT_PATH
+      const projectPath = getProjectPath()
 
       const jsonData = await this.sfProjectExtendService.getProjectGenCodeJson(projectId)
 
       const codeData = await this.genService.getSfGenCode(jsonData)
-
       await writeCode(projectPath,codeData)
       return await downloadCodeFile(projectPath,res)
     } catch (error) {
@@ -204,11 +222,10 @@ export class GenController {
   }
 
   @Post('genSfServiceByProjectId')
-  @ApiOperation({ summary: '通过项目id直接生成Service代码--勿用' })
+  @ApiOperation({ summary: '通过项目id直接生成Service代码--工具' })
   async genSfServiceByProjectId(@Query('projectId') projectId: string,@Res() res:Response){
     try {
-      const projectOutputDir = ''
-      const projectPath = projectOutputDir || FRAMEWORK_CONFIG.CODE_OUTPUT_ROOT_PATH
+      const projectPath = getProjectPath()
 
       const jsonData = await this.sfProjectExtendService.getProjectGenCodeJson(projectId)
 
@@ -223,11 +240,10 @@ export class GenController {
   }
 
   @Post('genSfEnumByProjectId')
-  @ApiOperation({ summary: '通过项目id直接生成Enum代码--勿用' })
+  @ApiOperation({ summary: '通过项目id直接生成Enum代码--工具' })
   async genSfEnumByProjectId(@Query('projectId') projectId: string,@Res() res:Response){
     try {
-      const projectOutputDir = ''
-      const projectPath = projectOutputDir || FRAMEWORK_CONFIG.CODE_OUTPUT_ROOT_PATH
+      const projectPath = getProjectPath()
 
       const jsonData = await this.sfProjectExtendService.getProjectGenCodeJson(projectId)
 
@@ -242,11 +258,10 @@ export class GenController {
   }
 
   @Post('downloadSfPageCodeByMenuId')
-  @ApiOperation({ summary: '通过菜单id直接下载代码--勿用' })
+  @ApiOperation({ summary: '通过菜单id直接下载代码--工具' })
   async downloadSfPageCodeByMenuId(@Query('menuId') menuId: string,@Res() res:Response){
     try {
-      const projectOutputDir = ''
-      const projectPath = projectOutputDir || FRAMEWORK_CONFIG.CODE_OUTPUT_ROOT_PATH
+      const projectPath = getProjectPath()
 
       const codeData = await this.genService.getSfPageCode(menuId)
 
@@ -258,7 +273,7 @@ export class GenController {
   }
 
   @Post('genSfPageCodeByMenuId')
-  @ApiOperation({ summary: '通过菜单id查看生成代码内容' })
+  @ApiOperation({ summary: '通过菜单id查看生成代码内容-工具' })
   async genSfPageCodeByMenuId(@Query('menuId') menuId: string){
     try {
       const codeData = await this.genService.getSfPageCode(menuId)
