@@ -76,7 +76,13 @@ function formatPageCode(codeData,projectPath='./',isProject=true) {
     if (isProject) {
       filePath = path.join(projectPath,'src',item.filePath)
     } else {
-      filePath = path.join(projectPath,item.filePath?.replace('pages/',''))
+      // 无关前缀都去除掉
+      let sliceLength = 'pages/'.length
+      const pageDirLength = item.filePath.slice(sliceLength).indexOf('/')
+      if (pageDirLength !== -1) {
+        sliceLength +=pageDirLength+1
+      }
+      filePath = path.join(projectPath,item.filePath?.slice(sliceLength))
     }
     return {
       ...item,

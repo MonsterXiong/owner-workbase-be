@@ -63,7 +63,7 @@ export class GenService {
   async getSfPageCode(menuId) {
     const menuInfo = await this.sfMenuExtendService.getMenuInfoById(menuId)
       if (!menuInfo) return []
-      const {menuCode,menuParam} = menuInfo
+      const { menuCode, menuParam} = menuInfo
       const pageInfo = {
           name:menuCode,
           detailParam:menuParam
@@ -113,6 +113,7 @@ export class GenService {
     const routesConstantCodeList = this.getSfCodeByType('routesConstant',routesConstantList)
     const enumCodeList = this.getSfEnumCode(enumList)
     const serviceCodeList = this.getSfServiceCode(serviceList)
+    // 页面需要放入项目配置信息
     const pageCodeList = await this.getSfPageListCode(pageList)
     return [...projectCodeList,menuCodeList, routeCodeList, routesConstantCodeList,...enumCodeList,...pageCodeList,...serviceCodeList]
   }

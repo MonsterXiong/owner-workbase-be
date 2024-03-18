@@ -53,7 +53,7 @@ function parseMenuInfo(menuInfo, bindProject) {
         return {
             menuId: item.id,
             // 转换为小驼峰
-            menuCode: item.code,
+            menuCode: camelCase(item.code),
             menuName: item.name,
             parentId: item.parentId,
             menuType: item.menuType,
@@ -279,20 +279,16 @@ export class SfProjectExtendService {
     async getProjectGenCodeJson(projectId) {
         const projectInfo = await this.getProjectConfig(projectId)
         const projectConfigInfo = projectInfo.projectConfig
-
         // 根据项目配置信息查询数据库表和字段信息，格式出serviceList
         const serviceList = await this.getServiceListByProjectConfig(projectConfigInfo)
-
         // 查询当前项目的枚举分类 && 枚举信息
         const { enumCategoryList,enumDataList } = await this.getEnumInfoByProjectId(projectId)
         const enumList = formatEnumList(enumCategoryList,enumDataList)
-
         // 获取当前项目的页面菜单信息 以及菜单配置信息 && 剔除掉没必要的属性
         // const pageInfo = (await this.getMenuInfoByProjectId(projectId)).map(item =>cleanInfo(item, ['bindProject', 'tag', 'remark', 'englishName', 'levelCode']))
         const pageInfo = await this.getMenuInfoByProjectId(projectId)
         // 获取菜单、路由数据
         const { menuList, routesConstantList, routeList, pageList}= formatPageInfo(pageInfo)
-
         return {
             projectInfo:cleanInfo(projectInfo,['projectConfig']),
             projectConfig:projectConfigInfo,
@@ -380,21 +376,22 @@ export class SfProjectExtendService {
             await this.sfProjectConfigService.save(cPInfo as SfProjectConfig)
         }
         const bindProjectId = projectBo.projectId
-
         // 同步菜单信息
         const menuBo = parseMenuInfo(menuInfo, bindProjectId)
-        if (menuBo) {
+        if (menuBo?.length) {
             await this.sfMenuService.saveBatch(menuBo as any)
         }
-
         // 同步枚举信息=>可扩展同步数据库表，建表生成后端
         const dataModelBo = parseDataInfo(dataInfo, bindProjectId)
         if (dataModelBo) {
             const { enumCategoryList, enumList } = dataModelBo
             // 应该判断是否有这些信息，有则同步，没有则新增
-            await this.sfEnumCategoryService.saveBatch(enumCategoryList as any)
-            await this.sfEnumService.saveBatch(enumList as any)
+            if (enumCategoryList?.length) {
+                await this.sfEnumCategoryService.saveBatch(enumCategoryList as any)
+                await this.sfEnumService.saveBatch(enumList as any)
+            }
         }
-        return this.getProjectGenCodeJson(projectId)
+        // return this.getProjectGenCodeJson(projectId)
+        return projectInfo.projectId
     }
 }
