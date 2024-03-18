@@ -79,7 +79,7 @@ export class DatabaseService {
                 _type:type,
                 _length:length
             }
-        }).filter(item=>!(item.Field.startsWith('sys_') && item.Field!='sys_create_time'))
+        }).filter(item=>!(item.Field.startsWith('sys_') && item.Field!='sys_create_time' && item.Field!='sys_id'))
   }
 
   async getTableAndFieldByConfig(databaseConfig) {
