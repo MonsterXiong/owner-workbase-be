@@ -76,13 +76,17 @@ function formatPageCode(codeData,projectPath='./',isProject=true) {
     if (isProject) {
       filePath = path.join(projectPath,'src',item.filePath)
     } else {
-      // 无关前缀都去除掉
-      let sliceLength = 'pages/'.length
-      const pageDirLength = item.filePath.slice(sliceLength).indexOf('/')
-      if (pageDirLength !== -1) {
-        sliceLength +=pageDirLength+1
+      if (item.filePath.indexOf('pages') > 0) {
+        // 无关前缀都去除掉
+        let sliceLength = 'pages/'.length
+        const pageDirLength = item.filePath.slice(sliceLength).indexOf('/')
+        if (pageDirLength !== -1) {
+          sliceLength +=pageDirLength+1
+        }
+        filePath = path.join(projectPath,item.filePath?.slice(sliceLength))
+      } else {
+        filePath = path.join(projectPath,item.filePath?.replace('pages/',''))
       }
-      filePath = path.join(projectPath,item.filePath?.slice(sliceLength))
     }
     return {
       ...item,
@@ -135,6 +139,7 @@ async function writeCode(projectPath,codeData,isProject = true) {
   if (isProject) {
     await uncompress('public/txsj-fe-template-master.zip', projectPath)
   }
+  // BUG:不应该在这里格式化，还存在service、enum代码
   codeList = formatPageCode(codeData,projectPath,isProject)
   // 生成代码
   await genCode(codeList);
