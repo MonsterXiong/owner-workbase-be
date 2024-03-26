@@ -117,7 +117,8 @@ class genComponentTemplateDto extends genCategoryTypeDto{
 @ApiTags('内部工具')
 @Controller('genTool')
 export class GenToolController {
-  constructor(private readonly genToolService: GenToolService) {}
+  constructor(private readonly genToolService: GenToolService) { }
+
   @Post('quickGenAdapter')
   @ApiOperation({ summary: '通过json获取代码生成内容' })
   async genAdapter(@Body() jsonData: adapterDto) {
@@ -129,24 +130,22 @@ export class GenToolController {
   async genComponentTemplate(@Body() jsonData: genComponentTemplateDto) {
     return await quickGenComponentTemplate(jsonData);
   }
+
   @Post('quickGenCategoryType')
   @ApiOperation({ summary: '快速生成组件模板类别' })
   async genCategoryType(@Body() jsonData: genCategoryTypeDto) {
     return await quickGenCategoryType(jsonData);
   }
 
-
   @Post('quickGenComponentTemplateAdapter')
   @ApiOperation({ summary: '快速生成组件模板架子适配器' })
   async genComponentTemplateAdapter(@Body() jsonData: genComponentTemplateDto) {
     return await quickGenComponentTemplateAdapter(jsonData);
   }
+
   @Post('quickGenCategoryTypeAdapter')
   @ApiOperation({ summary: '快速生成组件模板类别适配器' })
   async genCategoryTypeAdapter(@Body() jsonData: genCategoryTypeDto) {
     return await quickGenCategoryTypeAdapter(jsonData);
   }
-
-
-
 }

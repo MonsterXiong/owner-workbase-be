@@ -61,9 +61,10 @@ export function genContentByType(type, param) {
 export function genServiceCode(type, param) {
     const temp = getEjsTemplate(TEMPLATE_PATH[type]);
     const dirPath = FRAMEWORK_CONFIG[type]
-    const { pascalCaseName } = param
+    const { pascalCaseName,name } = param
     const filePath = `${dirPath}/${pascalCaseName}Service.js`
     return {
+        name,
         filePath: filePath,
         content: temp(param)
     }
@@ -71,9 +72,10 @@ export function genServiceCode(type, param) {
 export function genEnumCode(type, param) {
     const temp = getEjsTemplate(TEMPLATE_PATH[type]);
     const dirPath = FRAMEWORK_CONFIG[type]
-    const { camelCode } = param
+    const { camelCode,name } = param
     const filePath = `${dirPath}/${camelCode}.js`
     return {
+        name,
         filePath: filePath,
         content: temp(param)
     }
@@ -168,3 +170,42 @@ export async function genPageCode(param) {
     }
     return pageCodeList
 }
+
+export function formatEnumCode(codeData,projectPath='./',isProject=true) {
+    let codeList = codeData
+    if(!Array.isArray(codeData)){
+      codeList = [codeData]
+    }
+    return codeList.map(item => {
+      let filePath = item.filePath
+      if (isProject) {
+        filePath = path.join(projectPath,'src',item.filePath)
+      } else {
+        filePath = path.join(projectPath,item.filePath?.replace('enum/module/base/',''))
+      }
+      return {
+        ...item,
+        filePath
+      }
+    })
+}
+
+
+export function formatServiceCode(codeData,projectPath='./',isProject=true) {
+    let codeList = codeData
+    if(!Array.isArray(codeData)){
+      codeList = [codeData]
+    }
+    return codeList.map(item => {
+      let filePath = item.filePath
+      if (isProject) {
+        filePath = path.join(projectPath,'src',item.filePath)
+      } else {
+        filePath = path.join(projectPath,item.filePath?.replace('services/module/base',''))
+      }
+      return {
+        ...item,
+        filePath
+      }
+    })
+  }

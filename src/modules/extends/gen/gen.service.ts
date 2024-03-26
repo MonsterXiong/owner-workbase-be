@@ -2,7 +2,8 @@ import { SfMenuExtendService } from './../sf-menu-extend/sf-menu-extend.service'
 import { Injectable } from '@nestjs/common';
 import { FRAMEWORK_CONFIG } from '../../../../submodule/genCode-utils/src/config/frameworkConfig';
 import { getGenCode } from '../../../../submodule/genCode-utils/src/genCode';
-import { genContentByType, genPageCode, genServiceCode,genEnumCode, genProjectCode } from './genCodeUtil';
+import { formatEnumCode, formatServiceCode, genContentByType, genPageCode, genServiceCode,genEnumCode, genProjectCode } from './genCodeUtil';
+import { SfProjectExtendService } from '../sf-project-extend/sf-project-extend.service';
 
 const path = require('path');
 
@@ -39,7 +40,10 @@ function transformResult(baseDir,codeList){
 
 @Injectable()
 export class GenService {
-  constructor( private readonly sfMenuExtendService: SfMenuExtendService ){}
+  constructor(
+    private readonly sfMenuExtendService: SfMenuExtendService,
+    private readonly sfProjectExtendService: SfProjectExtendService,
+  ) { }
   /**
    * @description 通过json获取到生成的代码
    * @param {object} param json数据
@@ -73,8 +77,29 @@ export class GenService {
   getSfServiceCode(serviceList) {
     return serviceList.map(item => genServiceCode('service', item))
   }
+    /**
+   * @description 获取当前项目的APIcode
+   * @param projectId
+   * @returns
+   */
+  async getSfServiceByProjectId(projectId) {
+      const jsonData = await this.sfProjectExtendService.getProjectGenCodeJson(projectId)
+      const codeData = await this.getSfServiceCode(jsonData?.serviceList || [])
+      return formatServiceCode(codeData, '', false)
+    }
+
   getSfEnumCode(enumList) {
     return enumList.map(item => genEnumCode('enum', item))
+  }
+  /**
+   * @description 获取当前项目的枚举code
+   * @param projectId
+   * @returns
+   */
+  async getSfEnumCodeByProjectId(projectId) {
+    const jsonData = await this.sfProjectExtendService.getProjectGenCodeJson(projectId)
+    const codeData = await this.getSfEnumCode(jsonData?.enumList || [])
+    return formatEnumCode(codeData, '', false)
   }
   /**
    * projectInfo含有项目的配置信息
