@@ -1,6 +1,6 @@
 <template>
   <div style="padding: 30px">
-    <RelationMatrixTable :relationList="relationList" :treeData="treeData" :headerData="headerData" :data="data"></RelationMatrixTable>
+    <RelationMatrixTable :relationList="relationList" :treeData="treeData" :headerData="headerData" :data="data" @cellClick="onChange"></RelationMatrixTable>
   </div>
 </template>
 <script>
@@ -8,6 +8,8 @@ import { <%= horizontal.tableCode%>Service, <%= vertical.tableCode%>Service, <%=
 import { QueryConditionBuilder } from '@/utils/queryConditionBuilder'
 import { listToTree } from '@/utils/treeTool'
 import RelationMatrixTable from '@/components/matrixTable/RelationMatrixTable.vue'
+import { uuid } from '@/utils/commonUtil'
+
 export default {
   name: '<%= pageName%>',
   components: {
@@ -38,7 +40,6 @@ export default {
   methods: {
     getQueryCondition(){
       const queryCondition = QueryConditionBuilder.getInstanceNoPage()
-      queryCondition.buildEqualQuery('bindProject','')
       return queryCondition
     },
     async getHeaderData(){
@@ -76,8 +77,8 @@ export default {
       this.data = data.map(item=>{
         return {
           ...item,
-          from:item.<%= horizontal.fieldList.uniqueCode%>,
-          to:item.<%= vertical.fieldList.uniqueCode%>,
+          from:item.<%= rel.fieldList.relVerticalCode%>,
+          to:item.<%= rel.fieldList.relHorizontalCode%>,
           <%_ if(rel.fieldList.relCode){ -%>
           value:item.<%= rel.fieldList.relCode%>
           <%_ } -%>
@@ -86,6 +87,26 @@ export default {
     },
     initData() {
       Promise.all([this.getHeaderData(),this.getTreeData(),this.getData()])
+    },
+    async onChange({ data, from, to, value }){
+      let obj = {
+        <%= rel.fieldList.relVerticalCode%>: from,
+        <%= rel.fieldList.relHorizontalCode%>: to,
+        <%= rel.fieldList.relCode%>: value,
+        <%= rel.fieldList.uniqueCode%>: data? data : uuid(),
+      }
+      if (!value) {
+        await this.onDeleteRelAPI(obj.<%= rel.fieldList.uniqueCode%>)
+      } else{
+        await this.onSaveRelAPI(obj)
+      }
+      this.getData()
+    },
+    async onSaveRelAPI(id) {
+      await <%= rel.tableCode%>Service.save<%= rel.tableCode%>(id)
+    },
+    async onDeleteRelAPI(id) {
+      await <%= rel.tableCode%>Service.delete<%= rel.tableCode%>(id)
     },
   },
 }

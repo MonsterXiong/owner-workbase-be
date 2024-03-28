@@ -18,7 +18,8 @@ export function relationMatrixAdapter(param){
   if(!templateParam || !Object.keys(templateParam)?.length){
     return null
   }
-  const {horizontal,vertical,rel} = templateParam
+  const { horizontal, vertical, rel } = templateParam
+
   return {
     name,
     pageName,

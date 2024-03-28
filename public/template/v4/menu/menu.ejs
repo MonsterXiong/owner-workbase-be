@@ -12,6 +12,7 @@ export const menuList = [
     <%_if(item.menuType=='page' ) { -%>
     menuParams: routesConstant.<%= item.code %>.path,
     <%_ } -%>
+    sort: '<%= item.sort %>',
   },
   <%_ }); -%>
 ]

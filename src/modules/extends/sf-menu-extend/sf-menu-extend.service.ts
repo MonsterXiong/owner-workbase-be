@@ -34,10 +34,9 @@ export class SfMenuExtendService {
     // 批量获取菜单以及菜单详情信息
     async getMenuInfoByIds(menuIds) {
         // 获取菜单列表
-        const menuQuery = QueryConditionBuilder.getInstanceNoPage().buildInQuery('menuId',menuIds)
+        const menuQuery = QueryConditionBuilder.getInstanceNoPage().buildInQuery('menuId',menuIds).buildAscSort('sort')
         const menuList = await this.sfMenuService.queryList(menuQuery as any)
-
-        // 获取餐袋详情列表
+        // 获取菜单详情列表
         const menuDetailQuery = QueryConditionBuilder.getInstanceNoPage().buildInQuery('bindMenu',menuIds)
         const menuDetailList = await this.sfMenuDetailService.queryList(menuDetailQuery as any)
         const result =[]

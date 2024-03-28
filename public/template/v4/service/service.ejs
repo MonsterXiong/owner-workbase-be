@@ -9,7 +9,7 @@ export default class <%= pascalCaseName%>Service {
   * @returns
   */
   static async delete<%= pascalCaseName%>(<%= primaryKey%>) {
-    return service.postQuery('/<%= prefix%>/<%= camelCaseName%>/delete<%= pascalCaseName%>', { key :<%= primaryKey%> })
+    return service.postQuery('/<%= prefix%>/<%= camelCaseName%>/delete<%= pascalCaseName%>', { key: <%= primaryKey%> })
   }
   /**
   * @description 删除<%= name%>(批量、递归)

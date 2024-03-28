@@ -4,6 +4,7 @@ import { FRAMEWORK_CONFIG } from '../../../../submodule/genCode-utils/src/config
 import { getGenCode } from '../../../../submodule/genCode-utils/src/genCode';
 import { formatEnumCode, formatServiceCode, genContentByType, genPageCode, genServiceCode,genEnumCode, genProjectCode } from './genCodeUtil';
 import { SfProjectExtendService } from '../sf-project-extend/sf-project-extend.service';
+import { camelCase, constantCase, pascalCase } from 'change-case';
 
 const path = require('path');
 
@@ -38,6 +39,48 @@ function transformResult(baseDir,codeList){
     return result
 }
 
+// 格式化菜单信息获取路由、页面等列表
+function formatPageInfo(pageInfo) {
+  let pageData = pageInfo
+  if (!Array.isArray(pageInfo)) {
+      pageData = [pageInfo]
+  }
+  return pageData.reduce((pre, pageItem) => {
+      const { menuId, menuName, menuCode, parentId, menuType, menuParam, sort } = pageItem
+      const constantCaseCode = constantCase(menuCode)
+      const camelCaseCode = camelCase(menuCode)
+      const pascalCaseCode = pascalCase(menuCode)
+      const isPage = menuType == 'page'
+
+      pre['menuList'].push({
+          id: menuId,
+          name: menuName,
+          code: constantCaseCode,
+          parentId: parentId,
+          menuType: menuType,
+          icon: '',
+          sort
+      })
+      if (isPage) {
+          pre['routesConstantList'].push({
+              code: constantCaseCode,
+              path: `/${camelCaseCode}`,
+              name: pascalCaseCode
+          })
+          pre['routeList'].push({
+              routesConstant: `...baseRoutesConstant.${constantCaseCode}`,
+              filePath: `pages/${camelCaseCode}/${pascalCaseCode}.vue`,
+              name: menuName
+          })
+          // servicesList 和pageList=>以及创建文件另外进行计算
+          pre['pageList'].push({
+              name: camelCaseCode,
+              detailParam: menuParam
+          })
+      }
+      return pre
+  }, {menuList: [],routesConstantList: [],routeList: [],pageList:[]})
+}
 @Injectable()
 export class GenService {
   constructor(
@@ -100,6 +143,19 @@ export class GenService {
     const jsonData = await this.sfProjectExtendService.getProjectGenCodeJson(projectId)
     const codeData = await this.getSfEnumCode(jsonData?.enumList || [])
     return formatEnumCode(codeData, '', false)
+  }
+    /**
+   * @description 获取当前菜单的相关路由和常量等数据
+   * @param menuId
+   * @returns
+   */
+  async getMenuCodeByMenuId(menuId) {
+    const menuInfo = await this.sfMenuExtendService.getMenuInfoById(menuId)
+    const { menuList, routesConstantList, routeList, pageList } = formatPageInfo(menuInfo)
+    const menuCodeList = this.getSfCodeByType('menu',menuList)
+    const routeCodeList = this.getSfCodeByType('route',routeList)
+    const routesConstantCodeList = this.getSfCodeByType('routesConstant', routesConstantList)
+    return [menuCodeList, routeCodeList, routesConstantCodeList]
   }
   /**
    * projectInfo含有项目的配置信息

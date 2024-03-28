@@ -229,4 +229,15 @@ export class GenController {
     const codeData = await this.genService.getSfPageCode(menuId)
     return formatPageCode(codeData, '', false)
   }
+  @Post('getMenuCodeByMenuId')
+  @ApiOperation({ summary: '通过菜单id查看菜单相关路由代码内容' })
+  async getMenuCodeByMenuId(@Query('menuId') menuId: string){
+    return this.genService.getMenuCodeByMenuId(menuId)
+  }
+  @Post('genMenuCodeByMenuId')
+  @ApiOperation({ summary: '通过菜单id查看菜单相关路由代码内容' })
+  async genMenuCodeByMenuId(@Query('menuId') menuId: string,@Res() res:Response){
+    const result = await this.genService.getMenuCodeByMenuId(menuId)
+    return outputCode(res,result,false)
+  }
 }

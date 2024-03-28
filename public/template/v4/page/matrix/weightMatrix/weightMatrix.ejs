@@ -1,15 +1,15 @@
 <template>
   <div style="padding: 30px">
-    <WeightMatrixTable :treeData="treeData" :headerData="headerData" :data="data"></WeightMatrixTable>
+    <WeightMatrixTable :treeData="treeData" :headerData="headerData" :data="data" @change="onChange"></WeightMatrixTable>
   </div>
 </template>
 <script>
 import { <%= horizontal.tableCode%>Service, <%= vertical.tableCode%>Service, <%= rel.tableCode%>Service } from '@/services'
 import { QueryConditionBuilder } from '@/utils/queryConditionBuilder'
-<%_ if(horizontal.fieldList.parentCode || vertical.fieldList.parentCode){ -%>
 import { listToTree } from '@/utils/treeTool'
-<%_ } -%>
 import WeightMatrixTable from '@/components/matrixTable/WeightMatrixTable.vue'
+import { uuid } from '@/utils/commonUtil'
+
 export default {
   name: '<%= pageName%>',
   components: {
@@ -26,9 +26,8 @@ export default {
     this.initData()
   },
   methods: {
-    getQueryCondition(){
+    getQueryCondition() {
       const queryCondition = QueryConditionBuilder.getInstanceNoPage()
-      queryCondition.buildEqualQuery('bindProject','')
       return queryCondition
     },
     async getHeaderData(){
@@ -61,21 +60,42 @@ export default {
       this.treeData = list
       <%_ } -%>
     },
-    async getData(){
-      const { data } = await <%= rel.tableCode%>Service.query<%= rel.tableCode%>ByCondition(this.getQueryCondition())
-      this.data = data.map(item=>{
+    // 权重数据
+    async getData() {
+      const { data } = await XydBattleAbiToActRelService.queryXydBattleAbiToActRelByCondition(this.getQueryCondition())
+      this.data = data.map((item) => {
         return {
           ...item,
-          from:item.<%= horizontal.fieldList.uniqueCode%>,
-          to:item.<%= vertical.fieldList.uniqueCode%>,
-          <%_ if(rel.fieldList.relCode){ -%>
-          value:item.<%= rel.fieldList.relCode%>
-          <%_ } -%>
+          from: item.<%= rel.fieldList.relVerticalCode%>,
+          to: item.<%= rel.fieldList.relHorizontalCode%>,
+          value: item.<%= rel.fieldList.relCode%>,
         }
       })
     },
+
+    async onChange({ data, from, to, value }) {
+      let obj = {
+        <%= rel.fieldList.relVerticalCode%>: from,
+        <%= rel.fieldList.relHorizontalCode%>: to,
+        <%= rel.fieldList.relCode%>: data.value,
+        <%= rel.fieldList.uniqueCode%>: data?.<%= rel.fieldList.uniqueCode%> ? data.<%= rel.fieldList.uniqueCode%> : uuid(),
+      }
+      if (!value) {
+        await this.onDeleteRelAPI(obj.<%= rel.fieldList.uniqueCode%>)
+      } else{
+        await this.onSaveRelAPI(obj)
+      }
+      this.getData()
+    },
+
     initData() {
-      Promise.all([this.getHeaderData(),this.getTreeData(),this.getData()])
+      Promise.all([this.getHeaderData(), this.getTreeData(), this.getData()])
+    },
+    async onSaveRelAPI(id) {
+      await <%= rel.tableCode%>Service.save<%= rel.tableCode%>(id)
+    },
+    async onDeleteRelAPI(id) {
+      await <%= rel.tableCode%>Service.delete<%= rel.tableCode%>(id)
     },
   },
 }

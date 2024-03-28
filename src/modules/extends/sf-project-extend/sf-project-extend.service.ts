@@ -133,8 +133,12 @@ function formatEnumList(enumCategoryList, enumList) {
 }
 // 格式化菜单信息获取路由、页面等列表
 function formatPageInfo(pageInfo) {
-    return pageInfo.reduce((pre, pageItem) => {
-        const { menuId, menuName, menuCode, parentId, menuType, menuParam } = pageItem
+    let pageData = pageInfo
+    if (!Array.isArray(pageInfo)) {
+        pageData = [pageInfo]
+    }
+    return pageData.reduce((pre, pageItem) => {
+        const { menuId, menuName, menuCode, parentId, menuType, menuParam, sort } = pageItem
         const constantCaseCode = constantCase(menuCode)
         const camelCaseCode = camelCase(menuCode)
         const pascalCaseCode = pascalCase(menuCode)
@@ -146,6 +150,7 @@ function formatPageInfo(pageInfo) {
             parentId: parentId,
             menuType: menuType,
             icon: '',
+            sort
         })
         if (isPage) {
             pre['routesConstantList'].push({
