@@ -138,7 +138,13 @@ export async function genPageCode(param) {
 
     const pageCodeList = []
 
+    // 优化代码，组合类=>替换掉basePath之后，按目录分级别，一般都是左中右，上中下，从而从固定的对象分类中获取特定的模板参数
+    // 例如left/dialog.ejs 则从 left:{dialog}作为模板参数
+    // 例如right/query.ejs 则从 right:{query}作为模板参数
+    // entry则直接传左右参数
+    console.log('categoryType',categoryType,templatePathList,basePath);
     for await (const templatePathItem of templatePathList) {
+
         const filePath = templatePathItem.slice(basePath.length + 1)
         const ext = filePath.match(/\.\w+$/i)[0]
         const fileName = filePath.replace(ext, '')

@@ -14,6 +14,7 @@ import { GenModule } from './modules/extends/gen/gen.module';
 import { GenToolModule } from './modules/extends/gen-tool/gen-tool.module';
 import { SfProjectExtendModule } from './modules/extends/sf-project-extend/sf-project-extend.module';
 import { SfMenuExtendModule } from './modules/extends/sf-menu-extend/sf-menu-extend.module';
+import { TranslatorModule } from './modules/extends/translator/translator.module';
 
 
 @Module({
@@ -46,6 +47,7 @@ import { SfMenuExtendModule } from './modules/extends/sf-menu-extend/sf-menu-ext
     GenToolModule,
     SfProjectExtendModule,
     SfMenuExtendModule,
+    TranslatorModule,
   ],
   controllers: [],
   providers: [],
