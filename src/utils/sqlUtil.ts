@@ -96,7 +96,9 @@ function getFilterCode(conditionParams) {
   let result = ''
   if (conditionParams.length) {
     conditionParams.forEach((condition, index) => {
-      result += getWhereCode(condition, index)
+      if (condition.value) {
+        result += getWhereCode(condition, index)
+      }
     })
   }
   return result

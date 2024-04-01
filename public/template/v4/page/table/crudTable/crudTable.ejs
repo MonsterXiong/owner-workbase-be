@@ -170,7 +170,7 @@ export default {
           return {
             ...item,<% enumList.forEach(function(field){ %>
             <%_ if (field.configParam.hasMultiple){ -%>
-            <%= field.prop%>:item.<%= field.prop%>?.split(','),
+            <%= field.prop%>:JSON.parse(item.<%= field.prop%> || '[]'),
             <%_ } -%>
           }
         })
@@ -183,14 +183,12 @@ export default {
     async onSubmit(formData) {
       try {
         <%_ if (enumList.length > 0 && enumList.filter(item=>item.configParam.hasMultiple).length > 0) { -%>
-        const param = formData.map(item=>{
-          return {
+        const param =  {
             ...formData,<% enumList.forEach(function(field){%>
             <%_ if (field.configParam.hasMultiple){ -%>
-            <%= field.prop%>:item.<%= field.prop%>?.join(','),
+            <%= field.prop%>:JSON.stringify(formData.<%= field.prop%>),
             <%_ } -%>
-          }
-        })
+        }
         await this.onSaveAPI(param)
         <%_ });-%>
         <%_ }else{ -%>

@@ -19,12 +19,13 @@ function parseProjectInfo(projectInfo,projectId=nanoid()) {
     if (!projectInfo) {
         return null
     }
+
     return {
         projectId: projectId,
         projectCode: projectInfo.projectCode,
         projectName: projectInfo.projectName,
         projectDescription: projectInfo.projectDescription,
-
+        syncProjectId:projectId,
         configParam: {
             host: '192.168.2.204' || projectInfo?.dbIp || 'localhost',
             port: projectInfo?.dbPort || '3306',
@@ -65,7 +66,7 @@ function parseMenuInfo(menuInfo, bindProject) {
     return menuList
 }
 // 解析软件工厂的物理模型数据信息
-function parseDataInfo(dataInfo, bindProject) {
+function  parseDataInfo(dataInfo, bindProject) {
     if (!(Array.isArray(dataInfo) && dataInfo.length)) {
         return null
     }
@@ -217,6 +218,7 @@ export class SfProjectExtendService {
 
         const projectConfigInfo = await this.sfProjectConfigService.findOneByParam({ bindProject: projectId })
         const projectConfig = {
+            projectConfigId:projectConfigInfo?.projectConfigId,
             configParam: null,
             projectParam:null
         }
@@ -364,7 +366,7 @@ export class SfProjectExtendService {
 
     // 同步软件工厂项目数据
     async syncProjectToSf(projectId, jsonData) {
-        // 判断数据库中是否已经有该项目
+        // 判断数据库中是否已经有该项目 =>判断是否存在重复项，存一个原始值
         // 使用事务
         const { projectInfo, menuInfo, dataInfo, componentInfo } = jsonData
         const projectBo = parseProjectInfo(projectInfo,projectId )
@@ -372,6 +374,7 @@ export class SfProjectExtendService {
         if (projectBo) {
             const pInfo = await this.sfProjectService.save(projectBo as any)
             const { projectConfig } = await this.getProjectConfig(pInfo.projectId)
+
             const cPInfo = {
                 projectConfigId:projectConfig?.projectConfigId || nanoid(),
                 configParam: JSON.stringify(projectBo.configParam),
@@ -386,11 +389,18 @@ export class SfProjectExtendService {
         if (menuBo?.length) {
             await this.sfMenuService.saveBatch(menuBo as any)
         }
-        // 同步枚举信息=>可扩展同步数据库表，建表生成后端
+        // 同步枚举信息=>TODO:可扩展同步数据库表，建表生成后端
         const dataModelBo = parseDataInfo(dataInfo, bindProjectId)
         if (dataModelBo) {
             const { enumCategoryList, enumList } = dataModelBo
-            // 应该判断是否有这些信息，有则同步，没有则新增
+            // 最简单的方式就是全删除，全增加
+            const queryCondition = QueryConditionBuilder.getInstanceNoPage().buildEqualQuery('bindProject',bindProjectId).buildEqualQuery('isSync',1)
+            const dataEnumCategoryList = await this.sfEnumCategoryService.queryList(queryCondition as any)
+            await this.sfEnumCategoryService.deleteBatch(dataEnumCategoryList.map(item => item.enumCategoryId))
+
+            const dataEnumList = await this.sfEnumService.queryList(queryCondition as any)
+            await this.sfEnumService.deleteBatch(dataEnumList.map(item => item.enumId))
+
             if (enumCategoryList?.length) {
                 await this.sfEnumCategoryService.saveBatch(enumCategoryList as any)
                 await this.sfEnumService.saveBatch(enumList as any)

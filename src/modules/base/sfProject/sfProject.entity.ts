@@ -34,6 +34,16 @@ export class SfProject{
   projectName: string
 
   @ApiProperty({
+    description: '上次同步项目id'
+  })
+  @Column({
+    name:'sync_project_id',
+    nullable: true,
+    comment: '上次同步项目id'
+  })
+  syncProjectId: string
+
+  @ApiProperty({
     description: '项目简称'
   })
   @Column({

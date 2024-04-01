@@ -8,7 +8,7 @@
           <%_ if(configParam.type == 'enum'){ -%>
           <span>{{ $enum.getLabel('<%= configParam.param.enumCategory%>', row.<%= prop%>) }}</span>
           <%_ } else if(configParam.type == 'interface'){ -%>
-          <span>{{ <%= prop%>Enum.<% if(configParam.hasMultiple){%>getLabelsByValueJson<%_ } else { _%>getLabelByValue<%_ }_%>(row.<%= prop%>) }}</span>
+          <span>{{ <%= prop%>Enum.<% if(configParam.hasMultiple){%>getLabelsByValue<%_ } else { _%>getLabelByValue<%_ }_%>(row.<%= prop%>) }}</span>
           <%_ } else {  -%>
           <span>{{ row.<%= prop%> }}</span>
           <%_ } -%>

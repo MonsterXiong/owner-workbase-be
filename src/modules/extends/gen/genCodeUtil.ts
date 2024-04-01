@@ -138,6 +138,7 @@ export async function genPageCode(param) {
 
     const pageCodeList = []
 
+    // TODO:
     // 优化代码，组合类=>替换掉basePath之后，按目录分级别，一般都是左中右，上中下，从而从固定的对象分类中获取特定的模板参数
     // 例如left/dialog.ejs 则从 left:{dialog}作为模板参数
     // 例如right/query.ejs 则从 right:{query}作为模板参数
