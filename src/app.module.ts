@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { getConfiguration } from './config/configuration';
@@ -15,7 +15,9 @@ import { GenToolModule } from './modules/extends/gen-tool/gen-tool.module';
 import { SfProjectExtendModule } from './modules/extends/sf-project-extend/sf-project-extend.module';
 import { SfMenuExtendModule } from './modules/extends/sf-menu-extend/sf-menu-extend.module';
 import { TranslatorModule } from './modules/extends/translator/translator.module';
-
+import { IpMiddleware } from './middleware/ip.middleware';
+import { AuthMiddleware  } from './middleware/auth.middleware';
+import { IpModule } from './modules/test/ip/ip.module';
 
 @Module({
   imports: [
@@ -48,8 +50,14 @@ import { TranslatorModule } from './modules/extends/translator/translator.module
     SfProjectExtendModule,
     SfMenuExtendModule,
     TranslatorModule,
+    IpModule,
   ],
   controllers: [],
   providers: [],
 })
-export class AppModule {}
+export class AppModule implements NestModule{
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(IpMiddleware).forRoutes('*');
+    // consumer.apply(AuthMiddleware ).forRoutes('*');
+  }
+}
