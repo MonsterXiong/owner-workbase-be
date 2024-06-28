@@ -35,7 +35,7 @@ const FRAMEWORK_CONFIG = {
     [GEN_TYPE.ENUM]: 'enum/module/base',
 }
 
-function getEjsTemplate(templatePath) {
+export function getEjsTemplate(templatePath) {
     const templateFile = fs.readFileSync(templatePath, "utf8");
     return ejs.compile(templateFile);
 }

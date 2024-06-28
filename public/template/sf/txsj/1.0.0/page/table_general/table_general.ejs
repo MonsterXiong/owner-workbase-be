@@ -1,0 +1,303 @@
+<template>
+    <TableLayout>
+        <template #query>
+            <el-form :inline="true" :model="queryForm" class="demo-form-inline">
+                <%_ if (quickQueryInfo.tableFields.length > 0) { -%><%- include("../../base/formItem/index.ejs",{ list:quickQueryInfo.tableFields }) -%><%_ } -%>
+                <el-form-item>
+                    <el-button size="mini" type="primary" @click="onQuery">查询</el-button>
+                    <el-button size="mini" @click="onReset">重置</el-button>
+                    <%_ toolBar.forEach(function(btn){ -%>
+                    <el-button size="mini" @click="<%=btn.code -%>"><%=btn.name -%></el-button>
+                    <%_ }); -%>
+                </el-form-item>
+            </el-form>
+            <%_ if(auxiliaryToolBar.length){ -%>
+            <div style="position: absolute; bottom: 5px; right: 0">
+                <%_ auxiliaryToolBar.forEach(function(btn){ -%>
+                <el-button size="mini" icon="<%=btn.icon ||'el-icon-search'-%>" @click="<%=btn.code -%>"><%=btn.name -%></el-button>
+                <%_ }); -%>
+            </div>
+            <%_ } -%>
+        </template>
+        <main class="common-page" ref="tableRef">
+            <el-table :data="tableData" :height="tableHeight" @selection-change="onSelectionChange">
+                <el-table-column type="selection" align="center" label="序号" width="80"> </el-table-column>
+                <el-table-column type="index" label="序号" width="60px" align="center"> </el-table-column>
+                <%_ if (queryListInfo.tableFields.length > 0) { -%><%- include("../../base/tableColumn/index.ejs",{ list:queryListInfo.tableFields }) -%><%_ } -%>
+                <el-table-column label="操作">
+                    <template slot-scope="scope">
+                        <%_ operateBar.forEach(function(btn){ -%>
+                        <el-button size="mini" @click="<%=btn.code -%>(scope.row)"><%=btn.name -%></el-button>
+                        <%_ }); -%>
+                    </template>
+                </el-table-column>
+            </el-table>
+            <footer class="footer-container" ref="footerRef">
+                <%_ bottomBar.forEach(function(btn){ -%>
+                <el-button size="mini" @click="<%=btn.code -%>"><%=btn.name -%></el-button>
+                <%_ }); -%>
+
+                <%_ if(queryListInfo.request.configParam.isLimit){  -%>
+                <el-pagination
+                    style="margin-left: auto"
+                    @size-change="handleSizeChange"
+                    @current-change="handleCurrentChange"
+                    :current-page="pageInfo.page"
+                    :page-sizes="[10, 20, 50, 100, 200]"
+                    :page-size="pageInfo.rows"
+                    layout="total, sizes, prev, pager, next, jumper"
+                    :total="total"
+                >
+                </el-pagination>
+                <%_ } -%>
+            </footer>
+        </main>
+
+    </TableLayout>
+  </template>
+
+  <script>
+  import { QueryConditionBuilder } from '@/utils/queryConditionBuilder'
+  export default {
+    name: '<%= pageName %>',
+    data() {
+      return {
+          <%_ if(queryListInfo.request.configParam.isLimit){  -%>
+          total: 0,
+          pageInfo: {
+            page: 1,
+            rows: 20,
+          },
+          <%_ } -%>
+          tableHeight: "100%",
+          tableData: [
+            {
+            yhxxbName: '2016-05-04',
+            type: '王小虎',
+            },
+            {
+            yhxxbName: '2016-05-04',
+            type: '王小虎',
+            },
+            {
+            yhxxbName: '2016-05-04',
+            type: '王小虎',
+            },
+            {
+            yhxxbName: '2016-05-01',
+            type: '王小虎',
+            },
+            {
+            yhxxbName: '2016-05-04',
+            type: '王小虎',
+            },
+            {
+            yhxxbName: '2016-05-01',
+            type: '王小虎',
+            },
+            {
+            yhxxbName: '2016-05-04',
+            type: '王小虎',
+            },
+            {
+            yhxxbName: '2016-05-01',
+            type: '王小虎',
+            },
+            {
+            yhxxbName: '2016-05-03',
+            type: '王小虎',
+            },
+            {
+            yhxxbName: '2016-05-01',
+            type: '王小虎',
+            },
+            {
+            yhxxbName: '2016-05-03',
+            type: '王小虎',
+            },
+            {
+            yhxxbName: '2016-05-01',
+            type: '王小虎',
+            },
+        ],
+          queryForm:{},
+          multipleSelection:[]
+        }
+    },
+    watch: {
+        <%_ if(queryListInfo.request.configParam.isLimit){  -%>
+        pageInfo: {
+            handler() {
+                this.<%= queryListInfo.data.code _%>()
+            },
+            deep: true,
+        },
+        <%_ } -%>
+    },
+    mounted () {
+        this.setHeight()
+        this.<%= queryListInfo.data.code _%>()
+    },
+    methods: {
+        // 多选
+        onSelectionChange(val) {
+            this.multipleSelection = val
+        },
+        // 查询
+        onQuery(){
+            this.<%= queryListInfo.data.code _%>()
+        },
+        // 重置
+        onReset() {
+            Object.keys(this.queryForm).forEach((key) => {
+                    this.queryForm[key] = ''
+            })
+            // pageInfo修改会触发查询功能
+            this.pageInfo = { page: 1, rows: 20 }
+            this.<%= queryListInfo.data.code _%>()
+        },
+        <%_ if(queryListInfo.request.configParam.isLimit){  -%>
+        handleSizeChange(rows) {
+            this.pageInfo.rows = rows
+        },
+        handleCurrentChange(page) {
+            this.pageInfo.page = page
+        },
+        <%_ } -%>
+        setHeight() {
+            this.$nextTick(() => {
+                this.tableHeight = this.$refs.tableRef.offsetHeight - this.$refs.footerRef.offsetHeight + 'px'
+            });
+        },
+        <%_ if(updateInfo || insertInfo){  -%>
+        async onSubmit(formData) {
+            try {
+                if(formData?.<%= deleteBatchInfo.request.PrimaryCode%>){
+                    await <%= updateInfo.request.ServiceName %>.<%= updateInfo.request.InterfaceName -%>(formData)
+                }else{
+                    await <%= insertInfo.request.ServiceName %>.<%= insertInfo.request.InterfaceName -%>(formData)
+                }
+                this.<%= queryListInfo.data.code _%>()
+                this.$message.success('操作成功')
+            } catch (error) {
+                this.$message.error('操作失败，请联系管理员或者重试')
+            }
+        },
+        <%_ } -%>
+    <%#新增 -%>
+
+        <%_if(insertInfo){ -%>
+        // 新增
+        <%= insertInfo.data.code _%>() {
+            this.$refs.addDialogRef.show()
+        },
+    <%_ } -%>
+    <%#批量删除 -%>
+
+    <%_if(deleteBatchInfo){ -%>
+        async <%= deleteBatchInfo.data.code _%>() {
+            const ids = this.multipleSelection.map((item) => item.<%= deleteBatchInfo.request.PrimaryCode%>)
+            if (!ids.length) {
+                return this.$message.warning('请先选择需要删除的内容')
+            }
+            try {
+                await this.$tools.confirm('请确认是否删除？')
+                const { code } = await <%= deleteBatchInfo.request.ServiceName %>.<%= deleteBatchInfo.request.InterfaceName -%>(ids)
+                if (code === 200) this.$tools.message('删除成功')
+                this.<%= queryListInfo.data.code _%>()
+            } catch (e) {
+                if (e == 'cancel') return this.$tools.message('已取消删除', { type: 'info' })
+                console.error('删除失败', e)
+            }
+        },
+    <%_ } -%>
+    <%#删除 -%>
+
+    <%_if(deleteInfo){ -%>
+        async <%= deleteInfo.data.code _%>(row) {
+            try {
+                await this.$tools.confirm('请确认是否删除？')
+                const { code } = await <%= deleteInfo.request.ServiceName %>.<%= deleteInfo.request.InterfaceName -%>(row.<%=deleteInfo.request.PrimaryCode %>)
+                if (code === 200) this.$tools.message('删除成功')
+                this.<%= queryListInfo.data.code _%>()
+            } catch (e) {
+                if (e == 'cancel') return this.$tools.message('已取消删除', { type: 'info' })
+                console.error('删除失败', e)
+            }
+        },
+    <%_ } -%>
+    <%#导出 -%>
+
+    <%_if(exportInfo){ -%>
+        async <%= exportInfo.data.code _%>() {
+            await <%= exportInfo.request.ServiceName %>.<%= exportInfo.request.InterfaceName -%>()
+        },
+    <%_ } -%>
+    <%#导入 -%>
+
+    <%_if(importInfo){ -%>
+        async <%= importInfo.data.code _%>() {
+            await <%= importInfo.request.ServiceName %>.<%= importInfo.request.InterfaceName -%>()
+            this.<%= queryListInfo.data.code _%>()
+        },
+    <%_ } -%>
+    <%#修改 -%>
+
+    <%_if(updateInfo){ -%>
+        // 修改
+        <%= updateInfo.data.code _%>(row) {
+            this.$refs.updateDialogRef.show(row)
+        },
+    <%_ } -%>
+    <%#下载模板 -%>
+
+    <%_if(exportTemplateInfo){ -%>
+        async <%= exportTemplateInfo.data.code _%>() {
+            await <%= exportTemplateInfo.request.ServiceName %>.<%= exportTemplateInfo.request.InterfaceName -%>()
+        },
+    <%_ } -%>
+    <%#查询列表 -%>
+
+    <%_if(queryListInfo){ -%>
+        async <%= queryListInfo.data.code%>() {
+        <%#是否分页 -%>
+
+        <%_ if(queryListInfo.request.configParam.isLimit){  -%>
+        const queryCondition = QueryConditionBuilder.getInstance(this.pageInfo.page, this.pageInfo.rows)
+        <%_ }else { -%>
+        const queryCondition = QueryConditionBuilder.getInstanceNoPage()
+        <%_ }-%>
+        <%#开始for循环queryParam-拼接条件 -%>
+        <%_ queryListInfo.request.queryParam.forEach(function(queryParamItem){ -%>
+        queryCondition.<%= queryParamItem.symbol %>('<%= queryParamItem.key %>', <%_ if(queryParamItem.valueType != 'variable'){  -%>'<%= queryParamItem.value %>'<%_}else{ -%><%= queryParamItem.value %><%_}-%>)
+        <%_ }); -%>
+            Object.keys(this.queryForm).forEach((key) => {
+                if (this.queryForm[key] || this.queryForm[key] == 0) {
+                queryCondition.buildLikeQuery(key, this.queryForm[key])
+                }
+            })
+        <%#调用接口 -%>
+
+        <%_ if(queryListInfo.request.configParam.isLimit){  -%>
+        const { data, count } = await <%= queryListInfo.request.ServiceName %>.<%= queryListInfo.request.InterfaceName -%>(queryCondition)
+        this.tableData = data
+        this.total = count
+        <%_ }else { -%>
+        const { data } = await <%= queryListInfo.request.ServiceName %>.<%= queryListInfo.request.InterfaceName -%>(queryCondition)
+            this.tableData = data
+        }
+        <%_ }-%>
+        <%_ } -%>
+        },
+    }
+  }
+  </script>
+<style lang="less" scoped>
+.footer-container {
+    margin-top: 5px;
+    height: 30px;
+    text-align: right;
+    display: flex;
+    align-items: center;
+}
+</style>

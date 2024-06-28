@@ -1,0 +1,8 @@
+<%# 表格项 -%>
+<% list.forEach(function(field){ -%>
+      <%_  if (['switch','select','input','image',].includes(field.displayType) ) { -%>
+      <%- include(`./${field.displayType}.ejs`, field) -%>
+      <%_ } else{ -%>
+      <el-table-column prop="<%= field.prop %>" align="center" label="<%= field.label %>"></el-table-column>
+      <%_ } -%>
+<%_ }); -%>

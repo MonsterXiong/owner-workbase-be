@@ -1,0 +1,12 @@
+<%#
+    formDataCode,
+    prop
+    自带->绑定字段
+
+    显示名称：label
+    占位提示：placeholder
+
+-%>
+<%_ if(displayType == 'colorPicker'){ -%>
+<el-color-picker size="mini" v-model="<%=formDataCode%>.<%=prop%>"></el-color-picker>
+<%_ } -%>

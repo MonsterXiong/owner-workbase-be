@@ -7,6 +7,7 @@ import { genCode } from '../../../../submodule/genCode-utils/src/common';
 import { downloadCodeFile, uncompress } from '../generate/fe/utils';
 import { Response } from 'express';
 import * as path from 'path';
+import { parseSfJson } from './sf/parseSfJson';
 const fse = require('fs-extra');
 
 export class JsonData{
@@ -171,7 +172,16 @@ export class GenController {
 
   @Post('genProject')
   @ApiOperation({ summary: '通过json直接生成代码-----软件工厂需要调用xxx' })
-  async genProject(@Body() jsonData:JsonData,@Res() res:Response){
+  async genProject(@Body() jsonData: JsonData, @Res() res: Response) {
+    const toolJsonData =await parseSfJson(jsonData)
+    // return true
+    return outputCode(res,toolJsonData)
+  }
+
+  // 之前
+  @Post('genProject1')
+  @ApiOperation({ summary: '通过json直接生成代码-----软件工厂需要调用xxx' })
+  async genProject1(@Body() jsonData: JsonData, @Res() res: Response) {
     const toolJsonData = await this.sfProjectExtendService.adapterJson(jsonData)
     const codeData = await this.genService.getSfGenCode(toolJsonData)
     return outputCode(res,codeData)

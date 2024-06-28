@@ -1,0 +1,21 @@
+import { genEnumByOption } from '@/utils/EnumFactory'
+
+export const <%= constantCode %> = {
+  <%_ list.forEach(function(item) {  -%>
+  <%= item.constantCode %>: '<%= item.code %>',
+  <%_ }) -%>
+}
+
+// <%= name %>
+export const <%= camelCode %>Option = [
+  <%_ list.forEach(function(item) { -%>
+  {
+    value: <%= constantCode %>.<%= item.constantCode%>,
+    label: '<%= item.name %>',
+  },
+  <%_ }) -%>
+]
+
+export const <%= camelCode %>Enum = genEnumByOption(<%=camelCode %>Option)
+
+export default <%= camelCode %>Enum

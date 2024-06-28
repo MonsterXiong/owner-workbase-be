@@ -1,0 +1,11 @@
+<%#
+    prop
+    显示名称：label
+-%>
+<%_ if(displayType == 'switch'){ -%>
+<el-table-column prop="<%= prop %>" align="center" label="<%= label %>">
+        <template slot-scope="{ row }">
+          <i :class="[row.<%=prop%>=='1'?'el-icon-check':'el-icon-close']"></i>
+        </template>
+      </el-table-column>
+<%_ } -%>
