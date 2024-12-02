@@ -193,6 +193,8 @@ export class GenController {
   async genSfProjectByProjectId(@Query('projectId') projectId: string,@Res() res:Response){
     try {
       const jsonData = await this.sfProjectExtendService.getProjectGenCodeJson(projectId)
+      console.log('jsonData',jsonData);
+
       const codeData = await this.genService.getSfGenCode(jsonData)
       return outputCode(res,codeData)
     } catch (error) {

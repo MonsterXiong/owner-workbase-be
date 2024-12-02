@@ -16,3 +16,10 @@ export const menuList = [
   },
   <%_ }); -%>
 ]
+
+// 如果需要从后台获取菜单数据 则逻辑写在这里
+export const getMenuList = () => {
+  return new Promise((res, rej) => {
+    res(menuList)
+  })
+}

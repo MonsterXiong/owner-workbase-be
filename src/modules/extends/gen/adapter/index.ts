@@ -9,6 +9,8 @@ import { BIZ_ADAPTER_MAP } from './biz/index'
 import { LAYOUT_ADAPTER_MAP } from './layout/index'
 import { OTHER_ADAPTER_MAP } from './other/index'
 import { LIST_ADAPTER_MAP } from './list/index'
+import { STATISTICS_ADAPTER_MAP } from './statistics/index'
+import { BIZ_COMPONENT_ADAPTER_MAP } from './bizComponent/index'
 /* Software Gen Code Require Placeholder */
 
 export const ADAPTER_MAP = {
@@ -22,7 +24,9 @@ export const ADAPTER_MAP = {
   [CATEGORY_TYPE.LAYOUT]: LAYOUT_ADAPTER_MAP,
   [CATEGORY_TYPE.OTHER]: OTHER_ADAPTER_MAP,
   [CATEGORY_TYPE.LIST]: LIST_ADAPTER_MAP,
-  /* Software Gen Code Placeholder */
+  [CATEGORY_TYPE.STATISTICS]: STATISTICS_ADAPTER_MAP,
+	[CATEGORY_TYPE.BIZ_COMPONENT]: BIZ_COMPONENT_ADAPTER_MAP,
+	/* Software Gen Code Placeholder */
 }
 
 export const adapter = (categoryType,type,param)=> {

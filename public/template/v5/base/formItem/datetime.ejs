@@ -1,0 +1,12 @@
+<%#
+    formDataCode,
+    prop
+    自带->绑定字段
+
+    显示名称：label
+    占位提示：placeholder
+
+-%>
+<%_ if(displayType == 'datetime'){ -%>
+<el-date-picker v-model="<%=formDataCode%>.<%=prop%>" type="datetime" placeholder="请选择<%=label%>"></el-date-picker>
+<%_ } -%>

@@ -25,7 +25,7 @@ export class HttpFaild implements ExceptionFilter {
       time: new Date(),
       msg: exception.message,
       status,
-      path: request.originalUrl,
+      path: request.url,
     });
   }
 }

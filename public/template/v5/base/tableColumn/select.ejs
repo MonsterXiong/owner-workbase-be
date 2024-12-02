@@ -1,0 +1,17 @@
+<%#
+    prop
+    显示名称：label
+-%>
+<%_ if(displayType == 'select'){ -%>
+<el-table-column prop="<%= prop %>" align="center" label="<%= label %>">
+        <template slot-scope="{ row }">
+          <%_ if(configParam.type == 'enum'){ -%>
+          <span>{{ $enum.getLabel('<%= configParam.param.enumCategory%>', row.<%= prop%>) }}</span>
+          <%_ } else if(configParam.type == 'interface'){ -%>
+          <span>{{ <%= prop%>Enum.<% if(configParam.hasMultiple){%>getLabelsByValue<%_ } else { _%>getLabelByValue<%_ }_%>(row.<%= prop%>) }}</span>
+          <%_ } else {  -%>
+          <span>{{ row.<%= prop%> }}</span>
+          <%_ } -%>
+        </template>
+      </el-table-column>
+<%_ } -%>

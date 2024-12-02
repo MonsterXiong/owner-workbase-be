@@ -1,0 +1,51 @@
+<%#
+    formDataCode,
+    prop
+    自带->绑定字段
+
+    显示名称：label
+    占位提示：placeholder
+    类型 ： mock | enum | interface 默认mock
+    configParam:{
+      type:mock | enum | interface 默认mock,
+      <!-- mock [{label:'',value:''}] -->
+      <!-- enum { type:'extend' enumCategory:'', data:[{label:'',value:''}] }-->
+      <!-- interface { tableName:'',labelKey:'',valueKey:'', }-->
+      <!-- param -->
+      <!-- data:[] -->
+    }
+    mockConfig:[{label:'',value:''}]
+    enumConfig:{
+        type:'extend'
+        enumCategory:'',
+        data:[{label:'',value:''}]
+    }
+    interfaceConfig:{
+        type:'remote | queto'
+        tableName:'',
+        labelKey:'',
+        valueKey:'',
+    }
+    是否具有默认值 hasDefaultValue
+    默认值 defaultValue
+
+    是否多选 hasMultiple 默认false
+    是否清除 hasClearable 默认false
+    是否支持搜索 hasFilterable 默认false
+-%>
+<%_ if(displayType=='select'){ -%>
+<el-select v-model="<%=formDataCode%>.<%=prop%>"<%_if(configParam.hasMultiple){-%> multiple<%_}-%>
+        <%_ if(configParam.hasClearable){-%> clearable<%_}-%>
+        <%_ if(configParam.hasFilterable){-%> filterable<%_}-%> placeholder="请选择<%=label%>">
+        <%_ if(configParam.type=='enum'){ -%>
+          <el-option v-for="item in $enum.getOption('<%= configParam.param.enumCategory%>')" :key="item.value" :label="item.label" :value="item.value"></el-option>
+        <%_ } -%>
+        <%_ if(configParam.type=='interface'){ -%>
+          <el-option v-for="item in <%=prop%>Enum.getEnum()" :key="item.value" :label="item.label" :value="item.value"></el-option>
+        <%_ } -%>
+        <%_ if(configParam.type=='mock'){ -%><% configParam.data.forEach(function(field){ -%>
+          <el-option label="<%= field.label%>" value="<%= field.value%>"></el-option>
+        <%_ }) -%>
+        <%_ } -%>
+        </el-select>
+<%_ } -%>

@@ -1,0 +1,58 @@
+<template>
+  <div>
+    <BizTable :columnList="columnList" :tableConfig="tableConfig" :tableInterface="tableInterface" />
+  </div>
+</template>
+<script>
+import BizTable from '@/bizComponents/bizTable/BizTable.vue'
+export default {
+  name: '<%= pageName%>',
+  components: { BizTable },
+  data() {
+    return {
+      tableInterface: {
+        service: 'KppNode',
+        key: 'kppNodeId',
+      },
+      tableConfig:{
+        dialogTitle: '<%= title%>',
+        downloadFileName: '<%= title%>',
+        relationParams: {},
+        sortParams: [],
+      },
+      columnList:[
+        {
+          type: 'selection',
+        },
+        {
+          type: 'index',
+        },
+        {
+          code: 'kppNodeName',
+          label: '节点名称',
+          type: 'input',
+          query: true,
+          required: true,
+        },
+        {
+          code: 'kppNodeCode',
+          label: '节点标识',
+          type: 'input',
+        },
+        {
+          code: 'kppNodeType',
+          label: '类别',
+          type: 'select',
+          dataType: 'enum',
+          params: 'nodeType',
+        },
+        {
+          code: 'nodeValJs',
+          label: '重要度值',
+          type: 'number',
+        },
+      ]
+    }
+  }
+}
+</script>

@@ -27,7 +27,7 @@ function parseProjectInfo(projectInfo,projectId=nanoid()) {
         projectDescription: projectInfo.projectDescription,
         syncProjectId:projectId,
         configParam: {
-            host: '192.168.2.204' || projectInfo?.dbIp || 'localhost',
+            host:  projectInfo?.dbIp || '192.168.2.204' || 'localhost',
             port: projectInfo?.dbPort || '3306',
             type: projectInfo?.dbType || 'mysql',
             username: projectInfo?.dbUsername || 'root',
@@ -40,7 +40,7 @@ function parseProjectInfo(projectInfo,projectId=nanoid()) {
             projectOutputDir: projectInfo.projectOutputDir,
             projectVersion: projectInfo.projectVersion,
             projectFrameworkType: projectInfo.projectFrameworkType,
-            prefix: projectInfo?.prefix || 'base/api'
+            prefix: projectInfo?.prefix || '/base/api/'
         }
     }
     // 最后拿到的是数据库中的格式
@@ -76,7 +76,7 @@ function  parseDataInfo(dataInfo, bindProject) {
     const enumCategoryList = []
     const enumList = []
 
-    enumTableList.forEach(item => {
+    enumTableList.forEach((item,index) => {
         const isSync = 1
         const enumCategoryId = nanoid()
         const enumCategoryItem = {
@@ -85,14 +85,15 @@ function  parseDataInfo(dataInfo, bindProject) {
             enumCategoryName: item.remark,
             isSync,
             bindProject,
+            sort: item.sort || index,
         }
         if (item?.columns?.length) {
-            item.columns.forEach(column => {
+            item.columns.forEach((column,itemIndex) => {
                 const enumItem = {
                     enumId: nanoid(),
                     enumCode: column.code,
                     enumName: column.remark,
-                    sort: column.sort,
+                    sort: column.sort || itemIndex,
                     isSync,
                     bindEnumCategory: enumCategoryId,
                     bindProject,
@@ -387,6 +388,7 @@ export class SfProjectExtendService {
         // 同步菜单信息
         const menuBo = parseMenuInfo(menuInfo, bindProjectId)
         if (menuBo?.length) {
+            // TODO: 先删除菜单数据
             await this.sfMenuService.saveBatch(menuBo as any)
         }
         // 同步枚举信息=>TODO:可扩展同步数据库表，建表生成后端

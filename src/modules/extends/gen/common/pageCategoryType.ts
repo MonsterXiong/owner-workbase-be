@@ -9,5 +9,7 @@ export const CATEGORY_TYPE = {
   BIZ: 'biz',
   LAYOUT: 'layout',
   OTHER: 'other',
-  /* Software Gen Code Placeholder */
+  STATISTICS: 'statistics',
+	BIZ_COMPONENT: 'bizComponent',
+	/* Software Gen Code Placeholder */
 }

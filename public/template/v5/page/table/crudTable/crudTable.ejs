@@ -1,0 +1,223 @@
+<template>
+  <TableLayout>
+    <template #query>
+      <<%= pageName%>Query @onEvent="onEvent" :queryForm.sync="queryForm" <%_ if (queryEnumList.length > 0) { -%><% queryEnumList.forEach(function(field){ -%> :<%= field.prop%>Enum="<%= field.prop%>Enum"<%_ }); -%><%_ } -%>></<%= pageName%>Query>
+    </template>
+
+    <<%= pageName%>Table
+      :pageInfo.sync="pageInfo"
+      :tableData="tableData"
+      :total="total"
+      @onEdit="onEdit"
+      @onDelete="onDelete"
+      @selection-change="onSelectionChange"
+      <%_ if (tableEnumList.length > 0) { -%><% tableEnumList.forEach(function(field){ -%>
+      :<%= field.prop%>Enum="<%= field.prop%>Enum"
+      <%_ });-%>
+      <%_ } -%>
+    ></<%= pageName%>Table>
+
+    <<%= pageName%>Dialog ref="<%= camelCaseName%>DialogRef" @submit="onSubmit" <%_ if (dialogEnumList.length > 0) { -%><% dialogEnumList.forEach(function(field){ -%> :<%= field.prop%>Enum="<%= field.prop%>Enum"<%_ }); -%><%_ } -%>></<%= pageName%>Dialog>
+
+  </TableLayout>
+</template>
+
+<script>
+import { <%= tableCode%>Service <%_ if (enumList.length > 0) { -%><% enumList.forEach(function(field){ -%>, <%= field.param.pascalCaseTableName%>Service<%_ }); -%><%_ } -%> } from '@/services'
+import { QueryConditionBuilder } from '@/utils/queryConditionBuilder'
+import <%= pageName%>Dialog from './components/<%= pageName%>Dialog.vue'
+import <%= pageName%>Table from './components/<%= pageName%>Table.vue'
+import <%= pageName%>Query from './components/<%= pageName%>Query.vue'
+<%_ if (enumList.length > 0) { -%>
+import { genEnumByList, genEnumByOption } from '@/utils/EnumFactory'
+<%_ } -%>
+export default {
+  name: '<%= pageName%>',
+  components: {
+    <%= pageName%>Table,
+    <%= pageName%>Query,
+    <%= pageName%>Dialog,
+  },
+  data() {
+    return {
+      tableData: [],
+      queryForm: {},
+      total: 0,
+      pageInfo: {
+        page: 1,
+        rows: 20,
+      },
+      multipleSelection: [],
+      <%_ if (enumList.length > 0) { -%><% enumList.forEach(function(field){ -%>
+      <%= field.prop%>Enum:genEnumByOption([]),
+      <%_ });-%>
+      <%_ } -%>
+    }
+  },
+  mounted() {
+    this.init()
+  },
+  watch: {
+    pageInfo: {
+      handler() {
+        this.getTableData()
+      },
+      deep: true,
+    },
+  },
+  methods: {
+    <%_ if (enumList.length > 0) { -%><% enumList.forEach(function(field){ -%>
+    async get<%= field.param.pascalCaseProp%>Enum() {
+      const queryCondition = QueryConditionBuilder.getInstanceNoPage()
+      const { data } = await <%= field.param.pascalCaseTableName%>Service.query<%= field.param.pascalCaseTableName%>ByCondition(queryCondition)
+      this.<%= field.prop%>Enum = genEnumByList(data, { labelKey: '<%= field.param.labelKey%>', valueKey: '<%= field.param.valueKey%>' })
+    },
+    <%_ });-%>
+    <%_ } -%>
+    <%_ if (enumList.length > 0) { -%>
+    async getEnumData(){
+      <% enumList.forEach(function(field){ -%>await this.get<%= field.param.pascalCaseProp%>Enum()<%_ });%>
+    },
+    <%_ } -%>
+    <% if (enumList.length > 0) { -%>async<%_ } -%> init() {
+    <%_ if (enumList.length > 0) { -%>
+      await this.getEnumData()
+    <%_ } -%>
+      this.getTableData()
+    },
+    // 多选
+    onSelectionChange(val) {
+      this.multipleSelection = val
+    },
+    // 查询
+    onQuery() {
+      this.getTableData()
+    },
+    // 重置
+    onReset() {
+      Object.keys(this.queryForm).forEach((key) => {
+        this.queryForm[key] = ''
+      })
+      // pageInfo修改会触发查询功能
+      this.pageInfo = { page: 1, rows: 20 }
+    },
+    // 新增
+    onAdd() {
+      this.$refs.<%= camelCaseName%>DialogRef.show()
+    },
+    // 编辑
+    onEdit(row) {
+      this.$refs.<%= camelCaseName%>DialogRef.show(row)
+    },
+    // 删除
+    async onDelete(row) {
+      try {
+        await this.$tools.confirm('请确认是否删除？')
+        const { code } = await this.onDeleteAPI(row.<%= primaryKey%>)
+        if (code === 200) this.$tools.message('删除成功')
+        this.getTableData()
+      } catch (e) {
+        if (e == 'cancel') return this.$tools.message('已取消删除', { type: 'info' })
+        console.error('删除失败', e)
+      }
+    },
+    // 批量删除
+    async onBatchDelete() {
+      const ids = this.multipleSelection.map((item) => item.<%= primaryKey%>)
+      if (!ids.length) {
+        return this.$message.warning('请先选择需要删除的内容')
+      }
+      try {
+        await this.$tools.confirm('请确认是否删除？')
+        const { code } = await this.onBatchDeleteAPI(ids)
+        if (code === 200) this.$tools.message('删除成功')
+        this.getTableData()
+      } catch (e) {
+        if (e == 'cancel') return this.$tools.message('已取消删除', { type: 'info' })
+        console.error('删除失败', e)
+      }
+    },
+    // 处理query组件触发的方法
+    onEvent(type) {
+      switch (type) {
+        case 'query':
+          this.onQuery()
+          break
+        case 'reset':
+          this.onReset()
+          break
+        case 'add':
+          this.onAdd()
+          break
+        case 'batchDelete':
+          this.onBatchDelete()
+          break
+        default:
+          console.log('不支持的方法类型')
+          break
+      }
+    },
+    async getTableData() {
+      const queryCondition = QueryConditionBuilder.getInstance(this.pageInfo.page, this.pageInfo.rows)
+      Object.keys(this.queryForm).forEach((key) => {
+        if (this.queryForm[key] || this.queryForm[key] == 0) {
+          queryCondition.buildLikeQuery(key, this.queryForm[key])
+        }
+      })
+      const { data, count } = await this.onQueryListAPI(queryCondition)
+      <%_ if (enumList.length > 0 && enumList.filter(item=>item.configParam.hasMultiple).length > 0) { -%>
+        this.tableData = data.map(item=>{
+          return {
+            ...item,<% enumList.forEach(function(field){ %>
+            <%_ if (field.configParam.hasMultiple){ -%>
+            <%= field.prop%>:JSON.parse(item.<%= field.prop%> || '[]'),
+            <%_ } -%>
+          }
+        })
+      <%_ });-%>
+      <%_ }else{ -%>
+      this.tableData = data
+      <%_ } -%>
+      this.total = count
+    },
+    async onSubmit(formData) {
+      try {
+        <%_ if (enumList.length > 0 && enumList.filter(item=>item.configParam.hasMultiple).length > 0) { -%>
+        const param =  {
+            ...formData,<% enumList.forEach(function(field){%>
+            <%_ if (field.configParam.hasMultiple){ -%>
+            <%= field.prop%>:JSON.stringify(formData.<%= field.prop%>),
+            <%_ } -%>
+        }
+        await this.onSaveAPI(param)
+        <%_ });-%>
+        <%_ }else{ -%>
+        await this.onSaveAPI(formData)
+        <%_ } -%>
+        this.getTableData()
+        this.$message.success('操作成功')
+      } catch (error) {
+        this.$message.error('操作失败，请联系管理员或者重试')
+      }
+    },
+    // 查询列表API
+    async onQueryListAPI(queryCondition) {
+      return await <%= tableCode%>Service.query<%= tableCode%>DTOByCondition(queryCondition)
+    },
+    // 删除API
+    async onDeleteAPI(id) {
+      return await <%= tableCode%>Service.delete<%= tableCode%>(id)
+    },
+    // 批量删除API
+    async onBatchDeleteAPI(ids) {
+      return await <%= tableCode%>Service.delete<%= tableCode%>Batch(ids)
+    },
+    // 保存API
+    async onSaveAPI(param) {
+      return await <%= tableCode%>Service.save<%= tableCode%>(param)
+    }
+  },
+}
+</script>
+
+<style lang="less" scoped></style>

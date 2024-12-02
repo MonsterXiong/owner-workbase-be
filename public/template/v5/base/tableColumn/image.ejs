@@ -1,0 +1,11 @@
+<%#
+    显示名称：label
+    字段：prop
+-%>
+<%_ if(displayType == 'image'){ -%>
+<el-table-column prop="<%= prop %>" align="center" label="<%= label %>">
+        <template slot-scope="{ row }">
+          <img style="padding: 3px 0; max-width: 100%; max-height: 90px" :src="row.<%= prop %>" />
+        </template>
+      </el-table-column>
+<%_ } -%>

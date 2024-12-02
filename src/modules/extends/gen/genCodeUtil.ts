@@ -16,11 +16,14 @@ const GEN_TYPE = {
 function getPath(filepath) {
     return path.join(process.cwd(), filepath)
 }
+
+const PAGE_TEMPLATE_PATH = 'public/template/v4/page'
+
 const TEMPLATE_PATH = {
     [GEN_TYPE.MENU]: getPath('public/template/v4/menu/menu.ejs'),
     [GEN_TYPE.ROUTE]: getPath('public/template/v4/route/route.ejs'),
     [GEN_TYPE.ROUTES_CONSTANT]: getPath('public/template/v4/routeConstant/routeConstant.ejs'),
-    [GEN_TYPE.SERVICE]: getPath('public/template/v4/service/service.ejs'),
+    [GEN_TYPE.SERVICE]: getPath('public/template/v5/service/service.ejs'),
     [GEN_TYPE.ENUM]: getPath('public/template/v4/enum/enum.ejs'),
 
     // 目录
@@ -28,7 +31,7 @@ const TEMPLATE_PATH = {
 }
 
 const FRAMEWORK_CONFIG = {
-    [GEN_TYPE.MENU]: 'layout/sideBar/menuData.js',
+    [GEN_TYPE.MENU]: 'layout/menuData.js',
     [GEN_TYPE.ROUTE]: 'router/base/baseRoutes.js',
     [GEN_TYPE.ROUTES_CONSTANT]: 'router/base/baseRoutesConstant.js',
     [GEN_TYPE.SERVICE]: 'services/module/base',
@@ -84,7 +87,7 @@ export function genEnumCode(type, param) {
 async function genEmptyCode(filePath, templateParam) {
     return {
         filePath,
-        content: await getEjsTemplateByFile(getPath('public/template/v4/page/empty/empty.ejs'), templateParam)
+        content: await getEjsTemplateByFile(getPath(`${PAGE_TEMPLATE_PATH}/empty/empty.ejs`), templateParam)
     }
 }
 
@@ -108,7 +111,7 @@ export function genProjectCode(param) {
 }
 
 export async function genPageCode(param) {
-    const { name, detailParam } = param
+    const { name, detailParam,title } = param
     let type = ''
     let categoryType = ''
     if (!detailParam || !detailParam?.categoryType || !detailParam?.type) {
@@ -119,13 +122,15 @@ export async function genPageCode(param) {
     }
 
     const pascalCaseName = pascalCase(name)
-    const basePath = `public/template/v4/page/${categoryType}/${type}`
+    // const basePath = `${PAGE_TEMPLATE_PATH}/${categoryType}/${type}`
+    const basePath = `${PAGE_TEMPLATE_PATH}/${categoryType}/${type}`
     const pageDirPath = `pages/${name}`
     const entryPath = `${pageDirPath}/${pascalCaseName}.vue`
 
     const commonTemplateParam = {
         name,
-        pageName: pascalCaseName
+        pageName: pascalCaseName,
+        title
     }
 
     const templateParam = adapter(categoryType, type, { ...commonTemplateParam, ...param })

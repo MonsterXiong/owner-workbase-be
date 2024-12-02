@@ -110,10 +110,11 @@ export class GenService {
   async getSfPageCode(menuId) {
     const menuInfo = await this.sfMenuExtendService.getMenuInfoById(menuId)
       if (!menuInfo) return []
-      const { menuCode, menuParam} = menuInfo
+    const { menuCode, menuParam,menuName } = menuInfo
       const pageInfo = {
-          name:menuCode,
-          detailParam:menuParam
+        name:menuCode,
+        detailParam: menuParam,
+        title:menuName
       }
     return await genPageCode(pageInfo)
   }
